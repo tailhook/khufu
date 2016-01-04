@@ -1,0 +1,21 @@
+containers:
+  node:
+    setup:
+    - !Alpine v3.3
+    - !Install [alpine-base, make]
+    - !NpmDependencies
+    environ:
+      NODE_PATH: /usr/lib/node_modules
+      HOME: /tmp
+
+commands:
+
+  npm: !Command
+    description: Npm command
+    container: node
+    run: [npm]
+
+  test: !Command
+    description: Npm command
+    container: node
+    run: [npm, test]
