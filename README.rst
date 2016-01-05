@@ -11,9 +11,11 @@ Why?
 ====
 
 1. JSX is ugly. Mixing javascript and HTML is ugly
-2. I want to mix CSS with HTML and enough dynamic features [*]_
+2. Conversely, I want to mix CSS with HTML and enough dynamic features [*]_
+3. I'm tired of composing views and stores independently [*]_
 
 .. [*] Indentation-based syntax is a bonus.
+.. [*] Sure, the model proposed here doesn't work for everyone
 
 
 So What Is It?
