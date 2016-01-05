@@ -11,7 +11,7 @@ Why?
 ====
 
 1. JSX is ugly. Mixing javascript and HTML is ugly
-2. I want to mix CSS with HTML enough dynamic features [*]
+2. I want to mix CSS with HTML and enough dynamic features [*]_
 
 .. [*] Indentation-based syntax is a bonus.
 
