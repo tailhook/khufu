@@ -9,7 +9,11 @@ export var parser = new Parser({
         ["left", "^"],
         ["left", "UMINUS"]
     ],
-    "tokens": "import from { } ( ) + - * / ^ , . IDENT NL",
+    "tokens": "import from style view " +
+        "{ } ( ) + - * / ^ , . : " +
+        "INDENT DEDENT IDENT NL" +
+        // CSS
+        "IDENT_TOKEN",
     "start": "file",
 
     "bnf": {
@@ -25,11 +29,36 @@ export var parser = new Parser({
                 "$$ = ['import_names', $3, $6];"],
             ["import IDENT from STRING NL",
                 "$$ = ['import_default', $2, $4];"],
+            ["style : NL INDENT rules DEDENT", "$$ = ['style', $5];"],
+            ["style : NL", "$$ = ['style', []]"],
         ],
         "names": [
             ["IDENT , names", "$$ = [$1].concat($3);"],
             ["IDENT", "$$ = [$1];"],
         ],
+        // CSS
+        "rules": [
+            ["rule rules", "$$ = [$1].concat($2);"],
+            ["", "$$ = [];"],
+        ],
+        "rule": [
+            ["selector NL INDENT properties DEDENT", "$$ = ['rule', $1, $4]"],
+            ["selector NL", "$$ = ['rule', $1, []]"],
+        ],
+        "selector": [
+            ["IDENT_TOKEN", "$$ = [$1];"],
+        ],
+        "properties": [
+            ["property properties", "$$ = [$1].concat($2);"],
+            ["", "$$ = [];"],
+        ],
+        "property": [
+            ["IDENT_TOKEN : property_value NL", "$$ = ['property', $1, $3]"],
+        ],
+        "property_value": [
+            ["IDENT_TOKEN", "$$ = $1"],
+        ],
+        // FUTURE
         "e" :[
               [ "e + e",   "$$ = ['add', $1, $3];" ],
               [ "e - e",   "$$ = ['sub', $1, $3];" ],
