@@ -11,11 +11,11 @@ Why?
 ====
 
 1. JSX is ugly. Mixing javascript and HTML is ugly
-2. Conversely, I want to mix CSS with HTML and enough dynamic features [*]_
-3. I'm tired of composing views and stores independently [*]_
+2. Conversely, I want to mix CSS with HTML and enough dynamic features [1]_
+3. I'm tired of composing views and stores independently [2]_
 
-.. [*] Indentation-based syntax is a bonus.
-.. [*] Sure, the model proposed here doesn't work for everyone
+.. [1] Indentation-based syntax is a bonus.
+.. [2] Sure, the model proposed here doesn't work for everyone
 
 
 So What Is It?
@@ -23,11 +23,12 @@ So What Is It?
 
 It's mostly a DSL around HTML, that looks a lot like just a template language
 similar to Jade_, that compiles into Incremental DOM.
-Additinally Khufu:
+Additionally Khufu:
 
-1. Khufu reuses incremental dom diffing algorithm to diff flux_-like stores
+1. Reuses incremental dom diffing algorithm to diff redux_ or flux_-like stores
 2. Allows to write styles in the same file which are **properly namespaced**
    without long ugly prefixed like in BEM_
+
 
 So What is "View-Driven"?
 =========================
@@ -37,43 +38,49 @@ all server-side data are fetched when user enters some subview and is disposed
 when user leaves the view (of course, data can be prefetched and cached, but
 that's optimization orthogonal to what we're discussing here).
 
-For example::
+For example:
 
-    view main(choose_item):
+.. code-block:: javascript
+
+    import {Search, search} from 'myapp/search'
+    import {Image, load} from 'myapp/util/image_loading'
+    import {select} from 'myapp/action_creators'
+
+    view main(@selected_item):
+        store @results = Search
         <form>
-            store current_search = new Text()
             <input type="text" placeholder="search">
-                link change = current_search
+                link {change, keyup} search(this.value) -> @results
 
-        if current_search.value:
-            store results = new AjaxCall('/search', current_search.value)
-            if results.loading:
+        if @results.current_text:
+            if @results.loading:
                 <div.loading>
                     "Loading..."
             else:
                 <div.results>
-                for item in results.items:
+                for item in @results.items:
                     <div.result>
-                        store icon_loaded = new ImageLoad(item.img)
-                        if icon_loaded.done:
+                        store @icon_loaded = Image <- load(item.img)
+                        if @icon_loaded.done:
                             <img src=item.img>
                         else:
                             <div.icon-loading>
                         <div.title>
-                            link click = item.id -> choose_item
+                            link {click} select(item.id) -> @selected_item
                             item.title
 
-This example displays search box and if some search query is typed into the
-input box, search request is sent to the server immeditely. Displaying
-"Loading..." stub and results when they are loaded from server. There are also
-code to download images aynchronously.
+This example displays search box. When some search query is typed into the
+input box, search request is sent to the server immediately. This displays
+"Loading..." stub and replaces the stub with the results when they are loaded
+from server. There are also code to download images aynchronously.
 
 Some explanations:
 
 1. Nesting of elements is denoted by indentation, hence no closing tags
 2. ``div.cls`` is shortcut for ``<div class="cls">``
-3. ``store`` denotes a special variable, that persists data between re-renders
-4. ``link`` ties and event on the element to handler and may send some data
+3. ``store`` denotes a redux store
+4. ``->`` and ``<-`` arrows dispatches action for the store
+5. ``link`` allows to bind events to an action (or an action creator)
 
 The store thing might need a more comprehensive explanation:
 
@@ -81,7 +88,10 @@ The store thing might need a more comprehensive explanation:
 2. More so, on each loop iteration we get new scope
 3. Diffing algorithm of incremental-dom drops unused stores automatically
 4. They provide lifecycle hooks, so can dispose resources properly
-5. Otherwise they are just variables that you can use however you want
+5. Store is prefixed by ``@`` to get nice property access syntax [3]_
+
+.. [3] Otherwise would need to call ``getState()`` each time. We also cache
+   result of the method for subsequent attribute access
 
 
 Isn't it Like Good Old HTML?
@@ -97,6 +107,7 @@ similar to what you find in react_ or angular_.
 
 
 .. _flux: https://facebook.github.io/react/blog/2014/05/06/flux.html
+.. _redux: http://redux.js.org/
 .. _jade: http://jade-lang.com/
 .. _incremental-dom: https://github.com/google/incremental-dom
 .. _bem: http://getbem.com/
