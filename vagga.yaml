@@ -1,4 +1,5 @@
 containers:
+
   node:
     setup:
     - !Alpine v3.3
@@ -7,6 +8,12 @@ containers:
     environ:
       NODE_PATH: /usr/lib/node_modules
       HOME: /tmp
+
+  doc:
+    setup:
+    - !Container node
+    - !Install [py-sphinx, py-sphinx_rtd_theme]
+
 
 commands:
 
@@ -19,3 +26,12 @@ commands:
     description: Npm command
     container: node
     run: [npm, test]
+
+  doc: !Command
+    description: Build documentation
+    container: doc
+    run: [make, html]
+    work-dir: doc
+    epilog: |
+      --------------------------------------------------------
+      Documentation is built under doc/_build/html/index.html
