@@ -3,6 +3,7 @@ import Lexer from 'lex';
 const TOPLEVEL = 0;
 const TOPLEVEL_KW = new Set(["import", "from", "style", "view"])
 const STYLE = 2;
+const VIEW = 4;
 
 export default function () {
     let lexer = new Lexer();
@@ -86,6 +87,23 @@ export default function () {
         }
     }, []);
 
+    lexer.addRule(/[({[]/, function (lexeme) {
+        this.original_lexeme = lexeme;
+        this.yytext = lexeme;
+        this.bracket_level += 1;
+        return lexeme;
+    }, []);
+    lexer.addRule(/[\]})]/, function (lexeme) {
+        this.original_lexeme = lexeme;
+        this.yytext = lexeme;
+        if(this.bracket_level < 1) {
+            this.reject = true;
+            return;
+        }
+        this.bracket_level -= 1;
+        return lexeme;
+    }, []);
+
     /********************* Toplevel tokens ***************************/
 
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, function (lexeme) {
@@ -95,6 +113,9 @@ export default function () {
             switch(lexeme) {
                 case "style":
                     this.state = STYLE;
+                    break;
+                case "view":
+                    this.state = VIEW;
                     break;
             }
             return lexeme;
@@ -120,23 +141,6 @@ export default function () {
         return 'STRING';
     }, [TOPLEVEL]);
 
-    lexer.addRule(/[({[]/, function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
-        this.bracket_level += 1;
-        return lexeme;
-    }, [TOPLEVEL]);
-    lexer.addRule(/[\]})]/, function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
-        if(this.bracket_level < 1) {
-            this.reject = true;
-            return;
-        }
-        this.bracket_level -= 1;
-        return lexeme;
-    }, [TOPLEVEL]);
-
     /********************* Style tokens ***************************/
 
     lexer.addRule(/[:]/, function (lexeme) {
@@ -152,6 +156,19 @@ export default function () {
         this.yytext = lexeme;
         return "IDENT_TOKEN";
     }, [STYLE]);
+
+    /********************* View tokens ***************************/
+
+    lexer.addRule(/[:,.*+/-]/, function (lexeme) {
+        this.original_lexeme = lexeme;
+        this.yytext = lexeme;
+        return lexeme;
+    }, [VIEW]);
+    lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, function (lexeme) {
+        this.original_lexeme = lexeme;
+        this.yytext = lexeme;
+        return "IDENT";
+    }, [VIEW]);
 
 
     return lexer;

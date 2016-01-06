@@ -18,19 +18,22 @@ export var parser = new Parser({
 
     "bnf": {
         "file": [
-            ["statements EOF", "return $1;"],
+            ["blocks EOF", "return $1;"],
         ],
-        "statements": [
-            ["statement statements", "$$ = [$1].concat($2);" ],
+        "blocks": [
+            ["block blocks", "$$ = [$1].concat($2);" ],
             ["", "$$ = [];" ],
         ],
-        "statement": [
+        "block": [
             ["import { names } from STRING NL",
                 "$$ = ['import_names', $3, $6];"],
             ["import IDENT from STRING NL",
                 "$$ = ['import_default', $2, $4];"],
             ["style : NL INDENT rules DEDENT", "$$ = ['style', $5];"],
             ["style : NL", "$$ = ['style', []]"],
+            ["view IDENT ( args ) : NL " +
+             "INDENT statements DENENT", "$$ = ['view', $2, $4, $9]"],
+            ["view IDENT ( args ) : NL", "$$ = ['view', $2, $4, []]"],
         ],
         "names": [
             ["IDENT , names", "$$ = [$1].concat($3);"],
@@ -57,6 +60,19 @@ export var parser = new Parser({
         ],
         "property_value": [
             ["IDENT_TOKEN", "$$ = $1"],
+        ],
+        // HTML
+        "args": [
+            ["IDENT , args", "$$ = [$1].concat($3);"],
+            ["IDENT", "$$ = [$1];"],
+            ["", "$$ = [];"],
+        ],
+        "statements": [
+            ["statement statements", "$$ = [$1].concat($2);" ],
+            ["", "$$ = [];" ],
+        ],
+        "statement": [
+            ["STRING", "$$ = ['string', $1]" ],
         ],
         // FUTURE
         "e" :[
