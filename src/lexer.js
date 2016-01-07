@@ -3,7 +3,27 @@ import Lexer from 'lex';
 const TOPLEVEL = 0;
 const TOPLEVEL_KW = new Set(["import", "from", "style", "view"])
 const STYLE = 2;
-const VIEW = 4;
+const VIEW = 10;
+const VIEW_LINESTART = 12;  // "<" at tag open
+const VIEW_TAG = 14;        // "abc-def" identifiers
+const MATCHING_BRACKET = { '<': '>', '(': ')', '[': ']', '{': '}' }
+
+function lex(value) {
+    if(typeof value == 'string') {
+        return lex(lexeme => value);
+    } else {
+        return function(lexeme) {
+            this.original_lexeme = lexeme;
+            this.yytext = lexeme;
+            let old_state = this.state;
+            let result = value.call(this, lexeme)
+            if(old_state == this.state && this.state == VIEW_LINESTART) {
+                this.state == VIEW;
+            }
+            return result;
+        }
+    }
+}
 
 export default function () {
     let lexer = new Lexer();
@@ -20,7 +40,7 @@ export default function () {
     let old_set_input = lexer.setInput;
     lexer.setInput = function(x) {
         this.yylineno = 0;
-        this.bracket_level = 0;
+        this.brackets = [];
         this.original_lexeme = '';
         this.indent = [0];
         old_set_input.call(this, x)
@@ -29,15 +49,16 @@ export default function () {
     /********************* Common tokens *****************************/
 
     /// this rule must be first
-    lexer.addRule(/^[\t ]*/gm, function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
-        if(this.bracket_level != 0) {
+    lexer.addRule(/^[\t ]*/gm, lex(function(lexeme) {
+        if(this.brackets.length != 0) {
             return;
         }
         var indentation = lexeme.length;
 
-        if (indentation > this.indent[0]) {
+        if(this.state == VIEW) {
+            this.state = VIEW_LINESTART;
+        }
+        if(indentation > this.indent[0]) {
             this.indent.unshift(indentation);
             return "INDENT";
         }
@@ -59,16 +80,11 @@ export default function () {
         }
 
         if (tokens.length) return tokens;
-    }, []);
+    }), []);
 
-    lexer.addRule(/[ \t]+/, function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
-    }, []);
+    lexer.addRule(/[ \t]+/, lex(() => {}), []);
 
-    lexer.addRule(/\n?$/, function () {
-        this.original_lexeme = '';
-        this.yytext = '';
+    lexer.addRule(/\n?$/, lex(function(lexeme) {
         let tokens = ['NL']
         while(this.indent.length > 1) {
             tokens.push("DEDENT")
@@ -76,39 +92,63 @@ export default function () {
         }
         tokens.push('EOF')
         return tokens
-    }, []);
+    }), []);
 
-    lexer.addRule(/\n+/, function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
+    lexer.addRule(/\n+/, lex(function (lexeme) {
         this.yylineno += 1;
-        if(this.bracket_level == 0) {
+        if(this.brackets.length == 0) {
             return 'NL';
         }
-    }, []);
+    }), []);
 
-    lexer.addRule(/[({[]/, function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
-        this.bracket_level += 1;
+    lexer.addRule(/[({\[<]/, lex(function (lexeme) {
+        this.brackets.unshift(lexeme);
+        if(lexeme == '<' && this.brackets.length == 1) {
+            if(this.state == VIEW_LINESTART) {
+                this.state = VIEW_TAG;
+            } else {
+                this.reject = true;
+            }
+        } else {
+            if(this.state == VIEW_TAG) {
+                this.state = VIEW;
+            }
+        }
         return lexeme;
-    }, []);
-    lexer.addRule(/[\]})]/, function (lexeme) {
+    }), []);
+    lexer.addRule(/[)}\]>]/, lex(function (lexeme) {
         this.original_lexeme = lexeme;
         this.yytext = lexeme;
-        if(this.bracket_level < 1) {
+        if(MATCHING_BRACKET[this.brackets[0]] != lexeme) {
             this.reject = true;
             return;
         }
-        this.bracket_level -= 1;
+        if(lexeme == '>' && this.brackets.length == 1) {
+            this.state = VIEW;
+        }
+        this.brackets.shift();
+        if(this.brackets[0] == '>') {
+            this.state = VIEW_TAG;
+        }
         return lexeme;
-    }, []);
+    }), []);
+
+    lexer.addRule(/"(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*"/,
+        lex(function (lex) {
+            // TODO(tailhook) unescape
+            this.yytext = lex.substr(1, lex.length-2);
+            return 'STRING';
+        }), [TOPLEVEL, VIEW, VIEW_TAG]);
+    lexer.addRule(/'(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|[^'\\])*'/,
+        lex(function (lex) {
+            // TODO(tailhook) unescape
+            this.yytext = lex.substr(1, lex.length-2);
+            return 'STRING';
+        }), [TOPLEVEL, VIEW, VIEW_TAG]);
 
     /********************* Toplevel tokens ***************************/
 
-    lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
+    lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, lex(function (lexeme) {
         if(TOPLEVEL_KW.has(lexeme)) {
             switch(lexeme) {
                 case "style":
@@ -122,54 +162,26 @@ export default function () {
         } else {
             return 'IDENT';
         }
-    }, [TOPLEVEL]);
+    }), [TOPLEVEL]);
 
-    lexer.addRule(/[/*+\\-^,\\.]/, function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
-        return lexeme;
-    }, [TOPLEVEL]);
-
-    lexer.addRule(/"(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*"/, function (lex) {
-        this.original_lexeme = lex;
-        this.yytext = lex.substr(1, lex.length-2);
-        return 'STRING';
-    }, [TOPLEVEL]);
-    lexer.addRule(/'(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|[^'\\])*'/, function (lex) {
-        this.original_lexeme = lex;
-        this.yytext = lex.substr(1, lex.length-2);
-        return 'STRING';
-    }, [TOPLEVEL]);
+    lexer.addRule(/[/*+\\-^,\\.]/, lex(lexeme => lexeme), [TOPLEVEL]);
 
     /********************* Style tokens ***************************/
 
-    lexer.addRule(/[:]/, function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
-        return lexeme;
-    }, [STYLE]);
+    lexer.addRule(/[:]/, lex(x => x), [STYLE]);
     lexer.addRule(new RegExp("-?" +
         "(?:[a-zA-Z_\u0080-\uffff]|\\[^\n0-9a-fA-F]|\\[0-9a-fA-F]{1,6} ?)" +
         "(?:[a-zA-Z_0-9\u0080-\uffff-]|\\[^\n0-9a-fA-F]|\\[0-9a-fA-F]{1,6} ?)*"),
-    function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
-        return "IDENT_TOKEN";
-    }, [STYLE]);
+    lex("IDENT_TOKEN"), [STYLE]);
 
     /********************* View tokens ***************************/
 
-    lexer.addRule(/[:,.*+/-]/, function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
-        return lexeme;
-    }, [VIEW]);
-    lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, function (lexeme) {
-        this.original_lexeme = lexeme;
-        this.yytext = lexeme;
-        return "IDENT";
-    }, [VIEW]);
-
+    lexer.addRule(/[:,.*+/-]/, lex(x => x), [VIEW, VIEW_LINESTART]);
+    lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/,
+        lex('IDENT'),
+        [VIEW, VIEW_LINESTART]);
+    lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_-]*/, lex('TAG_NAME'), [VIEW_TAG]);
+    lexer.addRule(/=/, lex('='), [VIEW_TAG]);
 
     return lexer;
 }

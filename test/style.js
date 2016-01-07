@@ -12,4 +12,13 @@ describe("styles", () => {
                 ['rule', ['body'], [['property', 'text-align', 'left']]]
             ]]])
     })
+    it("two props", () => {
+        expect(parser.parse("style:\n  body\n    text-align: left\n    x: y"))
+            .to.deep.equal([['style', [
+                ['rule', ['body'], [
+                    ['property', 'text-align', 'left'],
+                    ['property', 'x', 'y'],
+                ]]
+            ]]])
+    })
 })

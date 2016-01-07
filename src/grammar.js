@@ -10,10 +10,12 @@ export var parser = new Parser({
         ["left", "UMINUS"]
     ],
     "tokens": "import from style view " +
-        "{ } ( ) + - * / ^ , . : " +
-        "INDENT DEDENT IDENT NL" +
+        "{ } ( ) < > + - * / ^ , . : " +
+        "INDENT DEDENT IDENT NL " +
         // CSS
-        "IDENT_TOKEN",
+        "IDENT_TOKEN " +
+        // HTML
+        "TAG_NAME",
     "start": "file",
 
     "bnf": {
@@ -32,7 +34,7 @@ export var parser = new Parser({
             ["style : NL INDENT rules DEDENT", "$$ = ['style', $5];"],
             ["style : NL", "$$ = ['style', []]"],
             ["view IDENT ( args ) : NL " +
-             "INDENT statements DENENT", "$$ = ['view', $2, $4, $9]"],
+             "INDENT statements DEDENT", "$$ = ['view', $2, $4, $9]"],
             ["view IDENT ( args ) : NL", "$$ = ['view', $2, $4, []]"],
         ],
         "names": [
@@ -72,7 +74,22 @@ export var parser = new Parser({
             ["", "$$ = [];" ],
         ],
         "statement": [
-            ["STRING", "$$ = ['string', $1]" ],
+            ["STRING", "$$ = ['string', $1];" ],
+            ["< TAG_NAME attributes > NL", "$$ = ['element', $2, $3, []];" ],
+            ["< TAG_NAME attributes > NL " +
+                "INDENT statements DEDENT", "$$ = ['element', $2, $3, $7];" ],
+        ],
+        "attributes": [
+            ["attribute attributes", "$$ = [$1].concat($2);" ],
+            ["", "$$ = [];" ],
+        ],
+        "attribute": [
+            ["TAG_NAME = attrvalue", "$$ = [$1, $3];"],
+            ["TAG_NAME", "$$ = [$1, $3];"],
+        ],
+        "attrvalue": [
+            ["STRING", "$$ = ['string', $1];"],
+            ["TAG_NAME", "$$ = ['ident', $1];"],
         ],
         // FUTURE
         "e" :[
