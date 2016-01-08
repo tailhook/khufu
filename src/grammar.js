@@ -7,15 +7,15 @@ export var parser = new Parser({
         ["left", "+", "-"],
         ["left", "*", "/"],
         ["left", "^"],
-        ["left", "UMINUS"]
+        ["left", "UNARY"]
     ],
     "tokens": "import from style view " +
         "{ } ( ) < > + - * / ^ , . : " +
         "INDENT DEDENT IDENT NL " +
         // CSS
-        "IDENT_TOKEN " +
+        "IDENT_TOKEN" +
         // HTML
-        "TAG_NAME",
+        "TAG_NAME STORE store link",
     "start": "file",
 
     "bnf": {
@@ -78,6 +78,7 @@ export var parser = new Parser({
             ["< TAG_NAME attributes > NL", "$$ = ['element', $2, $3, []];" ],
             ["< TAG_NAME attributes > NL " +
                 "INDENT statements DEDENT", "$$ = ['element', $2, $3, $7];" ],
+            ["store STORE = e NL", "$$ = ['store', $2, $4]"],
         ],
         "attributes": [
             ["attribute attributes", "$$ = [$1].concat($2);" ],
@@ -91,16 +92,17 @@ export var parser = new Parser({
             ["STRING", "$$ = ['string', $1];"],
             ["TAG_NAME", "$$ = ['ident', $1];"],
         ],
-        // FUTURE
         "e" :[
               [ "e + e",   "$$ = ['add', $1, $3];" ],
               [ "e - e",   "$$ = ['sub', $1, $3];" ],
               [ "e * e",   "$$ = ['mul', $1, $3];" ],
               [ "e / e",   "$$ = ['div', $1, $3];" ],
               [ "e ^ e",   "$$ = ['pow', $1, $3];" ],
-              [ "- e",     "$$ = ['minus', $2];", {"prec": "UMINUS"} ],
+              [ "- e",     "$$ = ['minus', $2];", {"prec": "UNARY"} ],
+              [ "+ e",     "$$ = ['plus', $2];", {"prec": "UNARY"} ],
               [ "( e )",   "$$ = $2;" ],
-              [ "NUMBER",  "$$ = Number(yytext);" ],
+              [ "NUMBER",  "$$ = ['number', yytext];" ],
+              [ "IDENT",  "$$ = ['name', $1];" ],
         ],
     }
 })

@@ -2,6 +2,11 @@ import Lexer from 'lex';
 
 const TOPLEVEL = 0;
 const TOPLEVEL_KW = new Set(["import", "from", "style", "view"])
+const VIEW_KW = new Set([
+    "store", "link",
+    "and", "or",
+    "for", "in", "if", "else", "elif",
+    ... TOPLEVEL_KW])  // reserve them for better error reporting
 const STYLE = 2;
 const VIEW = 10;
 const VIEW_LINESTART = 12;  // "<" at tag open
@@ -176,10 +181,18 @@ export default function () {
 
     /********************* View tokens ***************************/
 
-    lexer.addRule(/[:,.*+/-]/, lex(x => x), [VIEW, VIEW_LINESTART]);
-    lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/,
-        lex('IDENT'),
-        [VIEW, VIEW_LINESTART]);
+    lexer.addRule(/[:,.*+/-=<>!]/, lex(x => x), [VIEW, VIEW_LINESTART]);
+    lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, lex(function(lexeme) {
+        if(VIEW_KW.has(lexeme)) {
+            return lexeme;
+        } else {
+            return 'IDENT';
+        }
+    }), [VIEW, VIEW_LINESTART]);
+    lexer.addRule(/@[a-zA-Z_][a-zA-Z0-9_]*/, lex(function(lexeme) {
+        this.yytext = lexeme.substr(1);
+        return 'STORE';
+    }), [VIEW, VIEW_LINESTART]);
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_-]*/, lex('TAG_NAME'), [VIEW_TAG]);
     lexer.addRule(/=/, lex('='), [VIEW_TAG]);
 

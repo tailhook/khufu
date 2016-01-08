@@ -35,4 +35,10 @@ describe("views", () => {
                 ]]
             ]]])
     })
+    it("store", () => {
+        expect(parser.parse("view main():\n store @name = expression"))
+            .to.deep.equal([['view', 'main', [], [
+                ['store', 'name', ['name', 'expression']]
+            ]]])
+    })
 })
