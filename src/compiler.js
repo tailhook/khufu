@@ -1,7 +1,16 @@
+import 'babel-polyfill'
 import * as babel from 'babel-core'
+import * as T from 'babel-types'
 import * as babylon from 'babylon'
 import {parser} from './grammar'
-import {compile as compile_view} from './compile_view'
+import * as view from './compile_view'
+
+const DOM_FUNCTIONS = [
+    'elementVoid',
+    'elementOpen',
+    'elementClose',
+    'text',
+]
 
 function parse_tree_error(message, tree) {
     let strtree = tree.toString();
@@ -14,7 +23,7 @@ function parse_tree_error(message, tree) {
 function compile_block(block, path) {
     switch(block[0]) {
         case 'view':
-            return compile_view(block, path);
+            return view.compile(block, path);
         default:
             throw parse_tree_error("Unknown block", block);
     }
@@ -22,15 +31,12 @@ function compile_block(block, path) {
 
 export function compile_text(txt) {
     let parse_tree = parser.parse(txt);
-    let ast = {
-        type: "File",
-        program: {
-            type: "Program",
-            sourceType: "module",
-            body: [],
-            directives: [],
-        },
-    };
+    let ast = T.file(T.program([
+        T.importDeclaration(
+            DOM_FUNCTIONS.map(
+                x => T.importSpecifier(T.identifier(x), T.identifier(x))),
+            T.stringLiteral('incremental-dom'))
+    ]));
     //console.log("DECL", babylon.parse('export function x() {}', {
     //    sourceType: 'module',
     //}).program.body)
