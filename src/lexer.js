@@ -34,13 +34,14 @@ export default function () {
     let lexer = new Lexer();
 
     lexer.showPosition = function() {
-        let lex = this.original_lexeme
+        let lex = this.original_lexeme || ''
         let prefix = /(?:\n|^)(.*)$/.exec(this.input.substr(0, this.index))[1]
         let suffix = /.*$/m.exec(this.input.substr(this.index))[0]
         let indent = prefix.substr(0, prefix.length - lex.length)
         let arrow = lex.replace(/./g, '^') || '^'
-        return (prefix + suffix + "\n" +
-            indent.replace(/./g, ' ') + arrow + ' ---')
+        let ln = this.yylineno + ':';
+        return (ln + prefix + suffix + "\n" +
+            ln + indent.replace(/./g, ' ') + arrow + ' ---')
     }
     let old_set_input = lexer.setInput;
     lexer.setInput = function(x) {
@@ -50,10 +51,35 @@ export default function () {
         this.indent = [0];
         old_set_input.call(this, x)
     }
+    let original_lex = lexer.lex;
+    lexer.lex = function() {
+        try {
+            return original_lex.call(this)
+        } catch(e) {
+            throw Error(e.message + '\n' + this.showPosition())
+        }
+    }
 
     /********************* Common tokens *****************************/
 
-    /// this rule must be first
+    /// The order of whitespace rules matter
+    lexer.addRule(/\s*$/g, lex(function(lexeme) {
+        let tokens = ['NL']
+        while(this.indent.length > 1) {
+            tokens.push("DEDENT")
+            this.indent.shift()
+        }
+        tokens.push('EOF')
+        return tokens
+    }), []);
+
+    lexer.addRule(/\s*\n/g, lex(function (lexeme) {
+        this.yylineno += 1;
+        if(this.brackets.length == 0) {
+            return 'NL';
+        }
+    }), []);
+
     lexer.addRule(/^[\t ]*/gm, lex(function(lexeme) {
         if(this.brackets.length != 0) {
             return;
@@ -88,23 +114,6 @@ export default function () {
     }), []);
 
     lexer.addRule(/[ \t]+/, lex(() => {}), []);
-
-    lexer.addRule(/\n?$/, lex(function(lexeme) {
-        let tokens = ['NL']
-        while(this.indent.length > 1) {
-            tokens.push("DEDENT")
-            this.indent.shift()
-        }
-        tokens.push('EOF')
-        return tokens
-    }), []);
-
-    lexer.addRule(/\n+/, lex(function (lexeme) {
-        this.yylineno += 1;
-        if(this.brackets.length == 0) {
-            return 'NL';
-        }
-    }), []);
 
     lexer.addRule(/[({\[<]/, lex(function (lexeme) {
         this.brackets.unshift(lexeme);
@@ -143,13 +152,13 @@ export default function () {
             // TODO(tailhook) unescape
             this.yytext = lex.substr(1, lex.length-2);
             return 'STRING';
-        }), [TOPLEVEL, VIEW, VIEW_TAG]);
+        }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART]);
     lexer.addRule(/'(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|[^'\\])*'/,
         lex(function (lex) {
             // TODO(tailhook) unescape
             this.yytext = lex.substr(1, lex.length-2);
             return 'STRING';
-        }), [TOPLEVEL, VIEW, VIEW_TAG]);
+        }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART]);
 
     /********************* Toplevel tokens ***************************/
 
@@ -194,35 +203,14 @@ export default function () {
     lexer.addRule(/@[a-zA-Z_][a-zA-Z0-9_]*/, lex(function(lexeme) {
         this.yytext = lexeme.substr(1);
         return 'STORE';
-    }), [VIEW, VIEW_LINESTART]);
+    }), [VIEW, VIEW_LINESTART, VIEW_TAG]);
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_-]*/, lex('TAG_NAME'), [VIEW_TAG]);
-    lexer.addRule(/=/, lex('='), [VIEW_TAG]);
+    lexer.addRule(/[=.]/, lex(x => x), [VIEW_TAG]);
+    lexer.addRule(new RegExp(
+        "-?(?:[0-9]|[1-9][0-9]+)" +  // integer part
+        "(?:\\.[0-9]+)?" +           // fractional part
+        "(?:[eE][-+]?[0-9]+)?\\b"),      // exponent
+        lex("NUMBER"), [VIEW, VIEW_TAG, VIEW_LINESTART])
 
     return lexer;
 }
-
-/*
-    "lex": {
-        "macros": {
-            "digit": "[0-9]",
-            "esc": "\\\\",
-            "int": "-?(?:[0-9]|[1-9][0-9]+)",
-            "exp": "(?:[eE][-+]?[0-9]+)",
-            "frac": "(?:\\.[0-9]+)"
-        },
-        "rules": [
-           ["[ \t]+",                    "/ * skip whitespace * /"],
-           ["{int}{frac}?{exp}?\\b", "return 'NUMBER';"],
-           ["\"(?:{esc}[\"'bfnrt/{esc}]|{esc}u[a-fA-F0-9]{4}|[^\"'{esc}])*\"",
-                "yytext = yytext.substr(1,yyleng-2); return 'STRING';"],
-           ["'(?:{esc}[\"'bfnrt/{esc}]|{esc}u[a-fA-F0-9]{4}|[^\"'{esc}])*'",
-                "yytext = yytext.substr(1,yyleng-2); return 'STRING';"],
-           ["[/*+\\-^(){},\\.]",                     "return yytext;"],
-           ["import",                  "return 'import';"],
-           ["from",                    "return 'from';"],
-           ["\\w+",                     "return 'IDENT';"],
-           ["\\n",                     "return 'EOL';"],
-           ["$",                     "return ['EOL', 'EOF'];"],
-        ]
-    },
-*/

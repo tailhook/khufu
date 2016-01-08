@@ -20,6 +20,58 @@ describe("views", () => {
                 ['element', 'button', [], []]
             ]]])
     })
+    it("attribute string", () => {
+        expect(parser.parse("view main():\n <button a='x'>"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [['a', ['string', 'x']]], []]
+            ]]])
+    })
+    it("attribute int", () => {
+        expect(parser.parse("view main():\n <button a=123>"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [['a', ['number', '123']]], []]
+            ]]])
+    })
+    it("attribute var", () => {
+        expect(parser.parse("view main():\n <button a=xx>"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [['a', ['name', 'xx']]], []]
+            ]]])
+    })
+    it("attribute dotname", () => {
+        expect(parser.parse("view main():\n <button a=xx.yy>"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [
+                    ['a', ['attr', ['name', 'xx'], 'yy']],
+                ], []]
+            ]]])
+    })
+    it("attribute store", () => {
+        expect(parser.parse("view main():\n <button a=@s>"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [['a', ['store', 's']]], []]
+            ]]])
+    })
+    it("attribute store attr", () => {
+        expect(parser.parse("view main():\n <button a=@s.val>"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [
+                    ['a', ['attr', ['store', 's'], 'val']]
+                ], []]
+            ]]])
+    })
+    it("text", () => {
+        expect(parser.parse("view main():\n <button>\n  'x'"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [], [['string', 'x']]]
+            ]]])
+    })
+    it("number", () => {
+        expect(parser.parse("view main():\n <button>\n  153"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [], [['number', '153']]]
+            ]]])
+    })
     it("two elements", () => {
         expect(parser.parse("view main():\n  <button>\n  <h1>\n"))
             .to.deep.equal([['view', 'main', [], [

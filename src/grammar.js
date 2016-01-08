@@ -25,11 +25,12 @@ export var parser = new Parser({
         // CSS
         "IDENT_TOKEN" +
         // HTML
-        "TAG_NAME STORE store link -> <-",
+        "TAG_NAME STORE NUMBER store link -> <-",
     "start": "file",
     "bnf": {
         "file": [
             ["blocks EOF", "return $1;"],
+            ["NL blocks EOF", "return $2;"],
         ],
         "blocks": list('block'),
         "block": [
@@ -78,11 +79,11 @@ export var parser = new Parser({
         "statements": list('statement'),
         "elstatements": list('elstatement'),
         "statement": [
-            ["STRING", "$$ = ['string', $1];" ],
             ["< TAG_NAME attributes > NL", "$$ = ['element', $2, $3, []];" ],
             ["< TAG_NAME attributes > NL " +
                 "INDENT elstatements DEDENT", "$$ = ['element', $2, $3, $7];" ],
             ["store STORE = e NL", "$$ = ['store', $2, $4]"],
+            ["e NL", "$$ = $1;" ],
         ],
         "elstatement": [
             ["statement", "$$ = $1;"],
@@ -90,17 +91,17 @@ export var parser = new Parser({
             ["link { names } e -> STORE NL",
                 "$$ = ['link', $3, $5, ['store', $7]];"],
         ],
-        "attributes": [
-            ["attribute attributes", "$$ = [$1].concat($2);" ],
-            ["", "$$ = [];" ],
-        ],
+        "attributes": list('attribute'),
         "attribute": [
             ["TAG_NAME = attrvalue", "$$ = [$1, $3];"],
-            ["TAG_NAME", "$$ = [$1, $3];"],
+            ["TAG_NAME", "$$ = [$1];"],
         ],
         "attrvalue": [
+            ["NUMBER", "$$ = ['number', $1];"],
             ["STRING", "$$ = ['string', $1];"],
-            ["TAG_NAME", "$$ = ['ident', $1];"],
+            ["TAG_NAME", "$$ = ['name', $1];"],
+            ["STORE", "$$ = ['store', $1];"],
+            ["attrvalue . TAG_NAME", "$$ = ['attr', $1, $3];"],
         ],
         "e" :[
               [ "e + e",   "$$ = ['add', $1, $3];" ],
@@ -112,7 +113,10 @@ export var parser = new Parser({
               [ "+ e",     "$$ = ['plus', $2];", {"prec": "UNARY"} ],
               [ "( e )",   "$$ = $2;" ],
               [ "e ( e )", "$$ = ['call', $1, $3];" ],
-              [ "NUMBER",  "$$ = ['number', yytext];" ],
+              [ "e [ e ]", "$$ = ['index', $1, $3];" ],
+              [ "e . IDENT",   "$$ = ['attr', $1, $3];" ],
+              [ "NUMBER",  "$$ = ['number', $1];" ],
+              [ "STRING",  "$$ = ['string', $1];" ],
               [ "IDENT",  "$$ = ['name', $1];" ],
               [ "STORE",  "$$ = ['store', $1];" ],
         ],
