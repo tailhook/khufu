@@ -41,4 +41,15 @@ describe("views", () => {
                 ['store', 'name', ['name', 'expression']]
             ]]])
     })
+    it("link", () => {
+        expect(parser.parse(
+                "view main():\n <button>\n" +
+                "  link {click} f(x) -> @y"
+            )).to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [], [
+                    ['link', ['click'],
+                        ['call', ['name', 'f'], ['name', 'x']],
+                        ['store', 'y']]
+            ]]]]])
+    })
 })

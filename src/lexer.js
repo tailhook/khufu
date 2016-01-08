@@ -181,7 +181,9 @@ export default function () {
 
     /********************* View tokens ***************************/
 
-    lexer.addRule(/[:,.*+/-=<>!]/, lex(x => x), [VIEW, VIEW_LINESTART]);
+    lexer.addRule(/->/, lex(x => x), [VIEW, VIEW_LINESTART]);
+    lexer.addRule(/<-/, lex(x => x), [VIEW, VIEW_LINESTART]);
+    lexer.addRule(/[:,.*+/=<>!-]/, lex(x => x), [VIEW, VIEW_LINESTART]);
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, lex(function(lexeme) {
         if(VIEW_KW.has(lexeme)) {
             return lexeme;

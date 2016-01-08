@@ -1,12 +1,22 @@
 import {Parser} from 'jison'
 import Lexer from './lexer'
 
+var statement;
+
+function list(item) {
+    return [
+        [`${item} ${item}s`, "$$ = [$1].concat($2);" ],
+        ["", "$$ = [];" ],
+    ]
+}
+
 export var parser = new Parser({
 
     "operators": [
         ["left", "+", "-"],
         ["left", "*", "/"],
         ["left", "^"],
+        ["left", "(", ".", "["],
         ["left", "UNARY"]
     ],
     "tokens": "import from style view " +
@@ -15,17 +25,13 @@ export var parser = new Parser({
         // CSS
         "IDENT_TOKEN" +
         // HTML
-        "TAG_NAME STORE store link",
+        "TAG_NAME STORE store link -> <-",
     "start": "file",
-
     "bnf": {
         "file": [
             ["blocks EOF", "return $1;"],
         ],
-        "blocks": [
-            ["block blocks", "$$ = [$1].concat($2);" ],
-            ["", "$$ = [];" ],
-        ],
+        "blocks": list('block'),
         "block": [
             ["import { names } from STRING NL",
                 "$$ = ['import_names', $3, $6];"],
@@ -69,16 +75,20 @@ export var parser = new Parser({
             ["IDENT", "$$ = [$1];"],
             ["", "$$ = [];"],
         ],
-        "statements": [
-            ["statement statements", "$$ = [$1].concat($2);" ],
-            ["", "$$ = [];" ],
-        ],
+        "statements": list('statement'),
+        "elstatements": list('elstatement'),
         "statement": [
             ["STRING", "$$ = ['string', $1];" ],
             ["< TAG_NAME attributes > NL", "$$ = ['element', $2, $3, []];" ],
             ["< TAG_NAME attributes > NL " +
-                "INDENT statements DEDENT", "$$ = ['element', $2, $3, $7];" ],
+                "INDENT elstatements DEDENT", "$$ = ['element', $2, $3, $7];" ],
             ["store STORE = e NL", "$$ = ['store', $2, $4]"],
+        ],
+        "elstatement": [
+            ["statement", "$$ = $1;"],
+            // TODO(tailhook) support other targets than stores
+            ["link { names } e -> STORE NL",
+                "$$ = ['link', $3, $5, ['store', $7]];"],
         ],
         "attributes": [
             ["attribute attributes", "$$ = [$1].concat($2);" ],
@@ -101,8 +111,10 @@ export var parser = new Parser({
               [ "- e",     "$$ = ['minus', $2];", {"prec": "UNARY"} ],
               [ "+ e",     "$$ = ['plus', $2];", {"prec": "UNARY"} ],
               [ "( e )",   "$$ = $2;" ],
+              [ "e ( e )", "$$ = ['call', $1, $3];" ],
               [ "NUMBER",  "$$ = ['number', yytext];" ],
               [ "IDENT",  "$$ = ['name', $1];" ],
+              [ "STORE",  "$$ = ['store', $1];" ],
         ],
     }
 })
