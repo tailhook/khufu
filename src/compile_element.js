@@ -1,4 +1,6 @@
 import * as T from "babel-types"
+import {compile_body} from "./compile_view.js"
+
 
 export function compile(element, path) {
     let [_element, name, attributes, children] = element;
@@ -18,7 +20,7 @@ export function compile(element, path) {
                 T.stringLiteral(name),
             ])))
 
-        console.assert(!"not implemented")
+        compile_body(body, path);
 
         path.node.body.push(T.expressionStatement(
             T.callExpression(T.identifier('elementClose'), [])))

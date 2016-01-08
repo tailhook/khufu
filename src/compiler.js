@@ -12,7 +12,7 @@ const DOM_FUNCTIONS = [
     'text',
 ]
 
-function parse_tree_error(message, tree) {
+export function parse_tree_error(message, tree) {
     let strtree = tree.toString();
     if(strtree.length > 20) {
         strtree = strtree.substr(0, 17) + '...';

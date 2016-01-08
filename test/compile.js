@@ -16,4 +16,16 @@ describe("compiler", () => {
         expect(compile("view main():\n <p>"))
             .to.equal(imp + 'export function main() {\n  elementVoid("p");\n}')
     })
+    it("compiles a nested elements", () => {
+        expect(compile("view main():\n <p>\n  <a>\n   'text'\n <p>"))
+            .to.equal(imp +
+            'export function main() {\n' +
+            '  elementOpen("p");\n' +
+            '  elementOpen("a");\n' +
+            '  text("text");\n' +
+            '  elementClose();\n' + // a
+            '  elementClose();\n' + // p
+            '  elementVoid("p");\n' +
+            '}')
+    })
 })
