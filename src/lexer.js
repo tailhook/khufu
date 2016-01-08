@@ -1,12 +1,12 @@
 import Lexer from 'lex';
 
 const TOPLEVEL = 0;
-const TOPLEVEL_KW = new Set(["import", "from", "style", "view"])
-const VIEW_KW = new Set([
+const TOPLEVEL_KW = ["import", "from", "style", "view"]
+const VIEW_KW = [
     "store", "link",
     "and", "or",
     "for", "in", "if", "else", "elif",
-    ... TOPLEVEL_KW])  // reserve them for better error reporting
+    ... TOPLEVEL_KW]  // reserve them for better error reporting
 const STYLE = 2;
 const VIEW = 10;
 const VIEW_LINESTART = 12;  // "<" at tag open
@@ -163,7 +163,7 @@ export default function () {
     /********************* Toplevel tokens ***************************/
 
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, lex(function (lexeme) {
-        if(TOPLEVEL_KW.has(lexeme)) {
+        if(TOPLEVEL_KW.indexOf(lexeme) >= 0) {
             switch(lexeme) {
                 case "style":
                     this.state = STYLE;
@@ -194,7 +194,7 @@ export default function () {
     lexer.addRule(/<-/, lex(x => x), [VIEW, VIEW_LINESTART]);
     lexer.addRule(/[:,.*+/=<>!-]/, lex(x => x), [VIEW, VIEW_LINESTART]);
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, lex(function(lexeme) {
-        if(VIEW_KW.has(lexeme)) {
+        if(VIEW_KW.indexOf(lexeme) >= 0) {
             return lexeme;
         } else {
             return 'IDENT';

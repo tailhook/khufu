@@ -2,17 +2,19 @@ containers:
 
   node:
     setup:
-    - !Alpine v3.3
-    - !Install [alpine-base, make]
+    #- !Alpine v3.3
+    - !Ubuntu trusty
+    - !UbuntuUniverse
+    - !Install [npm]
     - !NpmDependencies
     environ:
-      NODE_PATH: /usr/lib/node_modules
+      NODE_PATH: /usr/local/lib/node_modules
       HOME: /tmp
 
   doc:
     setup:
     - !Container node
-    - !Install [py-sphinx, py-sphinx_rtd_theme]
+    - !Install [make, py-sphinx, py-sphinx_rtd_theme]
 
 
 commands:
