@@ -23,6 +23,7 @@ export function compile(element, path) {
         compile_body(body, path);
 
         path.node.body.push(T.expressionStatement(
-            T.callExpression(T.identifier('elementClose'), [])))
+            T.callExpression(T.identifier('elementClose'),
+                [T.stringLiteral(name)])))
     }
 }

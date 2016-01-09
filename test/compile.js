@@ -23,8 +23,8 @@ describe("compiler", () => {
             '  elementOpen("p");\n' +
             '  elementOpen("a");\n' +
             '  text("text");\n' +
-            '  elementClose();\n' + // a
-            '  elementClose();\n' + // p
+            '  elementClose("a");\n' +
+            '  elementClose("p");\n' +
             '  elementVoid("p");\n' +
             '}')
     })
