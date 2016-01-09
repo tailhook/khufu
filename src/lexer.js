@@ -62,6 +62,8 @@ export default function () {
 
     /********************* Common tokens *****************************/
 
+    lexer.addRule(/\/\/.*$/m, lex(() => {}), []);
+    lexer.addRule(/^\s*\/\/.*\n/m, lex(() => {}), []);
     /// The order of whitespace rules matter
     lexer.addRule(/\s*$/g, lex(function(lexeme) {
         let tokens = ['NL']
@@ -102,8 +104,8 @@ export default function () {
                 this.indent.shift();
             }
             if(indentation != this.indent[0]) {
-                throw Error(`Invalid indentation expected
-                    ${this.indent[0]}, got ${indentation}`)
+                throw Error("Invalid indentation, expected " +
+                    `${this.indent[0]}, got ${indentation}`)
             }
         }
         if(this.indent[0] == 0) {
@@ -159,8 +161,6 @@ export default function () {
             this.yytext = lex.substr(1, lex.length-2);
             return 'STRING';
         }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART]);
-
-    lexer.addRule(/\/\/.*$/, lex(() => {}), []);
 
     /********************* Toplevel tokens ***************************/
 

@@ -73,7 +73,14 @@ describe("views", () => {
             ]]])
     })
     it("two elements", () => {
-        expect(parser.parse("view main():\n  <button>\n  <h1>\n"))
+        expect(parser.parse("view main():\n  <button>\n //x\n  <h1>\n"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [], []],
+                ['element', 'h1', [], []],
+            ]]])
+    })
+    it("two elements with a comment", () => {
+        expect(parser.parse("view main():\n  <button>\n //x\n  <h1>\n"))
             .to.deep.equal([['view', 'main', [], [
                 ['element', 'button', [], []],
                 ['element', 'h1', [], []],
