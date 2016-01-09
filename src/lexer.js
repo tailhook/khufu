@@ -2,6 +2,7 @@ import Lexer from 'lex';
 
 const TOPLEVEL = 0;
 const TOPLEVEL_KW = ["import", "from", "style", "view"]
+const NEWLINE = 1;
 const VIEW_KW = [
     "store", "link",
     "and", "or",
@@ -18,10 +19,18 @@ function lex(value) {
         return lex(lexeme => value);
     } else {
         return function(lexeme) {
+            for(var i of lexeme) {
+                if(i == '\n') {
+                    this.yylineno += 1;
+                }
+            }
             this.original_lexeme = lexeme;
             this.yytext = lexeme;
             let old_state = this.state;
             let result = value.call(this, lexeme)
+            if(result && result != 'NL') {
+                this.newline = false;
+            }
             if(old_state == this.state && this.state == VIEW_LINESTART) {
                 this.state == VIEW;
             }
@@ -49,6 +58,7 @@ export default function () {
         this.brackets = [];
         this.original_lexeme = '';
         this.indent = [0];
+        this.newline = true;
         old_set_input.call(this, x)
     }
     let original_lex = lexer.lex;
@@ -75,9 +85,9 @@ export default function () {
         return tokens
     }), []);
 
-    lexer.addRule(/\s*\n/g, lex(function (lexeme) {
-        this.yylineno += 1;
-        if(this.brackets.length == 0) {
+    lexer.addRule(/\n/g, lex(function (lexeme) {
+        if(this.brackets.length == 0 && !this.newline) {
+            this.newline = true;
             return 'NL';
         }
     }), []);
