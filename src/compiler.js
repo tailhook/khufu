@@ -29,7 +29,7 @@ function compile_block(block, path) {
     }
 }
 
-export function compile_text(txt) {
+export function compile(txt) {
     let parse_tree = parser.parse(txt);
     let ast = T.file(T.program([
         T.importDeclaration(
@@ -37,13 +37,14 @@ export function compile_text(txt) {
                 x => T.importSpecifier(T.identifier(x), T.identifier(x))),
             T.stringLiteral('incremental-dom'))
     ]));
-    //console.log("DECL", babylon.parse('export function x() {}', {
-    //    sourceType: 'module',
-    //}).program.body)
     babel.traverse(ast, {
         Program: path => {
             parse_tree.map(block => compile_block(block, path))
         },
     });
-    return babel.transformFromAst(ast).code
+    return ast;
+}
+
+export function compile_text(txt) {
+    return babel.transformFromAst(compile(txt)).code
 }

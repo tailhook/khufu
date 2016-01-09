@@ -160,6 +160,8 @@ export default function () {
             return 'STRING';
         }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART]);
 
+    lexer.addRule(/\/\/.*$/, lex(() => {}), []);
+
     /********************* Toplevel tokens ***************************/
 
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, lex(function (lexeme) {

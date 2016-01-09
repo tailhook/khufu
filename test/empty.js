@@ -1,11 +1,15 @@
-var khufu = require('./../src/index.js');
+var khufu = require('./../src/compiler.js');
 
 var assert = require('assert');
 var expect = require('chai').expect;
 
 describe("simple test", () => {
+    const imp = 'import { elementVoid, elementOpen, elementClose, text } ' +
+                'from "incremental-dom";';
     it("compiles empty string", () => {
-        assert.equal(khufu.compile(""), "")
-        expect(khufu.compile("")).to.equal("")
+        expect(khufu.compile_text("")).to.equal(imp)
+    })
+    it("skips comments", () => {
+        expect(khufu.compile_text("/// something")).to.equal(imp)
     })
 })
