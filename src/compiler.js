@@ -1,7 +1,6 @@
 import 'babel-polyfill'
 import * as babel from 'babel-core'
 import * as T from 'babel-types'
-import * as babylon from 'babylon'
 import {parser} from './grammar'
 import * as view from './compile_view'
 
