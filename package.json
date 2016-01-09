@@ -18,6 +18,19 @@
   },
   "devDependencies": {
     "webpack": "1.12",
+
+    "webpack-dev-server": "1.14",
+    "sockjs-client": "*",
+    "strip-ansi": "*",
+    "debug": "*",
+    "inherits": "*",
+    "json3": "*",
+    "url-parse": "*",
+    "ansi-regex": "*",
+    "requires-port": "*",
+    "querystringify": "*",
+    "ms": "*",
+
     "babel-loader": "6.2",
     "mocha": "*",
     "chai": "*"

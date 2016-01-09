@@ -35,6 +35,16 @@ commands:
     container: node
     run: [npm, test]
 
+  hot-server: !Command
+    description: Run webpack dev server (in some example directory)
+    container: node
+    run:
+    - webpack-dev-server
+    - --hot
+    - --progress
+    - --colors
+    - --inline
+
   doc: !Command
     description: Build documentation and examples
     container: doc
