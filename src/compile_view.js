@@ -14,10 +14,10 @@ export function compile_string(item, path, opt) {
 }
 
 export function compile_body(body, path, opt) {
-    for(var item of body) {
+    for(var [idx, item] of body.entries()) {
         switch(item[0]) {
             case 'element':
-                element.compile(item, path, opt)
+                element.compile(item, path, opt, String(idx))
                 break;
             case 'expression':
                 compile_string(item, path, opt)

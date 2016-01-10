@@ -14,18 +14,27 @@ describe("compiler", () => {
     })
     it("compiles an element", () => {
         expect(compile("view main():\n <p>"))
-            .to.equal(imp + 'export function main() {\n  elementVoid("p");\n}')
+            .to.equal(imp +
+                'export function main() {\n' +
+                '  elementVoid("p", "0");\n}')
+    })
+    it("compiles static attribes", () => {
+        expect(compile("view main():\n <p a='b'>"))
+            .to.equal(imp +
+                'export function main() {\n' +
+                '  elementVoid("p", "0");\n' +
+                '}')
     })
     it("compiles a nested elements", () => {
         expect(compile("view main():\n <p>\n  <a>\n   'text'\n <p>"))
             .to.equal(imp +
             'export function main() {\n' +
-            '  elementOpen("p");\n' +
-            '  elementOpen("a");\n' +
+            '  elementOpen("p", "0");\n' +
+            '  elementOpen("a", "0");\n' +
             '  text("text");\n' +
             '  elementClose("a");\n' +
             '  elementClose("p");\n' +
-            '  elementVoid("p");\n' +
+            '  elementVoid("p", "1");\n' +
             '}')
     })
     it("compiles let", () => {
@@ -37,10 +46,10 @@ describe("compiler", () => {
             '  let _x = 1,\n' +
             '      _x2 = _x + 1;\n' +
             '\n' +
-            '  elementOpen("p");\n' +
+            '  elementOpen("p", "1");\n' +
             '  text(_x);\n' +
             '  elementClose("p");\n' +
-            '  elementOpen("p");\n' +
+            '  elementOpen("p", "3");\n' +
             '  text(_x2);\n' +
             '  elementClose("p");\n' +
             "}")
