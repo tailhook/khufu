@@ -19,13 +19,6 @@ export var parser = new Parser({
         ["left", "(", ".", "["],
         ["left", "UNARY"]
     ],
-    "tokens": "import from style view " +
-        "{ } ( ) < > + - * / ^ , . : " +
-        "INDENT DEDENT IDENT NL " +
-        // CSS
-        "IDENT_TOKEN" +
-        // HTML
-        "TAG_NAME STORE NUMBER store link -> <-",
     "start": "file",
     "bnf": {
         "file": [
@@ -83,7 +76,8 @@ export var parser = new Parser({
             ["< TAG_NAME attributes > NL " +
                 "INDENT elstatements DEDENT", "$$ = ['element', $2, $3, $7];" ],
             ["store STORE = e NL", "$$ = ['store', $2, $4]"],
-            ["e NL", "$$ = $1;" ],
+            ["let IDENT = e NL", "$$ = ['assign', $2, $4]"],
+            ["e NL", "$$ = ['expression', $1];" ],
         ],
         "elstatement": [
             ["statement", "$$ = $1;"],

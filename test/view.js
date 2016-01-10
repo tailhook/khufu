@@ -63,13 +63,13 @@ describe("views", () => {
     it("text", () => {
         expect(parser.parse("view main():\n <button>\n  'x'"))
             .to.deep.equal([['view', 'main', [], [
-                ['element', 'button', [], [['string', 'x']]]
+                ['element', 'button', [], [['expression', ['string', 'x']]]]
             ]]])
     })
     it("number", () => {
         expect(parser.parse("view main():\n <button>\n  153"))
             .to.deep.equal([['view', 'main', [], [
-                ['element', 'button', [], [['number', '153']]]
+                ['element', 'button', [], [['expression', ['number', '153']]]]
             ]]])
     })
     it("two elements", () => {

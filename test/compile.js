@@ -28,4 +28,21 @@ describe("compiler", () => {
             '  elementVoid("p");\n' +
             '}')
     })
+    it("compiles let", () => {
+        expect(compile("view main():\n" +
+                       " let x = 1\n <p>\n  x\n" +
+                       " let x = x + 1\n <p>\n  x\n"))
+            .to.equal(imp +
+            "export function main() {\n" +
+            '  let _x = 1,\n' +
+            '      _x2 = _x + 1;\n' +
+            '\n' +
+            '  elementOpen("p");\n' +
+            '  text(_x);\n' +
+            '  elementClose("p");\n' +
+            '  elementOpen("p");\n' +
+            '  text(_x2);\n' +
+            '  elementClose("p");\n' +
+            "}")
+    })
 })

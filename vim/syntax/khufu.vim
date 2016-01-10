@@ -9,7 +9,7 @@ endif
 syn keyword khufuToplevels view style import from
 syn keyword khufuFlow if elif else for in of key
 syn keyword khufuOperator and or not
-syn keyword khufuSpecial store link
+syn keyword khufuSpecial store link let
 syn match khufuComment "//.*$" contains=khufuTodo
 syn region khufuString start='"' end='"'
 syn region khufuString start="'" end="'"

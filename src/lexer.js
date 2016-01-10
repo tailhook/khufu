@@ -4,9 +4,9 @@ const TOPLEVEL = 0;
 const TOPLEVEL_KW = ["import", "from", "style", "view"]
 const NEWLINE = 1;
 const VIEW_KW = [
-    "store", "link",
-    "and", "or",
-    "for", "in", "if", "else", "elif",
+    "store", "link", "let",
+    "and", "or", "not",
+    "for", "in", "of", "key", "if", "else", "elif",
     ... TOPLEVEL_KW]  // reserve them for better error reporting
 const STYLE = 2;
 const VIEW = 10;
