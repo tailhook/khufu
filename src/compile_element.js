@@ -2,7 +2,7 @@ import * as T from "babel-types"
 import {compile_body} from "./compile_view.js"
 
 
-export function compile(element, path) {
+export function compile(element, path, opt) {
     let [_element, name, attributes, children] = element;
     let links = children.filter(([x]) => x == 'link')
     let stores = children.filter(([x]) => x == 'store')
@@ -20,7 +20,7 @@ export function compile(element, path) {
                 T.stringLiteral(name),
             ])))
 
-        compile_body(body, path);
+        compile_body(body, path, opt);
 
         path.node.body.push(T.expressionStatement(
             T.callExpression(T.identifier('elementClose'),

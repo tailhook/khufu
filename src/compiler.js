@@ -11,6 +11,10 @@ const DOM_FUNCTIONS = [
     'text',
 ]
 
+const DEFAULT_OPTIONS = {
+    static_attrs: true,
+}
+
 export function parse_tree_error(message, tree) {
     let strtree = tree.toString();
     if(strtree.length > 20) {
@@ -19,17 +23,17 @@ export function parse_tree_error(message, tree) {
     return Error(message + ': ' + strtree);
 }
 
-function compile_block(block, path) {
+function compile_block(block, path, opt) {
     switch(block[0]) {
         case 'view':
-            return view.compile(block, path);
+            return view.compile(block, path, opt);
         default:
             throw parse_tree_error("Unknown block", block);
     }
 }
 
-export function compile(txt) {
-    let parse_tree = parser.parse(txt);
+export function compile(txt, opt) {
+    let parse_tree = parser.parse(txt, opt);
     let ast = T.file(T.program([
         T.importDeclaration(
             DOM_FUNCTIONS.map(
@@ -38,12 +42,13 @@ export function compile(txt) {
     ]));
     babel.traverse(ast, {
         Program: path => {
-            parse_tree.map(block => compile_block(block, path))
+            parse_tree.map(block => compile_block(block, path, opt))
         },
     });
     return ast;
 }
 
-export function compile_text(txt) {
-    return babel.transformFromAst(compile(txt)).code
+export function compile_text(txt, options) {
+    let opt = Object.assign({}, DEFAULT_OPTIONS, options)
+    return babel.transformFromAst(compile(txt, opt)).code
 }
