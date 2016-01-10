@@ -20,9 +20,11 @@ describe("compiler", () => {
     })
     it("compiles static attribes", () => {
         expect(compile("view main():\n <p a='b'>"))
-            .to.equal(imp +
+            .to.equal(
+                'let _P_ATTRS = ["a", "b"];\n' +
+                imp +
                 'export function main() {\n' +
-                '  elementVoid("p", "0");\n' +
+                '  elementVoid("p", "0", _P_ATTRS);\n' +
                 '}')
     })
     it("compiles a nested elements", () => {

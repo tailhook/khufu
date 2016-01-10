@@ -1,5 +1,6 @@
 import * as T from "babel-types"
 import {compile_body} from "./compile_view.js"
+import * as expression from "./compile_expression.js"
 
 function sort_attributes(attributes) {
     let stat = []
@@ -28,28 +29,53 @@ export function compile(element, path, opt, key) {
     let stores = children.filter(([x]) => x == 'store')
     let body = children.filter(([x]) => x != 'link' && x != 'store');
 
-    let stat, dyn
+    let attrib_expr;
     if(opt.static_attrs) {
-        [stat, dyn] = sort_attributes(attributes)
-    } else {
-        stat = []
-        dyn = attributes
+        let [stat, dyn] = sort_attributes(attributes)
+
+        if(stat.length) {
+            let topscope = path.scope;
+            while(topscope.parent) {
+                topscope = topscope.parent;
+            }
+            let array = []
+            for(var [aname, value] of stat) {
+                array.push(T.stringLiteral(aname))
+                if(value == undefined) {
+                    array.push(T.stringLiteral(aname))
+                } else {
+                    array.push(expression.compile(value, path, opt))
+                }
+            }
+            let ident = topscope.generateUidIdentifier(
+                name.toUpperCase() + '_ATTRS');
+            topscope.push({
+                id: ident,
+                init: T.arrayExpression(array),
+                kind: 'let' })
+            attrib_expr = ident
+        }
+        attributes = dyn
     }
 
     console.assert(!links.length) // notimplemented
     console.assert(!stores.length) // notimplemented
+    let attribs = [
+        T.stringLiteral(name),
+        T.stringLiteral(key),
+    ];
+    if(attributes.length) {
+        attribs.push(attrib_expr || T.nullLiteral)
+        // TODO(tailhook)
+    } else if(attrib_expr) {
+        attribs.push(attrib_expr)
+    }
     if(body.length == 0) {
-        let node = T.callExpression(T.identifier('elementVoid'), [
-            T.stringLiteral(name),
-            T.stringLiteral(key),
-        ])
+        let node = T.callExpression(T.identifier('elementVoid'), attribs)
         path.node.body.push(T.expressionStatement(node))
     } else {
         path.node.body.push(T.expressionStatement(
-            T.callExpression(T.identifier('elementOpen'), [
-                T.stringLiteral(name),
-                T.stringLiteral(key),
-            ])))
+            T.callExpression(T.identifier('elementOpen'), attribs)))
 
         compile_body(body, path, opt);
 
