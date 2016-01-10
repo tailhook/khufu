@@ -65,7 +65,11 @@ export function compile(element, path, opt, key) {
         T.stringLiteral(key),
     ];
     if(attributes.length) {
-        attribs.push(attrib_expr || T.nullLiteral)
+        attribs.push(attrib_expr || T.nullLiteral())
+        for(var [aname, value] of attributes) {
+            attribs.push(T.stringLiteral(aname))
+            attribs.push(expression.compile(value, path, opt))
+        }
         // TODO(tailhook)
     } else if(attrib_expr) {
         attribs.push(attrib_expr)

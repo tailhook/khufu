@@ -18,13 +18,21 @@ describe("compiler", () => {
                 'export function main() {\n' +
                 '  elementVoid("p", "0");\n}')
     })
-    it("compiles static attribes", () => {
+    it("compiles static attributes", () => {
         expect(compile("view main():\n <p a='b'>"))
             .to.equal(
                 'let _P_ATTRS = ["a", "b"];\n' +
                 imp +
                 'export function main() {\n' +
                 '  elementVoid("p", "0", _P_ATTRS);\n' +
+                '}')
+    })
+    it("compiles dynamic attributes", () => {
+        expect(compile("view main():\n let x = 'b'\n <p a=x>"))
+            .to.equal(imp +
+                'export function main() {\n' +
+                '  let _x = "b";\n' +
+                '  elementVoid("p", "1", null, "a", _x);\n' +
                 '}')
     })
     it("compiles a nested elements", () => {
