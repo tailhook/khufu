@@ -64,4 +64,22 @@ describe("compiler", () => {
             '  elementClose("p");\n' +
             "}")
     })
+    it("compiles let with right scope", () => {
+        expect(compile("view main():\n" +
+                       " let x = 1\n <p>\n  let x = 2\n  x\n" +
+                       " <p>\n  x\n"))
+            .to.equal(imp +
+            "export function main() {\n" +
+            '  let _x = 1;\n' +
+            '  elementOpen("p", "1");\n' +
+            '  {\n' +
+            '    let _x2 = 2;\n' +
+            '    text(_x2);\n' +
+            '  }\n' +
+            '  elementClose("p");\n' +
+            '  elementOpen("p", "2");\n' +
+            '  text(_x);\n' +
+            '  elementClose("p");\n' +
+            "}")
+    })
 })

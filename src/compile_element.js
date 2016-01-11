@@ -1,6 +1,8 @@
+import * as babel from 'babel-core'
 import * as T from "babel-types"
 import {compile_body} from "./compile_view.js"
 import * as expression from "./compile_expression.js"
+import {push_to_body} from "./babel-util"
 
 function sort_attributes(attributes) {
     let stat = []
@@ -81,7 +83,13 @@ export function compile(element, path, opt, key) {
         path.node.body.push(T.expressionStatement(
             T.callExpression(T.identifier('elementOpen'), attribs)))
 
-        compile_body(body, path, opt);
+        let blockpath = push_to_body(path, T.blockStatement([]));
+        compile_body(body, blockpath, opt)
+        /// Optimize the scope without variables
+        if(Object.keys(blockpath.scope.bindings).length == 0) {
+            blockpath.replaceWithMultiple(
+                blockpath.get('body').map(x => x.node))
+        }
 
         path.node.body.push(T.expressionStatement(
             T.callExpression(T.identifier('elementClose'),

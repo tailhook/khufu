@@ -4,6 +4,7 @@ import * as T from "babel-types"
 import * as element from "./compile_element"
 import {compile as compile_expression} from "./compile_expression"
 import {parse_tree_error} from "./compiler"
+import {push_to_body} from "./babel-util"
 
 export function compile_string(item, path, opt) {
     let [_expression, value] = item;
@@ -39,13 +40,12 @@ export function compile(view, path, opt) {
     let [_view, name, params, body] = view;
     let node = T.functionDeclaration(T.identifier(name), [],
         T.blockStatement([]), false, false);
+    let child_path
     if(name[0] != '_') {
         node = T.exportNamedDeclaration(node, [])
+        child_path = push_to_body(path, node).get('declaration.body')
+    } else {
+        child_path = push_to_body(path, node).get('body')
     }
-    path.node.body.push(node)
-    babel.traverse(node, {
-        BlockStatement: path => {
-            compile_body(body, path, opt)
-        },
-    }, path.scope, path)
+    compile_body(body, child_path, opt)
 }
