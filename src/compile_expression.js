@@ -22,28 +22,20 @@ export function compile(item, path, opt) {
         }
         case 'store': {
             let [_store, name] = item
-            let store = path.scope.getData('khufu:store:' +name)
+            let store = path.scope.getData('khufu:store:raw:' +name);
             if(!store) {
                 throw Error("Unknown store: " + name);
             }
-            let state;
-            if(store[0] == 'raw') {
-                let ident = path.scope.generateUidIdentifier(name + '_state');
+            let state = path.scope.getData('khufu:store:state:' +name);
+            if(!state) {
+                state = path.scope.generateUidIdentifier(name + '_state');
                 path.scope.push({
-                    id: ident,
+                    id: state,
                     init: T.callExpression(T.memberExpression(
-                        T.memberExpression(store[1],
-                                           T.identifier(name)),
-                        T.identifier('getState')),
-                    []),
+                        store, T.identifier('getState')), []),
                     kind: 'let',
                 })
-                path.scope.setData('khufu:store:' + name, ['cached', ident]);
-                state = ident;
-            } else if(store[1] == 'cached') {
-                state = store[1];
-            } else {
-                throw Error("Wrong store binding: " + name);
+                path.scope.setData('khufu:store:state:' + name, state);
             }
             return state;
         }
@@ -51,6 +43,11 @@ export function compile(item, path, opt) {
             let [_attr, object, name] = item
             return T.memberExpression(compile(object, path, opt),
                 T.identifier(name))
+        }
+        case 'call': {
+            let [_call, fun, args] = item
+            return T.callExpression(compile(fun, path, opt),
+                args.map(x => compile(x, path, opt)))
         }
         case 'add': {
             let [_add, left, right] = item

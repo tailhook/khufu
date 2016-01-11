@@ -104,4 +104,35 @@ describe("compiler", () => {
             '  elementClose("p");\n' +
             "}")
     })
+    it("compiles a link", () => {
+        expect(compile("import {mystore, action} from './stores'\n" +
+                       "view main():\n" +
+                       " <p>\n" +
+                       "  store @x = mystore\n" +
+                       "  @x.value\n" +
+                       "  <button>\n" +
+                       "    link {click} action(1) -> @x\n"
+                       ))
+            .to.equal(imp +
+            'import { mystore, action } from "./stores";\n' +
+            "export function main() {\n" +
+            '  let _p_stores = {};\n' +
+            '  elementOpen("p", "0", null, "__stores", {\n' +
+            '    x: mystore,\n' +
+            '    ["@target"]: _p_stores\n' +
+            '  });\n' +
+            '  {\n' +
+            '    let _x_state = _p_stores.x.getState();\n' +
+            '\n' +
+            '    text(_x_state.value);\n' +
+            '\n' +
+            '    function _ln_click(event) {\n' +
+            '      _p_stores.x.dispatch(action(1))\n' +
+            '    }\n' +
+            '\n' +
+            '    elementVoid("button", "1", null, "onclick", _ln_click);\n' +
+            '  }\n' +
+            '  elementClose("p");\n' +
+            "}")
+    })
 })

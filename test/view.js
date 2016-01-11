@@ -107,7 +107,7 @@ describe("views", () => {
             )).to.deep.equal([['view', 'main', [], [
                 ['element', 'button', [], [
                     ['link', ['click'],
-                        ['call', ['name', 'f'], ['name', 'x']],
+                        ['call', ['name', 'f'], [['name', 'x']]],
                         ['store', 'y']]
             ]]]]])
     })

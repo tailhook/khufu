@@ -29,10 +29,11 @@ function compile_block(block, path, opt) {
             return view.compile(block, path, opt);
         case 'import_names': {
             let [_import, names, module] = block;
-            for(let i of names) {
-                path.pushContainer("body", T.importDeclaration(
-                    [T.importSpecifier(T.identifier(i), T.identifier(i))],
-                    T.stringLiteral(module)))
+            path.pushContainer("body", T.importDeclaration(
+                names.map(i =>
+                    T.importSpecifier(T.identifier(i), T.identifier(i))),
+                T.stringLiteral(module)))
+            for(var i of names) {
                 path.scope.setData('binding:' + i, T.identifier(i))
             }
             return;

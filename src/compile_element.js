@@ -40,7 +40,7 @@ export function compile(element, path, opt, key) {
             while(topscope.parent) {
                 topscope = topscope.parent;
             }
-            let array = []
+            let array = [];
             for(var [aname, value] of stat) {
                 array.push(T.stringLiteral(aname))
                 if(value == undefined) {
@@ -74,8 +74,27 @@ export function compile(element, path, opt, key) {
             ).concat([T.objectProperty(
                 T.stringLiteral('@target'), stores_id, true)]))])
     }
+    if(links.length) {
+        for(let [_link, names, action, target] of links) {
+            let fid = path.scope.generateUidIdentifier('ln_' + names.join('_'))
+            let fun = T.functionDeclaration(fid, [T.identifier('event')],
+                T.blockStatement([]))
+            let fpath = push_to_body(path, fun).get('body');
+            console.assert(target[0] == 'store');
+            let store = path.scope.getData('khufu:store:raw:' + target[1]);
+            if(!store) {
+                throw Error("Unknown store: " + name);
+            }
+            push_to_body(fpath, T.callExpression(
+                T.memberExpression(store, T.identifier('dispatch')),
+                    [expression.compile(action, fpath, opt)]));
 
-    console.assert(!links.length) // notimplemented
+            for(let name of names) {
+                // TODO(tailhook) support multiple links
+                genattrs.push(['on' + name, fid]);
+            }
+        }
+    }
 
     let attribs = [
         T.stringLiteral(name),
@@ -104,8 +123,9 @@ export function compile(element, path, opt, key) {
         let blockpath = push_to_body(path, T.blockStatement([]));
         if(stores_id) {
             for(let [_store, name, _] of stores) {
-                blockpath.scope.setData('khufu:store:' + name,
-                                        ['raw', stores_id]);
+                blockpath.scope.setData('khufu:store:raw:' + name,
+                    T.memberExpression(stores_id, T.identifier(name)));
+                blockpath.scope.setData('khufu:store:state:' + name, null);
             }
         }
         compile_body(body, blockpath, opt)
