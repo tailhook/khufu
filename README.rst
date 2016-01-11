@@ -15,7 +15,7 @@ Why?
 3. I'm tired of composing views and stores independently [2]_
 
 .. [1] Indentation-based syntax is a bonus.
-.. [2] Sure, the model proposed here doesn't work for everyone
+.. [2] Sure, the model proposed here doesn't work for everyone.
 
 
 So What Is It?
@@ -33,7 +33,7 @@ Additionally Khufu:
 So What is "View-Driven"?
 =========================
 
-It means when you design an application you design a single powerful view. And
+It means when you design an application you build a single powerful view. And
 all server-side data are fetched when user enters some subview and is disposed
 when user leaves the view (of course, data can be prefetched and cached, but
 that's optimization orthogonal to what we're discussing here).
@@ -47,27 +47,28 @@ For example:
     import {select} from 'myapp/action_creators'
 
     view main(@selected_item):
+      <div>
         store @results = Search
         <form>
-            <input type="text" placeholder="search">
-                link {change, keyup} search(this.value) -> @results
+          <input type="text" placeholder="search">
+            link {change, keyup} search(this.value) -> @results
 
         if @results.current_text:
-            if @results.loading:
-                <div.loading>
-                    "Loading..."
-            else:
-                <div.results>
-                for item in @results.items:
-                    <div.result>
-                        store @icon_loaded = Image <- load(item.img)
-                        if @icon_loaded.done:
-                            <img src=item.img>
-                        else:
-                            <div.icon-loading>
-                        <div.title>
-                            link {click} select(item.id) -> @selected_item
-                            item.title
+          if @results.loading:
+            <div.loading>
+              "Loading..."
+          else:
+            <div.results>
+            for item in @results.items:
+              <div.result>
+                store @icon_loaded = Image <- load(item.img)
+                if @icon_loaded.done:
+                    <img src=item.img>
+                else:
+                    <div.icon-loading>
+                <div.title>
+                    link {click} select(item.id) -> @selected_item
+                    item.title
 
 This example displays search box. When some search query is typed into the
 input box, search request is sent to the server immediately. This displays

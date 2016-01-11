@@ -1,16 +1,16 @@
-//import {Counter, counter, init} from './counter'
+import {Counter, counter} from './counter'
 
 view main():
   <p>
-    // store @counter = Counter
+    store @counter = Counter
 
     <button>
-       //link {click} counter(1) -> @counter
+       link {click} counter(1) -> @counter
        "+"
 
-    <input> // disabled value=@counter.value>
+    <input disabled value=@counter>
 
     <button>
-       //link {click} counter(1) -> @counter
+       link {click} counter(-1) -> @counter
        "-"
 

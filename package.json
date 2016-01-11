@@ -18,6 +18,8 @@
   },
   "devDependencies": {
     "webpack": "1.12",
+    "babel-loader": "6.2",
+    "redux": "3.0.5",
 
     "webpack-dev-server": "1.14",
     "sockjs-client": "*",
@@ -31,7 +33,6 @@
     "querystringify": "*",
     "ms": "*",
 
-    "babel-loader": "6.2",
     "mocha": "*",
     "chai": "*"
   },
