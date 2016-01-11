@@ -72,7 +72,7 @@ export function compile(element, path, opt, key) {
                 T.identifier(name),
                 expression.compile(value, path, opt))
             ).concat([T.objectProperty(
-                T.stringLiteral('@target'), stores_id, true)]))])
+                T.identifier('__target'), stores_id)]))])
     }
     if(links.length) {
         for(let [_link, names, action, target] of links) {

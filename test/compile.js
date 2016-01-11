@@ -102,7 +102,7 @@ describe("compiler", () => {
             '  let _p_stores = {};\n' +
             '  elementOpen("p", "0", null, "__stores", {\n' +
             '    x: mystore,\n' +
-            '    ["@target"]: _p_stores\n' +
+            '    __target: _p_stores\n' +
             '  });\n' +
             '  {\n' +
             '    let _x_state = _p_stores.x.getState();\n' +
@@ -127,7 +127,7 @@ describe("compiler", () => {
             '  let _p_stores = {};\n' +
             '  elementOpen("p", "0", null, "__stores", {\n' +
             '    x: mystore,\n' +
-            '    ["@target"]: _p_stores\n' +
+            '    __target: _p_stores\n' +
             '  });\n' +
             '  {\n' +
             '    let _x_state = _p_stores.x.getState();\n' +
