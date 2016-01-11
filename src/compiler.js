@@ -30,7 +30,7 @@ function compile_block(block, path, opt) {
         case 'import_names': {
             let [_import, names, module] = block;
             for(let i of names) {
-                path.node.body.push(T.importDeclaration(
+                path.pushContainer("body", T.importDeclaration(
                     [T.importSpecifier(T.identifier(i), T.identifier(i))],
                     T.stringLiteral(module)))
                 path.scope.setData('binding:' + i, T.identifier(i))

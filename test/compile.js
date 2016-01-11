@@ -82,4 +82,26 @@ describe("compiler", () => {
             '  elementClose("p");\n' +
             "}")
     })
+    it("compiles a store", () => {
+        expect(compile("import {mystore} from './stores'\n" +
+                       "view main():\n" +
+                       " <p>\n" +
+                       "  store @x = mystore\n" +
+                       "  @x.value\n"))
+            .to.equal(imp +
+            'import { mystore } from "./stores";\n' +
+            "export function main() {\n" +
+            '  let _p_stores = {};\n' +
+            '  elementOpen("p", "0", null, "__stores", {\n' +
+            '    x: mystore,\n' +
+            '    ["@target"]: _p_stores\n' +
+            '  });\n' +
+            '  {\n' +
+            '    let _x_state = _p_stores.x.getState();\n' +
+            '\n' +
+            '    text(_x_state.value);\n' +
+            '  }\n' +
+            '  elementClose("p");\n' +
+            "}")
+    })
 })

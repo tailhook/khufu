@@ -59,20 +59,38 @@ export function compile(element, path, opt, key) {
         }
         attributes = dyn
     }
+    let genattrs = [];
+    let stores_id = null;
+    if(stores.length) {
+        stores_id = path.scope.generateUidIdentifier(name + '_stores');
+        path.scope.push({
+            id: stores_id,
+            init: T.objectExpression([]),
+            kind: 'let' })
+        genattrs.push(['__stores', T.objectExpression(
+            stores.map(([_store, name, value]) => T.objectProperty(
+                T.identifier(name),
+                expression.compile(value, path, opt))
+            ).concat([T.objectProperty(
+                T.stringLiteral('@target'), stores_id, true)]))])
+    }
 
     console.assert(!links.length) // notimplemented
-    console.assert(!stores.length) // notimplemented
+
     let attribs = [
         T.stringLiteral(name),
         T.stringLiteral(key),
     ];
-    if(attributes.length) {
+    if(attributes.length || genattrs.length) {
         attribs.push(attrib_expr || T.nullLiteral())
         for(var [aname, value] of attributes) {
             attribs.push(T.stringLiteral(aname))
             attribs.push(expression.compile(value, path, opt))
         }
-        // TODO(tailhook)
+        for(var [aname, value] of genattrs) {
+            attribs.push(T.stringLiteral(aname))
+            attribs.push(value)
+        }
     } else if(attrib_expr) {
         attribs.push(attrib_expr)
     }
@@ -84,6 +102,12 @@ export function compile(element, path, opt, key) {
             T.callExpression(T.identifier('elementOpen'), attribs)))
 
         let blockpath = push_to_body(path, T.blockStatement([]));
+        if(stores_id) {
+            for(let [_store, name, _] of stores) {
+                blockpath.scope.setData('khufu:store:' + name,
+                                        ['raw', stores_id]);
+            }
+        }
         compile_body(body, blockpath, opt)
         /// Optimize the scope without variables
         if(Object.keys(blockpath.scope.bindings).length == 0) {
