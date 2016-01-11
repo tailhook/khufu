@@ -104,7 +104,11 @@ export function compile(element, path, opt, key) {
         attribs.push(attrib_expr || T.nullLiteral())
         for(var [aname, value] of attributes) {
             attribs.push(T.stringLiteral(aname))
-            attribs.push(expression.compile(value, path, opt))
+            if(value) {
+                attribs.push(expression.compile(value, path, opt))
+            } else {
+                attribs.push(T.stringLiteral(aname))
+            }
         }
         for(var [aname, value] of genattrs) {
             attribs.push(T.stringLiteral(aname))

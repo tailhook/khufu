@@ -35,6 +35,14 @@ describe("compiler", () => {
                 '  elementVoid("p", "1", null, "a", _x);\n' +
                 '}')
     })
+    it("compiles all dynamic attributes", () => {
+        expect(compile("view main():\n <p a='b' c>", {static_attrs: false}))
+            .to.equal(
+                imp +
+                'export function main() {\n' +
+                '  elementVoid("p", "0", null, "a", "b", "c", "c");\n' +
+                '}')
+    })
     it("compiles a nested elements", () => {
         expect(compile("view main():\n <p>\n  <a>\n   'text'\n <p>"))
             .to.equal(imp +
