@@ -98,7 +98,12 @@ export function compile(element, path, opt, key) {
 
     let attribs = [
         T.stringLiteral(name),
-        T.stringLiteral(key),
+        // We need to add a tag name to the element, because incremental-dom
+        // throws an exception when tag name is changed. Changing tag
+        // name is is only possible with hot-reload, though.
+        //
+        // TODO(tailhook) should we do it only if hot-reload is enabled?
+        T.stringLiteral(name + "-" + key),
     ];
     if(attributes.length || genattrs.length) {
         attribs.push(attrib_expr || T.nullLiteral())

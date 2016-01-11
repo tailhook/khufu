@@ -15,10 +15,12 @@ export function compile_string(item, path, opt) {
 }
 
 export function compile_body(body, path, opt) {
-    for(var [idx, item] of body.entries()) {
+    let elements = 0;
+    for(var item of body) {
         switch(item[0]) {
             case 'element':
-                element.compile(item, path, opt, String(idx))
+                elements += 1;
+                element.compile(item, path, opt, String(elements))
                 break;
             case 'expression':
                 compile_string(item, path, opt)

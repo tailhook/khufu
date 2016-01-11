@@ -16,7 +16,7 @@ describe("compiler", () => {
         expect(compile("view main():\n <p>"))
             .to.equal(imp +
                 'export function main() {\n' +
-                '  elementVoid("p", "0");\n}')
+                '  elementVoid("p", "p-1");\n}')
     })
     it("compiles static attributes", () => {
         expect(compile("view main():\n <p a='b'>"))
@@ -24,7 +24,7 @@ describe("compiler", () => {
                 'let _P_ATTRS = ["a", "b"];\n' +
                 imp +
                 'export function main() {\n' +
-                '  elementVoid("p", "0", _P_ATTRS);\n' +
+                '  elementVoid("p", "p-1", _P_ATTRS);\n' +
                 '}')
     })
     it("compiles dynamic attributes", () => {
@@ -32,7 +32,7 @@ describe("compiler", () => {
             .to.equal(imp +
                 'export function main() {\n' +
                 '  let _x = "b";\n' +
-                '  elementVoid("p", "1", null, "a", _x);\n' +
+                '  elementVoid("p", "p-1", null, "a", _x);\n' +
                 '}')
     })
     it("compiles all dynamic attributes", () => {
@@ -40,19 +40,19 @@ describe("compiler", () => {
             .to.equal(
                 imp +
                 'export function main() {\n' +
-                '  elementVoid("p", "0", null, "a", "b", "c", "c");\n' +
+                '  elementVoid("p", "p-1", null, "a", "b", "c", "c");\n' +
                 '}')
     })
     it("compiles a nested elements", () => {
         expect(compile("view main():\n <p>\n  <a>\n   'text'\n <p>"))
             .to.equal(imp +
             'export function main() {\n' +
-            '  elementOpen("p", "0");\n' +
-            '  elementOpen("a", "0");\n' +
+            '  elementOpen("p", "p-1");\n' +
+            '  elementOpen("a", "a-1");\n' +
             '  text("text");\n' +
             '  elementClose("a");\n' +
             '  elementClose("p");\n' +
-            '  elementVoid("p", "1");\n' +
+            '  elementVoid("p", "p-2");\n' +
             '}')
     })
     it("compiles let", () => {
@@ -64,10 +64,10 @@ describe("compiler", () => {
             '  let _x = 1,\n' +
             '      _x2 = _x + 1;\n' +
             '\n' +
-            '  elementOpen("p", "1");\n' +
+            '  elementOpen("p", "p-1");\n' +
             '  text(_x);\n' +
             '  elementClose("p");\n' +
-            '  elementOpen("p", "3");\n' +
+            '  elementOpen("p", "p-2");\n' +
             '  text(_x2);\n' +
             '  elementClose("p");\n' +
             "}")
@@ -79,13 +79,13 @@ describe("compiler", () => {
             .to.equal(imp +
             "export function main() {\n" +
             '  let _x = 1;\n' +
-            '  elementOpen("p", "1");\n' +
+            '  elementOpen("p", "p-1");\n' +
             '  {\n' +
             '    let _x2 = 2;\n' +
             '    text(_x2);\n' +
             '  }\n' +
             '  elementClose("p");\n' +
-            '  elementOpen("p", "2");\n' +
+            '  elementOpen("p", "p-2");\n' +
             '  text(_x);\n' +
             '  elementClose("p");\n' +
             "}")
@@ -100,7 +100,7 @@ describe("compiler", () => {
             'import { mystore } from "./stores";\n' +
             "export function main() {\n" +
             '  let _p_stores = {};\n' +
-            '  elementOpen("p", "0", null, "__stores", {\n' +
+            '  elementOpen("p", "p-1", null, "__stores", {\n' +
             '    x: mystore,\n' +
             '    __target: _p_stores\n' +
             '  });\n' +
@@ -125,7 +125,7 @@ describe("compiler", () => {
             'import { mystore, action } from "./stores";\n' +
             "export function main() {\n" +
             '  let _p_stores = {};\n' +
-            '  elementOpen("p", "0", null, "__stores", {\n' +
+            '  elementOpen("p", "p-1", null, "__stores", {\n' +
             '    x: mystore,\n' +
             '    __target: _p_stores\n' +
             '  });\n' +
@@ -138,7 +138,8 @@ describe("compiler", () => {
             '      _p_stores.x.dispatch(action(1))\n' +
             '    }\n' +
             '\n' +
-            '    elementVoid("button", "1", null, "onclick", _ln_click);\n' +
+            '    elementVoid("button", "button-1", null,' +
+                            ' "onclick", _ln_click);\n' +
             '  }\n' +
             '  elementClose("p");\n' +
             "}")
