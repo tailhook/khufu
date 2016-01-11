@@ -27,6 +27,16 @@ function compile_block(block, path, opt) {
     switch(block[0]) {
         case 'view':
             return view.compile(block, path, opt);
+        case 'import_names': {
+            let [_import, names, module] = block;
+            for(let i of names) {
+                path.node.body.push(T.importDeclaration(
+                    [T.importSpecifier(T.identifier(i), T.identifier(i))],
+                    T.stringLiteral(module)))
+                path.scope.setData('binding:' + i, T.identifier(i))
+            }
+            return;
+        }
         default:
             throw parse_tree_error("Unknown block", block);
     }
