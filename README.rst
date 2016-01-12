@@ -4,8 +4,16 @@ Khufu
 
 At a glance Khufu is a template-engine for incremental-dom_.
 
-But more characteristically I call it view-driven micro-framework for
-single-page applications.
+But more characteristically I call it is a domain-specific language (DSL) for
+view-driven single-page applications.
+
+The boring list of features:
+
+* Nice, compact, indentation-based syntax, designed for readability
+* Rich-enough subset of javascript is allowed right in the template
+* Styles in the same file as view (HTML), properly namespaced
+* Avoids separate code to compose redux_ stores (kinda auto-generates it)
+* Supports webpack hot module replacement (aka hot reload)
 
 Why?
 ====
@@ -71,16 +79,16 @@ For example:
                     item.title
 
 This example displays search box. When some search query is typed into the
-input box, search request is sent to the server immediately. This displays
+input box, search request is sent to the server immediately [5]_. This displays
 "Loading..." stub and replaces the stub with the results when they are loaded
-from server. There are also code to download images aynchronously.
+from a server. There is also the code to download images asynchronously.
 
 Some explanations:
 
 1. Nesting of elements is denoted by indentation, hence no closing tags
 2. ``div.cls`` is shortcut for ``<div class="cls">``
-3. ``store`` denotes a redux store
-4. ``->`` and ``<-`` arrows dispatches action for the store
+3. ``store`` denotes a redux_ store
+4. ``->`` and ``<-`` arrows dispatches an action for the store
 5. ``link`` allows to bind events to an action (or an action creator)
 
 The store thing might need a more comprehensive explanation:
@@ -88,11 +96,15 @@ The store thing might need a more comprehensive explanation:
 1. Stores are lexically scoped
 2. More so, on each loop iteration we get new scope
 3. Diffing algorithm of incremental-dom drops unused stores automatically
-4. They provide lifecycle hooks, so can dispose resources properly
-5. Store is prefixed by ``@`` to get nice property access syntax [3]_
+4. They provide lifecycle hooks, so can dispose resources properly [3]_
+5. Store is prefixed by ``@`` to get nice property access syntax [4]_
 
-.. [3] Otherwise would need to call ``getState()`` each time. We also cache
+.. [3] Yes, we attach resources (such as network requests) to stores, using
+   middleware
+.. [4] Otherwise would need to call ``getState()`` each time. We also cache
    result of the method for subsequent attribute access
+.. [5] Sure, you can delay requests by adding RxJS_ or redux-saga_ middlewares
+   to the store
 
 
 Isn't it Like Good Old HTML?
@@ -104,7 +116,8 @@ have been doing HTML page and add jQuery_ plugins to make that work.
 **Except you get proper scopes and namespaces**. I mean you never give elements
 globally accessible id attribute or something that prevents them to be reused
 and composed. You can also think of each view function being a component
-similar to what you find in react_ or angular_.
+similar to what you find in react_ or angular_. Have I said that syntax is
+much more readable?
 
 
 .. _flux: https://facebook.github.io/react/blog/2014/05/06/flux.html
@@ -115,3 +128,5 @@ similar to what you find in react_ or angular_.
 .. _jquery: https://jquery.com/
 .. _react: https://facebook.github.io/react/
 .. _angular: https://angularjs.org/
+.. _RxJS: https://github.com/acdlite/redux-rx
+.. _redux-saga: https://github.com/yelouafi/redux-saga
