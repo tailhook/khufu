@@ -2,12 +2,14 @@ import {store_handler} from './stores'
 import {patch, attributes} from 'incremental-dom'
 
 export {REMOVED} from './stores'
+export {add_style} from './style'
 
 function set_global_state(fun) {
     attributes.__stores = store_handler(fun)
 }
 
 function clean_global_state(old) {
+    // probably we don't need to clean attributes.__stores
 }
 
 export default function init(element, template) {

@@ -3,13 +3,8 @@ import * as babel from 'babel-core'
 import * as T from 'babel-types'
 import {parser} from './grammar'
 import * as view from './compile_view'
+import * as style from './compile_style'
 
-const DOM_FUNCTIONS = [
-    'elementVoid',
-    'elementOpen',
-    'elementClose',
-    'text',
-]
 
 const DEFAULT_OPTIONS = {
     static_attrs: true,
@@ -28,6 +23,8 @@ function compile_block(block, path, opt) {
     switch(block[0]) {
         case 'view':
             return view.compile(block, path, opt);
+        case 'style':
+            return style.compile(block, path, opt);
         case 'import_names': {
             let [_import, names, module] = block;
             path.pushContainer("body", T.importDeclaration(
@@ -48,12 +45,7 @@ export function compile(txt, options) {
     let opt = Object.assign({}, DEFAULT_OPTIONS, options)
     opt.always_add_class = new Set(opt.always_add_class || []);
     let parse_tree = parser.parse(txt, opt);
-    let ast = T.file(T.program([
-        T.importDeclaration(
-            DOM_FUNCTIONS.map(
-                x => T.importSpecifier(T.identifier(x), T.identifier(x))),
-            T.stringLiteral('incremental-dom'))
-    ]));
+    let ast = T.file(T.program([]));
     babel.traverse(ast, {
         Program: path => {
             parse_tree.map(block => compile_block(block, path, opt))

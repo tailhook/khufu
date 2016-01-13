@@ -22,7 +22,7 @@ module.exports = {
         }],
     },
     resolve: {
-        modulesDirectories: ["/usr/local/lib/node_modules"],
+        modulesDirectories: ["/usr/local/lib/node_modules", "../.."],
     },
     resolveLoader: {
         modulesDirectories: ["/usr/local/lib/node_modules"],

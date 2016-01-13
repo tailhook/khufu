@@ -1,4 +1,3 @@
-import * as babel from 'babel-core'
 import * as T from "babel-types"
 
 import * as element from "./compile_element"
@@ -6,6 +5,14 @@ import {compile as compile_expression} from "./compile_expression"
 import * as lval from "./compile_lval"
 import {parse_tree_error} from "./compiler"
 import {push_to_body} from "./babel-util"
+
+
+const DOM_FUNCTIONS = [
+    'elementVoid',
+    'elementOpen',
+    'elementClose',
+    'text',
+]
 
 export function compile_string(item, path, opt) {
     let [_expression, value] = item;
@@ -96,6 +103,16 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
 
 export function compile(view, path, opt) {
     let [_view, name, params, body] = view;
+
+    if(!path.scope.getData('khufu:dom-imported')) {
+        path.unshiftContainer("body",
+            T.importDeclaration(
+                DOM_FUNCTIONS.map(
+                    x => T.importSpecifier(T.identifier(x), T.identifier(x))),
+                T.stringLiteral('incremental-dom')))
+        path.scope.setData('khufu:dom-imported', true)
+    }
+
     let node = T.functionDeclaration(T.identifier(name), [],
         T.blockStatement([]), false, false);
     let child_path
