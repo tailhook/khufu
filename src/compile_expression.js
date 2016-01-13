@@ -54,9 +54,9 @@ export function compile(item, path, opt) {
             return T.callExpression(compile(fun, path, opt),
                 args.map(x => compile(x, path, opt)))
         }
-        case 'add': {
-            let [_add, left, right] = item
-            return T.binaryExpression("+",
+        case 'binop': {
+            let [_binop, oper, left, right] = item
+            return T.binaryExpression(oper,
                 compile(left, path, opt), compile(right, path, opt))
         }
         default:
