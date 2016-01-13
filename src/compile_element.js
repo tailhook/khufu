@@ -7,6 +7,8 @@ import {push_to_body} from "./babel-util"
 function sort_attributes(attributes) {
     let stat = []
     let dyn = []
+    let cls_stat = []
+    let cls_dyn = []
     for(let [name, value] of attributes) {
         let is_static = false;
         /// TODO(tailhook) maybe employ more deep analysis?
@@ -19,7 +21,14 @@ function sort_attributes(attributes) {
             default:
                 break;
         }
-        (is_static ? stat : dyn).push([name, value])
+        if(name == 'class') {
+            (is_static ? cls_stat : cls_dyn).push(value)
+        } else {
+            (is_static ? stat : dyn).push([name, value])
+        }
+    }
+    if(cls_stat.length && !cls_dyn.length) {
+        stat.push(['class', ['string', cls_stat.map(x => x[1]).join(' ')]])
     }
     return [stat, dyn]
 }
@@ -103,7 +112,7 @@ export function compile(element, path, opt, key) {
         }
     }
     if(opt.static_attrs) {
-        let [stat, dyn, cls] = sort_attributes(attributes)
+        let [stat, dyn] = sort_attributes(attributes)
 
         if(stat.length) {
             attrib_expr = insert_static(name, stat, path, opt)
