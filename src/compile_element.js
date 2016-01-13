@@ -4,6 +4,16 @@ import {compile_body, join_key} from "./compile_view.js"
 import * as expression from "./compile_expression.js"
 import {push_to_body} from "./babel-util"
 
+
+function optimize(expr) {
+    if(expr[0] == 'binop' && expr[1] == '+'
+       && expr[2][0] == 'string' && expr[3][0] == 'string') {
+        return ['string', expr[2][1] + expr[3][1]]
+    }
+    return expr
+}
+
+
 function sort_attributes(attributes) {
     let stat = []
     let dyn = []
@@ -29,6 +39,14 @@ function sort_attributes(attributes) {
     }
     if(cls_stat.length && !cls_dyn.length) {
         stat.push(['class', ['string', cls_stat.map(x => x[1]).join(' ')]])
+    } else if(cls_stat.length && cls_dyn.length) {
+        stat.push(['class', cls_dyn.reduce((x, y) =>
+            ['binop', '+', optimize(['binop', '+', x, ['string', ' ']]), y],
+            ['string', cls_stat.map(x => x[1]).join(' ')])])
+    } else if(cls_dyn.length) {
+        stat.push(['class',
+            cls_dyn.slice(1).reduce((x, y) => ['binop', '+', x, y],
+            cls_dyn[0])])
     }
     return [stat, dyn]
 }

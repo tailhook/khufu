@@ -59,6 +59,13 @@ export function compile(item, path, opt) {
             return T.binaryExpression(oper,
                 compile(left, path, opt), compile(right, path, opt))
         }
+        case 'if': {
+            let [_if, cond, norm, alter] = item
+            return T.conditionalExpression(
+                compile(cond, path, opt),
+                compile(norm, path, opt),
+                compile(alter, path, opt))
+        }
         default:
             throw parse_tree_error('Unknown expression', item)
     }

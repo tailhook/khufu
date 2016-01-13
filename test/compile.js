@@ -59,6 +59,15 @@ describe("compiler", () => {
                 'export function main() {\n' +
                 '  elementVoid("p", "p-1", _P_ATTRS);\n}')
     })
+    it("compiles element with optional class", () => {
+        expect(compile("view main():\n <p.a.b.world?(0)>"))
+            .to.equal(
+                'let _P_ATTRS = ["class", ' +
+                    '"a b " + (0 ? "world" : "")];\n' +
+                imp +
+                'export function main() {\n' +
+                '  elementVoid("p", "p-1", _P_ATTRS);\n}')
+    })
     it("compiles a nested elements", () => {
         expect(compile("view main():\n <p>\n  <a>\n   'text'\n <p>"))
             .to.equal(imp +
