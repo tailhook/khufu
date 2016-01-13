@@ -13,7 +13,7 @@ module.exports = {
     module: {
         loaders: [{
             test: /\.khufu$/,
-            loaders: ['babel', '../../src/loader?static_attrs='],
+            loaders: ['babel', '../../src/loader'],
             exclude: /node_modules/,
         }, {
             test: /\.js$/,
@@ -34,5 +34,8 @@ module.exports = {
     khufu: {
         static_attrs: false, // for normal hot reload
     },
+    plugins: [
+        new webpack.NoErrorsPlugin(),
+    ],
 }
 

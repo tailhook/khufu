@@ -1,4 +1,5 @@
-import {Counter, counter} from './counter'
+import {Counter, counter, range} from './counter'
+import {shit} from './counter'
 
 view main():
   <p>
@@ -15,4 +16,11 @@ view main():
     <button>
        link {click} counter(-1) -> @counter
        "-"
+
+    <div>
+      for x of range(3, 9):
+        <button>
+           link {click} counter(x) -> @counter
+           "+"
+           x
 
