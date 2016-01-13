@@ -5,16 +5,15 @@ import * as expression from "./compile_expression.js"
 import {push_to_body} from "./babel-util"
 
 
-function optimize(expr) {
-    if(expr[0] == 'binop' && expr[1] == '+'
-       && expr[2][0] == 'string' && expr[3][0] == 'string') {
-        return ['string', expr[2][1] + expr[3][1]]
+function optimize_plus(a, b) {
+    if(a[0] == 'string' && b[0] == 'string') {
+        return ['string', a[1] + b[1]]
     }
-    return expr
+    return ['binop', '+', a, b]
 }
 
 
-function sort_attributes(attributes) {
+function sort_attributes(attributes, elname, opt) {
     let stat = []
     let dyn = []
     let cls_stat = []
@@ -26,7 +25,7 @@ function sort_attributes(attributes) {
             case undefined:
             case 'string':
             case 'number':
-                is_static = true;
+                is_static = !!opt.static_attrs;
                 break;
             default:
                 break;
@@ -37,15 +36,20 @@ function sort_attributes(attributes) {
             (is_static ? stat : dyn).push([name, value])
         }
     }
+    if(opt.additional_class && (cls_stat.length || cls_dyn.length ||
+        opt.always_add_class.has(elname)))
+    {
+        cls_stat.unshift(['string', opt.additional_class])
+    }
     if(cls_stat.length && !cls_dyn.length) {
         stat.push(['class', ['string', cls_stat.map(x => x[1]).join(' ')]])
     } else if(cls_stat.length && cls_dyn.length) {
-        stat.push(['class', cls_dyn.reduce((x, y) =>
-            ['binop', '+', optimize(['binop', '+', x, ['string', ' ']]), y],
+        dyn.push(['class', cls_dyn.reduce((x, y) =>
+            optimize_plus(optimize_plus(x, ['string', ' ']), y),
             ['string', cls_stat.map(x => x[1]).join(' ')])])
     } else if(cls_dyn.length) {
-        stat.push(['class',
-            cls_dyn.slice(1).reduce((x, y) => ['binop', '+', x, y],
+        dyn.push(['class', cls_dyn.slice(1).reduce((x, y) =>
+            optimize_plus(optimize_plus(x, ['string', ' ']), y),
             cls_dyn[0])])
     }
     return [stat, dyn]
@@ -118,7 +122,6 @@ export function compile(element, path, opt, key) {
     let stores = children.filter(([x]) => x == 'store')
     let body = children.filter(([x]) => x != 'link' && x != 'store');
 
-    let attrib_expr;
     if(classes.length) {
         for(let [cls, cond] of classes) {
             if(cond) {
@@ -129,13 +132,12 @@ export function compile(element, path, opt, key) {
             }
         }
     }
-    if(opt.static_attrs) {
-        let [stat, dyn] = sort_attributes(attributes)
+    let [stat, dyn] = sort_attributes(attributes, name, opt)
+    attributes = dyn;
 
-        if(stat.length) {
-            attrib_expr = insert_static(name, stat, path, opt)
-        }
-        attributes = dyn
+    let attrib_expr;
+    if(stat.length) {
+        attrib_expr = insert_static(name, stat, path, opt)
     }
     let genattrs = [];
     let stores_id = null;

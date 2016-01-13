@@ -13,6 +13,7 @@ const DOM_FUNCTIONS = [
 
 const DEFAULT_OPTIONS = {
     static_attrs: true,
+    additional_class: "",
 }
 
 export function parse_tree_error(message, tree) {
@@ -43,7 +44,9 @@ function compile_block(block, path, opt) {
     }
 }
 
-export function compile(txt, opt) {
+export function compile(txt, options) {
+    let opt = Object.assign({}, DEFAULT_OPTIONS, options)
+    opt.always_add_class = new Set(opt.always_add_class || []);
     let parse_tree = parser.parse(txt, opt);
     let ast = T.file(T.program([
         T.importDeclaration(
@@ -60,6 +63,5 @@ export function compile(txt, opt) {
 }
 
 export function compile_text(txt, options) {
-    let opt = Object.assign({}, DEFAULT_OPTIONS, options)
-    return babel.transformFromAst(compile(txt, opt)).code
+    return babel.transformFromAst(compile(txt, options)).code
 }

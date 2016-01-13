@@ -62,11 +62,29 @@ describe("compiler", () => {
     it("compiles element with optional class", () => {
         expect(compile("view main():\n <p.a.b.world?(0)>"))
             .to.equal(
-                'let _P_ATTRS = ["class", ' +
-                    '"a b " + (0 ? "world" : "")];\n' +
                 imp +
                 'export function main() {\n' +
-                '  elementVoid("p", "p-1", _P_ATTRS);\n}')
+                '  elementVoid("p", "p-1", null, ' +
+                    '"class", "a b " + (0 ? "world" : ""));\n}')
+    })
+    it("compiles element with base class", () => {
+        expect(compile("view main():\n <p.a.b.world?(0)>\n <a>",
+            {'additional_class': 'base'}))
+            .to.equal(
+                imp +
+                'export function main() {\n' +
+                '  elementVoid("p", "p-1", null, ' +
+                    '"class", "base a b " + (0 ? "world" : ""));\n' +
+                '  elementVoid("a", "a-2");\n' +
+                '}')
+    })
+    it("compiles element with two classes (no static)", () => {
+        expect(compile("view main():\n <p.hello.world>",
+                       {static_attrs: false}))
+            .to.equal(
+                imp +
+                'export function main() {\n' +
+                '  elementVoid("p", "p-1", null, "class", "hello world");\n}')
     })
     it("compiles a nested elements", () => {
         expect(compile("view main():\n <p>\n  <a>\n   'text'\n <p>"))
