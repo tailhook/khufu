@@ -31,7 +31,7 @@ commands:
     run: [npm]
 
   test: !Command
-    description: Npm command
+    description: Run unit tests
     container: node
     run: [npm, test]
 
