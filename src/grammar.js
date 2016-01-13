@@ -74,9 +74,10 @@ export var parser = new Parser({
         "statements": list('statement'),
         "elstatements": list('elstatement'),
         "statement": [
-            ["< TAG_NAME attributes > NL", "$$ = ['element', $2, $3, []];" ],
-            ["< TAG_NAME attributes > NL " +
-                "INDENT elstatements DEDENT", "$$ = ['element', $2, $3, $7];" ],
+            ["< TAG_NAME classes attributes > NL",
+                "$$ = ['element', $2, $3, $4, []];" ],
+            ["< TAG_NAME classes attributes > NL INDENT elstatements DEDENT",
+                "$$ = ['element', $2, $3, $4, $8];" ],
             ["store STORE = e NL", "$$ = ['store', $2, $4]"],
             ["let IDENT = e NL", "$$ = ['assign', $2, $4]"],
             ["if e : NL stmtblock elifblocks", "$$ = ['if', [$2, $5], $6]"],
@@ -86,6 +87,11 @@ export var parser = new Parser({
             ["for lval of e key e : NL stmtblock",
                 "$$ = ['for', $2, $4, $6, $9]"],
             ["e NL", "$$ = ['expression', $1];" ],
+        ],
+        "classes": list('classe'),
+        "classe": [
+            [". TAG_NAME", "$$ = [$2];"],
+            [". TAG_NAME ? ( e )", "$$ = [$2, $5];"],
         ],
         "elifblocks": list('elifblock'),
         "elifblock": [

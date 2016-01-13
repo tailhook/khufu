@@ -24,76 +24,99 @@ function sort_attributes(attributes) {
     return [stat, dyn]
 }
 
+function insert_static(elname, attributes, path, opt) {
+    let topscope = path.scope;
+    while(topscope.parent) {
+        topscope = topscope.parent;
+    }
+    let array = [];
+    for(var [aname, value] of attributes) {
+        array.push(T.stringLiteral(aname))
+        if(value == undefined) {
+            array.push(T.stringLiteral(aname))
+        } else {
+            array.push(expression.compile(value, path, opt))
+        }
+    }
+    let ident = topscope.generateUidIdentifier(
+        elname.toUpperCase() + '_ATTRS');
+    topscope.push({
+        id: ident,
+        init: T.arrayExpression(array),
+        kind: 'let' })
+    return ident;
+}
+
+function insert_stores(elname, stores, genattrs, path, opt) {
+    let stores_id = path.scope.generateUidIdentifier(elname + '_stores');
+    path.scope.push({
+        id: stores_id,
+        init: T.objectExpression([]),
+        kind: 'let' })
+    genattrs.push(['__stores', T.objectExpression(
+        stores.map(([_store, name, value]) => T.objectProperty(
+            T.identifier(name),
+            expression.compile(value, path, opt))
+        ).concat([T.objectProperty(
+            T.identifier('__target'), stores_id)]))])
+    return stores_id;
+}
+
+function insert_links(links, genattrs, path, opt) {
+    for(let [_link, names, action, target] of links) {
+        let fid = path.scope.generateUidIdentifier('ln_' + names.join('_'))
+        let fun = T.functionDeclaration(fid, [T.identifier('event')],
+            T.blockStatement([]))
+        let fpath = push_to_body(path, fun).get('body');
+        console.assert(target[0] == 'store');
+        let store = path.scope.getData('khufu:store:raw:' + target[1]);
+        if(!store) {
+            throw Error("Unknown store: " + target[1]);
+        }
+        push_to_body(fpath, T.callExpression(
+            T.memberExpression(store, T.identifier('dispatch')),
+                [expression.compile(action, fpath, opt)]));
+
+        for(let name of names) {
+            // TODO(tailhook) support multiple links
+            genattrs.push(['on' + name, fid]);
+        }
+    }
+}
+
 export function compile(element, path, opt, key) {
-    let [_element, name, attributes, children] = element;
+    let [_element, name, classes, attributes, children] = element;
 
     let links = children.filter(([x]) => x == 'link')
     let stores = children.filter(([x]) => x == 'store')
     let body = children.filter(([x]) => x != 'link' && x != 'store');
 
     let attrib_expr;
+    if(classes.length) {
+        for(let [cls, cond] of classes) {
+            if(cond) {
+                attributes.push(['class',
+                    ['if', cond, ['string', cls], ['string', '']]]);
+            } else {
+                attributes.push(['class', ['string', cls]]);
+            }
+        }
+    }
     if(opt.static_attrs) {
-        let [stat, dyn] = sort_attributes(attributes)
+        let [stat, dyn, cls] = sort_attributes(attributes)
 
         if(stat.length) {
-            let topscope = path.scope;
-            while(topscope.parent) {
-                topscope = topscope.parent;
-            }
-            let array = [];
-            for(var [aname, value] of stat) {
-                array.push(T.stringLiteral(aname))
-                if(value == undefined) {
-                    array.push(T.stringLiteral(aname))
-                } else {
-                    array.push(expression.compile(value, path, opt))
-                }
-            }
-            let ident = topscope.generateUidIdentifier(
-                name.toUpperCase() + '_ATTRS');
-            topscope.push({
-                id: ident,
-                init: T.arrayExpression(array),
-                kind: 'let' })
-            attrib_expr = ident
+            attrib_expr = insert_static(name, stat, path, opt)
         }
         attributes = dyn
     }
     let genattrs = [];
     let stores_id = null;
     if(stores.length) {
-        stores_id = path.scope.generateUidIdentifier(name + '_stores');
-        path.scope.push({
-            id: stores_id,
-            init: T.objectExpression([]),
-            kind: 'let' })
-        genattrs.push(['__stores', T.objectExpression(
-            stores.map(([_store, name, value]) => T.objectProperty(
-                T.identifier(name),
-                expression.compile(value, path, opt))
-            ).concat([T.objectProperty(
-                T.identifier('__target'), stores_id)]))])
+        stores_id = insert_stores(name, stores, genattrs, path, opt)
     }
     if(links.length) {
-        for(let [_link, names, action, target] of links) {
-            let fid = path.scope.generateUidIdentifier('ln_' + names.join('_'))
-            let fun = T.functionDeclaration(fid, [T.identifier('event')],
-                T.blockStatement([]))
-            let fpath = push_to_body(path, fun).get('body');
-            console.assert(target[0] == 'store');
-            let store = path.scope.getData('khufu:store:raw:' + target[1]);
-            if(!store) {
-                throw Error("Unknown store: " + name);
-            }
-            push_to_body(fpath, T.callExpression(
-                T.memberExpression(store, T.identifier('dispatch')),
-                    [expression.compile(action, fpath, opt)]));
-
-            for(let name of names) {
-                // TODO(tailhook) support multiple links
-                genattrs.push(['on' + name, fid]);
-            }
-        }
+        insert_links(links, genattrs, path, opt)
     }
 
     let attribs = [

@@ -43,6 +43,14 @@ describe("compiler", () => {
                 '  elementVoid("p", "p-1", null, "a", "b", "c", "c");\n' +
                 '}')
     })
+    it("compiles element with class", () => {
+        expect(compile("view main():\n <p.hello>"))
+            .to.equal(
+                'let _P_ATTRS = ["class", "hello"];\n' +
+                imp +
+                'export function main() {\n' +
+                '  elementVoid("p", "p-1", _P_ATTRS);\n}')
+    })
     it("compiles a nested elements", () => {
         expect(compile("view main():\n <p>\n  <a>\n   'text'\n <p>"))
             .to.equal(imp +
