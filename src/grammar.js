@@ -115,6 +115,11 @@ export var parser = new Parser({
         "lval": [
             ["IDENT", "$$ = ['name', $1]"],
         ],
+        "callargs": [
+            ["e , callargs", "$$ = [$1].concat($3);"],
+            ["e", "$$ = [$1];"],
+            ["", "$$ = [];"],
+        ],
         "e" :[
               [ "e + e",   "$$ = ['add', $1, $3];" ],
               [ "e - e",   "$$ = ['sub', $1, $3];" ],
@@ -124,7 +129,7 @@ export var parser = new Parser({
               [ "- e",     "$$ = ['minus', $2];", {"prec": "UNARY"} ],
               [ "+ e",     "$$ = ['plus', $2];", {"prec": "UNARY"} ],
               [ "( e )",   "$$ = $2;" ],
-              [ "e ( e )", "$$ = ['call', $1, [$3]];" ],
+              [ "e ( callargs )", "$$ = ['call', $1, $3];" ],
               [ "e [ e ]", "$$ = ['index', $1, $3];" ],
               [ "e . IDENT", "$$ = ['attr', $1, $3];" ],
               [ "[ ]",       "$$ = ['list', []];" ],
