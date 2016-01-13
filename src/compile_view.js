@@ -3,6 +3,7 @@ import * as T from "babel-types"
 
 import * as element from "./compile_element"
 import {compile as compile_expression} from "./compile_expression"
+import * as lval from "./compile_lval"
 import {parse_tree_error} from "./compiler"
 import {push_to_body} from "./babel-util"
 
@@ -14,13 +15,23 @@ export function compile_string(item, path, opt) {
         ])))
 }
 
-export function compile_body(body, path, opt, key='') {
+export function join_key(x, y) {
+    if(x.type == 'StringLiteral' && y.type == 'StringLiteral') {
+        return T.stringLiteral(x.value + y.value)
+    }
+    if(x.value === '') return y;
+    if(y.value === '') return x;
+    return T.binaryExpression("+", x, y)
+}
+
+export function compile_body(body, path, opt, key=T.stringLiteral('')) {
     let elements = 0;
     for(var item of body) {
         switch(item[0]) {
             case 'element': {
                 elements += 1;
-                element.compile(item, path, opt, key + String(elements))
+                element.compile(item, path, opt,
+                    join_key(key, T.stringLiteral('-' + elements)))
                 break;
             }
             case 'expression': {
@@ -35,6 +46,20 @@ export function compile_body(body, path, opt, key='') {
                 path.scope.setData('binding:' + name, ident);
                 break;
             }
+            case 'for': {
+                let [_for, assign, source, loopkey, block] = item;
+                let [decl, bindings] = lval.compile(assign, path, opt)
+                let stmt = T.forOfStatement(decl,
+                    compile_expression(source, path, opt),
+                    T.blockStatement([]))
+                let npath = push_to_body(path, stmt);
+                for(var x in bindings) {
+                    npath.scope.setData('binding:' + x, bindings[x])
+                }
+                compile_body(block, npath.get('body'), opt,
+                    join_key(key, compile_expression(loopkey, npath, opt)))
+                break;
+            }
             case 'if': {
                 elements += 1;
                 let [_if, [condition, block], elifblocks, elseblk] = item;
@@ -43,22 +68,23 @@ export function compile_body(body, path, opt, key='') {
                     T.blockStatement([]), null)
                 let ifblock = push_to_body(path, con);
                 compile_body(block, ifblock.get('consequent'), opt,
-                    key + String(elements) + 'if0-')
+                    join_key(key, T.stringLiteral(`-${elements}if0`)))
                 for(var [idx, [cond, blk]] of elifblocks.entries()) {
-                    console.log("BLOCK", cond, blk)
                     ifblock = ifblock.get('alternate');
                     ifblock.replaceWith(T.ifStatement(
                         compile_expression(cond, path, opt),
                         T.blockStatement([]),
                         null))
                     compile_body(blk, ifblock.get('consequent'), opt,
-                        key + String(elements) + `if${idx+1}-`)
+                        join_key(key,
+                            T.stringLiteral(`-${elements}if${idx+1}`)))
                 }
                 if(elseblk) {
                     let elseblock = ifblock.get('alternate');
                     elseblock.replaceWith(T.blockStatement([]))
                     compile_body(elseblk, elseblock, opt,
-                        key + String(elements) + 'els-')
+                        join_key(key,
+                            T.StringLiteral(`-${elements}els`)))
                 }
                 break;
             }

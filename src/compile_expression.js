@@ -12,6 +12,11 @@ export function compile(item, path, opt) {
             let [_number, value] = item;
             return T.numericLiteral(Number(value));
         }
+        case 'list': {
+            let [_list, expressions] = item;
+            return T.arrayExpression(expressions.map(x =>
+                compile(x, path, opt)))
+        }
         case 'name': {
             let [_name, name] = item;
             let binding = path.scope.getData('binding:' + name);

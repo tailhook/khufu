@@ -198,4 +198,20 @@ describe("compiler", () => {
                 '  }\n' +
                 '}')
     })
+    it("compiles a loop", () => {
+        expect(compile("view main(x):\n <ul>\n  for a of []:\n   <li>\n    a"))
+            .to.equal(imp +
+                'export function main() {\n' +
+                '  elementOpen("ul", "ul-1");\n' +
+                '\n' +
+                '  for (let _a of []) {\n' +
+                // TODO(tailhook) probably better serialization could be done
+                '    elementOpen("li", "li" + (_a + "-1"));\n' +
+                '    text(_a);\n' +
+                '    elementClose("li");\n' +
+                '  }\n' +
+                '\n' +
+                '  elementClose("ul");\n' +
+                '}')
+    })
 })

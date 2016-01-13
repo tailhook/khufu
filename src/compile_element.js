@@ -1,6 +1,6 @@
 import * as babel from 'babel-core'
 import * as T from "babel-types"
-import {compile_body} from "./compile_view.js"
+import {compile_body, join_key} from "./compile_view.js"
 import * as expression from "./compile_expression.js"
 import {push_to_body} from "./babel-util"
 
@@ -103,7 +103,7 @@ export function compile(element, path, opt, key) {
         // name is is only possible with hot-reload, though.
         //
         // TODO(tailhook) should we do it only if hot-reload is enabled?
-        T.stringLiteral(name + "-" + key),
+        join_key(T.stringLiteral(name), key),
     ];
     if(attributes.length || genattrs.length) {
         attribs.push(attrib_expr || T.nullLiteral())
