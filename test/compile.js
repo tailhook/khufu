@@ -144,4 +144,58 @@ describe("compiler", () => {
             '  elementClose("p");\n' +
             "}")
     })
+    it("compiles an if statement", () => {
+        expect(compile("view main():\n <p>\n if 0:\n  <a>"))
+            .to.equal(imp +
+                'export function main() {\n' +
+                '  elementVoid("p", "p-1");\n' +
+                '\n' +
+                '  if (0) {\n' +
+                '    elementVoid("a", "a-2if0-1");\n' +
+                '  }\n' +
+                '}')
+    })
+    it("compiles an if else statement", () => {
+        expect(compile("view main():\n <p>\n if 0:\n  <a>\n else:\n  <b>"))
+            .to.equal(imp +
+                'export function main() {\n' +
+                '  elementVoid("p", "p-1");\n' +
+                '\n' +
+                '  if (0) {\n' +
+                '    elementVoid("a", "a-2if0-1");\n' +
+                '  } else {\n' +
+                '    elementVoid("b", "b-2els-1");\n' +
+                '  }\n' +
+                '}')
+    })
+    it("compiles an elif statement", () => {
+        expect(compile("view main():\n <p>\n if 0:\n  <a>\n" +
+                       ' elif 1:\n  <div>'))
+            .to.equal(imp +
+                'export function main() {\n' +
+                '  elementVoid("p", "p-1");\n' +
+                '\n' +
+                '  if (0) {\n' +
+                '    elementVoid("a", "a-2if0-1");\n' +
+                '  } else if (1) {\n' +
+                '    elementVoid("div", "div-2if1-1");\n' +
+                '  }\n' +
+                '}')
+    })
+    it("compiles an elif-else statement", () => {
+        expect(compile("view main():\n <p>\n if 0:\n  <a>\n" +
+                       ' elif 1:\n  <div>\n else:\n  <b>'))
+            .to.equal(imp +
+                'export function main() {\n' +
+                '  elementVoid("p", "p-1");\n' +
+                '\n' +
+                '  if (0) {\n' +
+                '    elementVoid("a", "a-2if0-1");\n' +
+                '  } else if (1) {\n' +
+                '    elementVoid("div", "div-2if1-1");\n' +
+                '  } else {\n' +
+                '    elementVoid("b", "b-2els-1");\n' +
+                '  }\n' +
+                '}')
+    })
 })

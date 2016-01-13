@@ -33,9 +33,7 @@ export var parser = new Parser({
                 "$$ = ['import_default', $2, $4];"],
             ["style : NL INDENT rules DEDENT", "$$ = ['style', $5];"],
             ["style : NL", "$$ = ['style', []]"],
-            ["view IDENT ( args ) : NL " +
-             "INDENT statements DEDENT", "$$ = ['view', $2, $4, $9]"],
-            ["view IDENT ( args ) : NL", "$$ = ['view', $2, $4, []]"],
+            ["view IDENT ( args ) : NL stmtblock", "$$ = ['view', $2, $4, $8]"],
         ],
         "names": [
             ["IDENT , names", "$$ = [$1].concat($3);"],
@@ -69,6 +67,10 @@ export var parser = new Parser({
             ["IDENT", "$$ = [$1];"],
             ["", "$$ = [];"],
         ],
+        "stmtblock": [
+            ["INDENT statements DEDENT", "$$ = $2"],
+            ["", "$$ = []"],
+        ],
         "statements": list('statement'),
         "elstatements": list('elstatement'),
         "statement": [
@@ -77,7 +79,17 @@ export var parser = new Parser({
                 "INDENT elstatements DEDENT", "$$ = ['element', $2, $3, $7];" ],
             ["store STORE = e NL", "$$ = ['store', $2, $4]"],
             ["let IDENT = e NL", "$$ = ['assign', $2, $4]"],
+            ["if e : NL stmtblock elifblocks", "$$ = ['if', [$2, $5], $6]"],
+            ["if e : NL stmtblock elifblocks elseblock",
+                "$$ = ['if', [$2, $5], $6, $7]"],
             ["e NL", "$$ = ['expression', $1];" ],
+        ],
+        "elifblocks": list('elifblock'),
+        "elifblock": [
+            ["elif e : NL stmtblock", "$$ = [$2, $5]"],
+        ],
+        "elseblock": [
+            ["else : NL stmtblock", "$$ = $4;"],
         ],
         "elstatement": [
             ["statement", "$$ = $1;"],
