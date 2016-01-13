@@ -22,4 +22,11 @@ describe("compiler", () => {
                 '  text(x(1, 2, 3));\n' +
                 "}")
     })
+    it("compiles a list", () => {
+        expect(compile("view main():\n [1, 2, 3]"))
+            .to.equal(imp +
+                "export function main() {\n" +
+                '  text([1, 2, 3]);\n' +
+                "}")
+    })
 })

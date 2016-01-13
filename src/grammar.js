@@ -115,8 +115,8 @@ export var parser = new Parser({
         "lval": [
             ["IDENT", "$$ = ['name', $1]"],
         ],
-        "callargs": [
-            ["e , callargs", "$$ = [$1].concat($3);"],
+        "comma_separated": [
+            ["e , comma_separated", "$$ = [$1].concat($3);"],
             ["e", "$$ = [$1];"],
             ["", "$$ = [];"],
         ],
@@ -129,10 +129,10 @@ export var parser = new Parser({
               [ "- e",     "$$ = ['minus', $2];", {"prec": "UNARY"} ],
               [ "+ e",     "$$ = ['plus', $2];", {"prec": "UNARY"} ],
               [ "( e )",   "$$ = $2;" ],
-              [ "e ( callargs )", "$$ = ['call', $1, $3];" ],
+              [ "e ( comma_separated )", "$$ = ['call', $1, $3];" ],
               [ "e [ e ]", "$$ = ['index', $1, $3];" ],
               [ "e . IDENT", "$$ = ['attr', $1, $3];" ],
-              [ "[ ]",       "$$ = ['list', []];" ],
+              [ "[ comma_separated ]",       "$$ = ['list', $2];" ],
               [ "NUMBER",  "$$ = ['number', $1];" ],
               [ "STRING",  "$$ = ['string', $1];" ],
               [ "IDENT",  "$$ = ['name', $1];" ],
