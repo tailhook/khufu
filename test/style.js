@@ -1,7 +1,8 @@
-var parser = require('./../src/grammar.js').parser;
-var expect = require('chai').expect;
+import {parser} from './../src/grammar.js'
+import {compile_text as compile} from '../src/compiler.js'
+import {expect} from 'chai'
 
-describe("styles", () => {
+describe("parses styles", () => {
     it("empty", () => {
         expect(parser.parse("style:"))
             .to.deep.equal([['style', []]])
