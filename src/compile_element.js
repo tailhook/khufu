@@ -104,6 +104,8 @@ function insert_links(links, genattrs, path, opt) {
         if(!store) {
             throw Error("Unknown store: " + target[1]);
         }
+        fpath.scope.setData('binding:this', T.identifier('this'))
+        fpath.scope.setData('binding:event', T.identifier('event'))
         push_to_body(fpath, T.callExpression(
             T.memberExpression(store, T.identifier('dispatch')),
                 [expression.compile(action, fpath, opt)]));
