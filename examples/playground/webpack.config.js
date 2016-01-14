@@ -1,11 +1,12 @@
 var webpack = require('webpack')
+var DEV = process.env['NODE_ENV'] != 'production';
 module.exports = {
     context: __dirname,
-    entry: [
+    entry: DEV ? [
         "./index",
         "webpack-dev-server/client?http://localhost:8080",
         "webpack/hot/only-dev-server",
-    ],
+    ] : "./index",
     output: {
         path: __dirname + "/public",
         filename: "bundle.js"
@@ -32,7 +33,7 @@ module.exports = {
         hot: true,
     },
     khufu: {
-        static_attrs: false, // for normal hot reload
+        static_attrs: !DEV,
     },
     plugins: [
         new webpack.NoErrorsPlugin(),
