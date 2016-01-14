@@ -45,6 +45,12 @@ commands:
     - --progress
     - --colors
 
+  webpack: !Command
+    description: Run webpack command
+    container: node
+    run:
+    - webpack
+
   doc: !Command
     description: Build documentation and examples
     container: doc
