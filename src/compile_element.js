@@ -3,6 +3,7 @@ import * as T from "babel-types"
 import {compile_body, join_key} from "./compile_view.js"
 import * as expression from "./compile_expression.js"
 import {push_to_body} from "./babel-util"
+import {parse_tree_error} from "./compiler"
 
 
 function optimize_plus(a, b) {
@@ -84,11 +85,26 @@ function insert_stores(elname, stores, genattrs, path, opt) {
         id: stores_id,
         init: T.objectExpression([]),
         kind: 'let' })
+
     genattrs.push(['__stores', T.objectExpression(
-        stores.map(([_store, name, value]) => T.objectProperty(
-            T.identifier(name),
-            expression.compile(value, path, opt))
-        ).concat([T.objectProperty(
+        stores.map(([_store, name, value]) => {
+            let [call, expr, args] = value
+            if(call != 'call' || !Array.isArray(args) || args.length != 1) {
+                throw parse_tree_error("Store constructor must be a function" +
+                    " call with exactly one argument. " +
+                    "For example: `createStore(x)`. Got", value)
+            }
+            return T.objectProperty(
+                T.identifier(name),
+                T.functionExpression(null,
+                    [T.identifier('state')], T.blockStatement([
+                    // TODO(tailhook) pass path to function rather than outer
+                    T.returnStatement(T.callExpression(
+                        expression.compile(expr, path, opt),
+                        [expression.compile(args[0], path, opt),
+                         T.identifier('state')]))
+                ])))
+        }).concat([T.objectProperty(
             T.identifier('__target'), stores_id)]))])
     return stores_id;
 }

@@ -1,0 +1,39 @@
+import {id} from 'khufu-runtime'
+import {Text, update} from './text'
+import {delay_saga} from './delay'
+
+style:
+  .table
+    display: flex
+    flex-direction: column
+  .main, .clone
+    display: flex
+    flex-directoin: row
+    margin: 2px
+  label
+    width: 120px
+    box-sizing: border-box
+  .arrow
+    text-align: right
+    padding-right: 6px
+
+view main():
+  <div.table>
+    for delay of [0, 200, 1000]:
+      <div.row>
+        store @value = delay_saga(20)(Text)
+        <div.main>
+          store @id = id
+          <label for=@id>
+            "Delay "
+            delay
+            " ms: "
+          <input id=@id type="text">
+            link {blur, change, keyup, keydown} update(this.value) -> @value
+
+        <div.clone>
+          store @id = id
+          <label.arrow for=@id>
+            "⤷"
+          <input id=@id disabled value=@value>
+

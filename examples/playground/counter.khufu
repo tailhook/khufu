@@ -1,5 +1,5 @@
 import {Counter, counter, range} from './counter'
-import {shit} from './counter'
+import {createStore} from 'redux'
 
 style:
   .bar1, bar2
@@ -19,7 +19,7 @@ style:
 
 view main():
   <p>
-    store @counter = Counter
+    store @counter = createStore(Counter)
 
     <div.bar1>
       <button>

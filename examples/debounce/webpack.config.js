@@ -1,8 +1,11 @@
 module.exports = {
     context: __dirname,
-    entry: "./index",
+    entry: [
+        "babel-polyfill",
+        "./index",
+    ],
     output: {
-        path: __dirname + "/../../doc/_build/html/examples/counter",
+        path: __dirname + "/../../doc/_build/html/examples/debounce",
         filename: "bundle.js"
     },
     module: {

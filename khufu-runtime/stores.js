@@ -1,7 +1,6 @@
-import {createStore} from 'redux'
 import {attributes} from 'incremental-dom'
 
-export const REMOVED = '@khufu/removed'
+export const REMOVED = '@@khufu/REMOVED'
 
 export function store_handler(do_render, unsubscriptions) {
     return function(element, name, defs) {
@@ -11,14 +10,14 @@ export function store_handler(do_render, unsubscriptions) {
         for(let k in defs) {
             let store = old[k];
             if(store) {
-                if(module.hot) {
+                if(module.hot && module.hot.status() == 'apply') {
                     store.__redraw_unsubscr()
-                    store.replaceReducer(defs[k])
+                    store = defs[k](store.getState())
                     store.__redraw_unsubscr = store.subscribe(do_render)
                 }
                 delete old[k];
             } else {
-                store = createStore(defs[k]);
+                store = defs[k]();
                 store.__redraw_unsubscr = store.subscribe(do_render)
             }
             value[k] = store;

@@ -137,14 +137,16 @@ describe("compiler", () => {
         expect(compile("import {mystore} from './stores'\n" +
                        "view main():\n" +
                        " <p>\n" +
-                       "  store @x = mystore\n" +
+                       "  store @x = mystore()\n" +
                        "  @x.value\n"))
             .to.equal(imp +
             'import { mystore } from "./stores";\n' +
             "export function main() {\n" +
             '  let _p_stores = {};\n' +
             '  elementOpen("p", "p-1", null, "__stores", {\n' +
-            '    x: mystore,\n' +
+            '    x: function () {\n' +
+            '      return mystore();\n' +
+            '    },\n' +
             '    __target: _p_stores\n' +
             '  });\n' +
             '  {\n' +
@@ -159,7 +161,7 @@ describe("compiler", () => {
         expect(compile("import {mystore, action} from './stores'\n" +
                        "view main():\n" +
                        " <p>\n" +
-                       "  store @x = mystore\n" +
+                       "  store @x = mystore()\n" +
                        "  @x.value\n" +
                        "  <button>\n" +
                        "    link {click} action(1) -> @x\n"
@@ -169,7 +171,9 @@ describe("compiler", () => {
             "export function main() {\n" +
             '  let _p_stores = {};\n' +
             '  elementOpen("p", "p-1", null, "__stores", {\n' +
-            '    x: mystore,\n' +
+            '    x: function () {\n' +
+            '      return mystore();\n' +
+            '    },\n' +
             '    __target: _p_stores\n' +
             '  });\n' +
             '  {\n' +

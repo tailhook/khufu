@@ -22,6 +22,13 @@ containers:
       NODE_PATH: /usr/local/lib/node_modules
       HOME: /tmp
 
+  serve:
+    setup:
+    - !Tar
+      url: https://github.com/cortesi/devd/releases/download/v0.1/devd-0.1-linux64.tgz
+      path: /usr/bin
+      subdir: devd-0.1-linux64
+
 
 commands:
 
@@ -58,10 +65,20 @@ commands:
       set -ex
       cd /work/doc
       make html
+      # example: counter
       cd /work/examples/counter
       cp index.html ../../doc/_build/html/examples/counter
+      webpack
+      # example: debounce
+      cd /work/examples/debounce
+      cp index.html ../../doc/_build/html/examples/debounce
       webpack
     epilog: |
       --------------------------------------------------------
       Documentation is built under doc/_build/html/index.html
       Examples are in doc/_build/html/examples
+
+  devd: !Command
+    description: Run devd (useful to run inside the example directory)
+    container: serve
+    run: [devd]
