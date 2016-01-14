@@ -3,6 +3,7 @@ import {patch, attributes} from 'incremental-dom'
 
 export {REMOVED} from './stores'
 export {add_style} from './style'
+export {id} from './id'
 
 function set_global_state(fun) {
     attributes.__stores = store_handler(fun)
