@@ -207,7 +207,7 @@ export default function () {
                      `|'(?:[^'\\\\\\n]|${css_esc}|\\\\\\n)*')`
 
 
-    lexer.addRule(/[:]/, lex(x => x), [STYLE]);
+    lexer.addRule(/[:.,]/, lex(x => x), [STYLE]);
     lexer.addRule(new RegExp(css_ident), lex("IDENT_TOKEN"), [STYLE]);
 
     lexer.addRule(new RegExp(css_number), lex("NUMBER"), [STYLE]);

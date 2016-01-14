@@ -14,6 +14,30 @@ describe("parses styles", () => {
                 ['rule', ['body'], [['property', 'text-align', 'left']]]
             ]]])
     })
+    it("class", () => {
+        expect(parser.parse("style:\n  .left\n    text-align: left\n"))
+            .to.deep.equal([['style', [
+                ['rule', ['.left'], [['property', 'text-align', 'left']]]
+            ]]])
+    })
+    it("two elements", () => {
+        expect(parser.parse("style:\n  .left, a\n    text-align: left\n"))
+            .to.deep.equal([['style', [
+                ['rule', ['.left', 'a'], [['property', 'text-align', 'left']]]
+            ]]])
+    })
+    it("two classes", () => {
+        expect(parser.parse("style:\n  .a.left\n    text-align: left\n"))
+            .to.deep.equal([['style', [
+                ['rule', ['.a.left'], [['property', 'text-align', 'left']]]
+            ]]])
+    })
+    it("element + class", () => {
+        expect(parser.parse("style:\n  p.a.left\n    text-align: left\n"))
+            .to.deep.equal([['style', [
+                ['rule', ['p.a.left'], [['property', 'text-align', 'left']]]
+            ]]])
+    })
     it("two dimensions", () => {
         expect(parser.parse("style:\n  body\n    margin: 2px 4px\n"))
             .to.deep.equal([['style', [

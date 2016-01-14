@@ -45,11 +45,22 @@ export var parser = new Parser({
             ["", "$$ = [];"],
         ],
         "rule": [
-            ["selector NL INDENT properties DEDENT", "$$ = ['rule', $1, $4]"],
-            ["selector NL", "$$ = ['rule', $1, []]"],
+            ["selectors NL INDENT properties DEDENT", "$$ = ['rule', $1, $4]"],
+            ["selectors NL", "$$ = ['rule', $1, []]"],
+        ],
+        "selectors": [
+            ["selector", "$$ = [$1]"],
+            ["selector , selectors", "$$ = [$1].concat($3)"],
         ],
         "selector": [
-            ["IDENT_TOKEN", "$$ = [$1];"],
+            ["IDENT_TOKEN", "$$ = $1;"],
+            ["css_classes", "$$ = $1;"],
+            ["IDENT_TOKEN css_classes", "$$ = $1 + $2;"],
+        ],
+        "css_classes": [
+            [". IDENT_TOKEN", "$$ = '.' +$2"],
+            [". IDENT_TOKEN css_classes", "$$ = '.' + $2 + $3"],
+            [": IDENT_TOKEN css_classes", "$$ = ':' + $2 + $3"],
         ],
         "properties": [
             ["property properties", "$$ = [$1].concat($2);"],
