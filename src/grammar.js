@@ -56,10 +56,28 @@ export var parser = new Parser({
             ["", "$$ = [];"],
         ],
         "property": [
-            ["IDENT_TOKEN : property_value NL", "$$ = ['property', $1, $3]"],
+            ["IDENT_TOKEN : property_value", "$$ = ['property', $1, $3]"],
         ],
         "property_value": [
+            ["NL", "$$ = '';"],
+            ["NL INDENT css_lines DEDENT", "$$ = $3"],
+            ["css_value NL", "$$ = $1;"],
+            ["css_value NL INDENT css_lines DEDENT", "$$ = $1 + ' ' + $4"],
+        ],
+        "css_lines": [
+            ["css_value NL", "$$ = $1"],
+            ["css_value NL css_lines", "$$ = $1 + ' ' + $3"],
+        ],
+        "css_value": [
+            ["css_item", "$$ = $1;"],
+            ["css_item css_value", "$$ = $1 + ' ' + $2"],
+        ],
+        "css_item": [
             ["IDENT_TOKEN", "$$ = $1"],
+            ["HASH_TOKEN", "$$ = $1"],
+            ["URL", "$$ = $1"],
+            ["DIMENSION", "$$ = $1"],
+            ["NUMBER", "$$ = $1"],
         ],
         // HTML
         "args": [

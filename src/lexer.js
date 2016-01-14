@@ -194,11 +194,32 @@ export default function () {
 
     /********************* Style tokens ***************************/
 
+    let css_esc = "\\\\[^\\n0-9a-fA-F]|\\\\[0-9a-fA-F]{1,6} ?"
+    let css_ident = "-?" +
+        `(?:[a-zA-Z_\\u0080-\\uffff]|${css_esc})` +
+        `(?:[a-zA-Z_0-9\\u0080-\\uffff-]|${css_esc})*`
+    let css_number =
+        "[+-]?(?:[0-9]+\\\\.[0-9]+|[0-9]+|\\\\.[0-9]+)(?:[eE][+-]?[0-9]+)?"
+    let css_unquoted =
+        "(?:[^\"'()\\s\\u0000-\\u0008\\u000b\\u000e-\\u001f\\u007f]" +
+        `|${css_esc})*`
+    let css_string = `(?:"(?:[^"\\\\\\n]|${css_esc}|\\\\\\n)*"` +
+                     `|'(?:[^'\\\\\\n]|${css_esc}|\\\\\\n)*')`
+
+
     lexer.addRule(/[:]/, lex(x => x), [STYLE]);
-    lexer.addRule(new RegExp("-?" +
-        "(?:[a-zA-Z_\u0080-\uffff]|\\[^\n0-9a-fA-F]|\\[0-9a-fA-F]{1,6} ?)" +
-        "(?:[a-zA-Z_0-9\u0080-\uffff-]|\\[^\n0-9a-fA-F]|\\[0-9a-fA-F]{1,6} ?)*"),
-    lex("IDENT_TOKEN"), [STYLE]);
+    lexer.addRule(new RegExp(css_ident), lex("IDENT_TOKEN"), [STYLE]);
+
+    lexer.addRule(new RegExp(css_number), lex("NUMBER"), [STYLE]);
+
+    lexer.addRule(new RegExp(css_number + css_ident),
+        lex("DIMENSION"), [STYLE]);
+
+    lexer.addRule(new RegExp("url\\(\\s*(?:" +
+        css_string + "|" + css_unquoted + ")\s*\\)"),
+        lex("URL"), [STYLE]);
+    lexer.addRule(new RegExp("#(?:[a-zA-Z_0-9\\u0080-\\uffff-]|${css_esc})*"),
+        lex("HASH_TOKEN"), [STYLE]);
 
     /********************* View tokens ***************************/
 

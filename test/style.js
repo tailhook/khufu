@@ -14,6 +14,38 @@ describe("parses styles", () => {
                 ['rule', ['body'], [['property', 'text-align', 'left']]]
             ]]])
     })
+    it("two dimensions", () => {
+        expect(parser.parse("style:\n  body\n    margin: 2px 4px\n"))
+            .to.deep.equal([['style', [
+                ['rule', ['body'], [['property', 'margin', '2px 4px']]]
+            ]]])
+    })
+    it("two indented", () => {
+        expect(parser.parse('style:\n body\n  margin:\n' +
+            '   2px // vert\n' +
+            '   4px // horizon\n'))
+        .to.deep.equal([['style', [
+            ['rule', ['body'], [['property', 'margin', '2px 4px']]]
+        ]]])
+    })
+    it('url', () => {
+        expect(parser.parse('style:\n body\n  background: url(google.com)'))
+        .to.deep.equal([['style', [
+            ['rule', ['body'], [['property', 'background', 'url(google.com)']]]
+        ]]])
+    })
+    it('url quoted', () => {
+        expect(parser.parse('style:\n body\n  background: url("a)b")'))
+        .to.deep.equal([['style', [
+            ['rule', ['body'], [['property', 'background', 'url("a)b")']]]
+        ]]])
+    })
+    it('color', () => {
+        expect(parser.parse('style:\n body\n  background: #FFF'))
+        .to.deep.equal([['style', [
+            ['rule', ['body'], [['property', 'background', '#FFF']]]
+        ]]])
+    })
     it("two props", () => {
         expect(parser.parse("style:\n  body\n    text-align: left\n    x: y"))
             .to.deep.equal([['style', [
