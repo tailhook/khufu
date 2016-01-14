@@ -11,8 +11,8 @@ export function store_handler(do_render, unsubscriptions) {
         for(let k in defs) {
             let store = old[k];
             if(store) {
-                store.__redraw_unsubscr()
                 if(module.hot) {
+                    store.__redraw_unsubscr()
                     store.replaceReducer(defs[k])
                     store.__redraw_unsubscr = store.subscribe(do_render)
                 }

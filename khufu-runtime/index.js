@@ -13,7 +13,7 @@ function clean_global_state(old) {
 }
 
 export default function init(element, template) {
-    function render(new_tpl) {
+    function render() {
         let obj = set_global_state(render)
         try {
             patch(element, template)
