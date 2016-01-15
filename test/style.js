@@ -94,9 +94,9 @@ describe("parses styles", () => {
     it("element", () => {
         expect(raw_style(parser.parse(
             "style:\n p\n  text-align: left"
-        )[0][1])).to.equal(
+        )[0][1], {})).to.equal(
             'p {\n' +
-            '  text-align: left;\n' +
+            '    text-align: left\n' +
             '}')
     })
 })
