@@ -50,13 +50,14 @@ For example:
 
 .. code-block:: javascript
 
+    import {createStore} from 'redux'
     import {Search, search} from 'myapp/search'
     import {Image, load} from 'myapp/util/image_loading'
     import {select} from 'myapp/action_creators'
 
     view main(@selected_item):
       <div>
-        store @results = Search
+        store @results = createStore(Search)
         <form>
           <input type="text" placeholder="search">
             link {change, keyup} search(this.value) -> @results
@@ -69,7 +70,7 @@ For example:
             <div.results>
             for item in @results.items:
               <div.result>
-                store @icon_loaded = Image <- load(item.img)
+                store @icon_loaded = createStore(Image) <- load(item.img)
                 if @icon_loaded.done:
                     <img src=item.img>
                 else:
