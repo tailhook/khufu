@@ -19,7 +19,16 @@ import shlex
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('.'))
+
+import pygments
+import pkg_resources
+
+distrib = pkg_resources.Distribution('.', {}, 'khufulexer', '1.0')
+distrib.get_entry_map().update({'pygments.lexers':
+  {'khufu': pkg_resources.EntryPoint('khufu', 'khufulexer',
+                                     attrs=('KhufuLexer',), dist=distrib)}})
+pkg_resources.working_set.add(distrib)
 
 # -- General configuration ------------------------------------------------
 

@@ -9,7 +9,7 @@ view main():
        link {click} counter(1) -> @counter
        "+"
 
-    <input disabled value=@counter>
+    <input disabled size="6" value=@counter>
 
     <button>
        link {click} counter(-1) -> @counter
