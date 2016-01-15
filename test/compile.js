@@ -2,8 +2,9 @@ import {compile_text as compile} from '../src/compiler.js'
 import {expect} from 'chai'
 
 describe("compiler", () => {
-    const imp = 'import { elementVoid, elementOpen, elementClose, text } ' +
-                'from "incremental-dom";\n';
+    const imp = 'import ' +
+        '{ elementVoid, elementOpen, elementClose, text, expr }' +
+        ' from "khufu-runtime/dom";\n';
     it("compiles empty function", () => {
         expect(compile("view main():"))
             .to.equal(imp + "export function main() {}")
@@ -92,7 +93,7 @@ describe("compiler", () => {
             'export function main() {\n' +
             '  elementOpen("p", "p-1");\n' +
             '  elementOpen("a", "a-1");\n' +
-            '  text("text");\n' +
+            '  expr("text");\n' +
             '  elementClose("a");\n' +
             '  elementClose("p");\n' +
             '  elementVoid("p", "p-2");\n' +
@@ -108,10 +109,10 @@ describe("compiler", () => {
             '      _x2 = _x + 1;\n' +
             '\n' +
             '  elementOpen("p", "p-1");\n' +
-            '  text(_x);\n' +
+            '  expr(_x);\n' +
             '  elementClose("p");\n' +
             '  elementOpen("p", "p-2");\n' +
-            '  text(_x2);\n' +
+            '  expr(_x2);\n' +
             '  elementClose("p");\n' +
             "}")
     })
@@ -125,11 +126,11 @@ describe("compiler", () => {
             '  elementOpen("p", "p-1");\n' +
             '  {\n' +
             '    let _x2 = 2;\n' +
-            '    text(_x2);\n' +
+            '    expr(_x2);\n' +
             '  }\n' +
             '  elementClose("p");\n' +
             '  elementOpen("p", "p-2");\n' +
-            '  text(_x);\n' +
+            '  expr(_x);\n' +
             '  elementClose("p");\n' +
             "}")
     })
@@ -152,7 +153,7 @@ describe("compiler", () => {
             '  {\n' +
             '    let _x_state = _p_stores.x.getState();\n' +
             '\n' +
-            '    text(_x_state.value);\n' +
+            '    expr(_x_state.value);\n' +
             '  }\n' +
             '  elementClose("p");\n' +
             "}")
@@ -180,7 +181,7 @@ describe("compiler", () => {
             '  {\n' +
             '    let _x_state = _p_stores.x.getState();\n' +
             '\n' +
-            '    text(_x_state.value);\n' +
+            '    expr(_x_state.value);\n' +
             '\n' +
             '    function _ln_click(event) {\n' +
             '      _p_stores.x.dispatch(action(1))\n' +
@@ -255,7 +256,7 @@ describe("compiler", () => {
                 '  for (let _a of []) {\n' +
                 // TODO(tailhook) probably better serialization could be done
                 '    elementOpen("li", "li" + (_a + "-1"));\n' +
-                '    text(_a);\n' +
+                '    expr(_a);\n' +
                 '    elementClose("li");\n' +
                 '  }\n' +
                 '\n' +
@@ -270,11 +271,11 @@ describe("compiler", () => {
         .to.equal(imp +
             '\n' +
             'function _other(txt) {\n' +
-            '  text(txt);\n' +
+            '  expr(txt);\n' +
             '}\n' +
             '\n' +
             'export function main(x) {\n' +
-            '  text(_other(x));\n' +
+            '  expr(_other(x));\n' +
             "}")
     })
 })

@@ -12,12 +12,13 @@ const DOM_FUNCTIONS = [
     'elementOpen',
     'elementClose',
     'text',
+    'expr',
 ]
 
 export function compile_string(item, path, opt) {
     let [_expression, value] = item;
     path.node.body.push(T.expressionStatement(
-        T.callExpression(T.identifier('text'), [
+        T.callExpression(T.identifier('expr'), [
             compile_expression(value, path, opt)
         ])))
 }
@@ -109,7 +110,7 @@ export function compile(view, path, opt) {
             T.importDeclaration(
                 DOM_FUNCTIONS.map(
                     x => T.importSpecifier(T.identifier(x), T.identifier(x))),
-                T.stringLiteral('incremental-dom')))
+                T.stringLiteral('khufu-runtime/dom')))
         path.scope.setData('khufu:dom-imported', true)
     }
 
