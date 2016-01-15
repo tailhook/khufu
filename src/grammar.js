@@ -108,7 +108,6 @@ export var parser = new Parser({
                 "$$ = ['element', $2, $3, $4, []];" ],
             ["< TAG_NAME classes attributes > NL INDENT elstatements DEDENT",
                 "$$ = ['element', $2, $3, $4, $8];" ],
-            ["store STORE = e NL", "$$ = ['store', $2, $4]"],
             ["let IDENT = e NL", "$$ = ['assign', $2, $4]"],
             ["if e : NL stmtblock elifblocks", "$$ = ['if', [$2, $5], $6]"],
             ["if e : NL stmtblock elifblocks elseblock",
@@ -135,6 +134,7 @@ export var parser = new Parser({
             // TODO(tailhook) support other targets than stores
             ["link { names } e -> STORE NL",
                 "$$ = ['link', $3, $5, ['store', $7]];"],
+            ["store STORE = e NL", "$$ = ['store', $2, $4]"],
         ],
         "attributes": list('attribute'),
         "attribute": [
