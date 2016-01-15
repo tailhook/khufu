@@ -59,6 +59,7 @@ export var parser = new Parser({
         ],
         "css_classes": [
             [". IDENT_TOKEN", "$$ = '.' +$2"],
+            [": IDENT_TOKEN", "$$ = ':' +$2"],
             [". IDENT_TOKEN css_classes", "$$ = '.' + $2 + $3"],
             [": IDENT_TOKEN css_classes", "$$ = ':' + $2 + $3"],
         ],
