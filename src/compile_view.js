@@ -113,7 +113,8 @@ export function compile(view, path, opt) {
         path.scope.setData('khufu:dom-imported', true)
     }
 
-    let node = T.functionDeclaration(T.identifier(name), [],
+    let node = T.functionDeclaration(T.identifier(name),
+        params.map(x => T.identifier(x)),
         T.blockStatement([]), false, false);
     let child_path
     if(name[0] != '_') {
@@ -121,6 +122,9 @@ export function compile(view, path, opt) {
         child_path = push_to_body(path, node).get('declaration.body')
     } else {
         child_path = push_to_body(path, node).get('body')
+    }
+    for(let x of params) {
+        child_path.scope.setData('binding:' + x, T.identifier(x))
     }
     compile_body(body, child_path, opt)
 }

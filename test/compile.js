@@ -247,7 +247,7 @@ describe("compiler", () => {
                 '}')
     })
     it("compiles a loop", () => {
-        expect(compile("view main(x):\n <ul>\n  for a of []:\n   <li>\n    a"))
+        expect(compile("view main():\n <ul>\n  for a of []:\n   <li>\n    a"))
             .to.equal(imp +
                 'export function main() {\n' +
                 '  elementOpen("ul", "ul-1");\n' +
@@ -261,5 +261,13 @@ describe("compiler", () => {
                 '\n' +
                 '  elementClose("ul");\n' +
                 '}')
+    })
+
+    it("compiles function with args", () => {
+        expect(compile("view main(x, y):\n x\n y"))
+            .to.equal(imp + "export function main(x, y) {\n" +
+            '  text(x);\n' +
+            '  text(y);\n' +
+            "}")
     })
 })
