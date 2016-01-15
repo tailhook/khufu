@@ -134,18 +134,18 @@ describe("compiler", () => {
             "}")
     })
     it("compiles a store", () => {
-        expect(compile("import {mystore} from './stores'\n" +
+        expect(compile("import {createStore, mystore} from './stores'\n" +
                        "view main():\n" +
                        " <p>\n" +
-                       "  store @x = mystore()\n" +
+                       "  store @x = createStore(mystore)\n" +
                        "  @x.value\n"))
-            .to.equal(imp +
-            'import { mystore } from "./stores";\n' +
+        .to.equal(imp +
+            'import { createStore, mystore } from "./stores";\n' +
             "export function main() {\n" +
             '  let _p_stores = {};\n' +
             '  elementOpen("p", "p-1", null, "__stores", {\n' +
-            '    x: function () {\n' +
-            '      return mystore();\n' +
+            '    x: function (state) {\n' +
+            '      return createStore(mystore, state);\n' +
             '    },\n' +
             '    __target: _p_stores\n' +
             '  });\n' +
@@ -158,21 +158,22 @@ describe("compiler", () => {
             "}")
     })
     it("compiles a link", () => {
-        expect(compile("import {mystore, action} from './stores'\n" +
-                       "view main():\n" +
-                       " <p>\n" +
-                       "  store @x = mystore()\n" +
-                       "  @x.value\n" +
-                       "  <button>\n" +
-                       "    link {click} action(1) -> @x\n"
-                       ))
-            .to.equal(imp +
-            'import { mystore, action } from "./stores";\n' +
+        expect(compile(
+            "import {createStore, mystore, action} from './stores'\n" +
+            "view main():\n" +
+            " <p>\n" +
+            "  store @x = createStore(mystore)\n" +
+            "  @x.value\n" +
+            "  <button>\n" +
+            "    link {click} action(1) -> @x\n"
+            ))
+        .to.equal(imp +
+            'import { createStore, mystore, action } from "./stores";\n' +
             "export function main() {\n" +
             '  let _p_stores = {};\n' +
             '  elementOpen("p", "p-1", null, "__stores", {\n' +
-            '    x: function () {\n' +
-            '      return mystore();\n' +
+            '    x: function (state) {\n' +
+            '      return createStore(mystore, state);\n' +
             '    },\n' +
             '    __target: _p_stores\n' +
             '  });\n' +
