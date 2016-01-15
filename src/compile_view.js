@@ -123,8 +123,14 @@ export function compile(view, path, opt) {
     } else {
         child_path = push_to_body(path, node).get('body')
     }
+
+    // bind params
     for(let x of params) {
         child_path.scope.setData('binding:' + x, T.identifier(x))
     }
+
+    // bind itself
+    path.scope.setData('binding:' + name, T.identifier(name))
+
     compile_body(body, child_path, opt)
 }

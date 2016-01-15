@@ -263,11 +263,18 @@ describe("compiler", () => {
                 '}')
     })
 
-    it("compiles function with args", () => {
-        expect(compile("view main(x, y):\n x\n y"))
-            .to.equal(imp + "export function main(x, y) {\n" +
-            '  text(x);\n' +
-            '  text(y);\n' +
+    it("compiles multiple view functions", () => {
+        expect(compile(
+            "view _other(txt):\n txt\n" +
+            "view main(x):\n _other(x)"))
+        .to.equal(imp +
+            '\n' +
+            'function _other(txt) {\n' +
+            '  text(txt);\n' +
+            '}\n' +
+            '\n' +
+            'export function main(x) {\n' +
+            '  text(_other(x));\n' +
             "}")
     })
 })
