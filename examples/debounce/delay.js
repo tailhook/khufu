@@ -1,29 +1,38 @@
 import {applyMiddleware, createStore} from 'redux'
 import {REMOVED} from 'khufu-runtime'
-import {fork, take, cancel, race, put, delay} from 'redux-saga'
+import {fork, take, cancel, race, put} from 'redux-saga'
 import middleware from 'redux-saga'
 import regeneratorRuntime from 'regenerator/runtime'
 
-export function delay_saga(sec) {
+var sleep = (num) => new Promise((accept) => setTimeout(accept, num))
+
+export function delay(action) {
+    return {type: 'delay', action: action}
+}
+
+function* guard(generator) {
+    let task = yield fork(generator)
+    yield take(REMOVED)
+    yield cancel(task)
+}
+
+export function delay_saga(msec) {
     function* debounce() {
         while(true) {
-            let action = yield take('update')
-            let deadline = Date.now() - sec
+            let action = yield take('delay')
+            let deadline = Date.now() + msec
             let diff
             while ((diff = deadline - Date.now()) > 0) {
-                let {event} = race({
-                    event: take('update'),
-                    timeout: delay(diff),
+                let {event} = yield race({
+                    event: take('delay'),
+                    timeout: sleep(diff),
                 })
                 if(event) action = event;
             }
-            yield put(event)
+            yield put(action.action)
         }
     }
-    function* guard() {
-        let task = yield fork(debounce)
-        yield take(REMOVED)
-        yield cancel(task)
-    }
-    return applyMiddleware(middleware(guard))(createStore)
+    return applyMiddleware(
+        middleware(() => guard(debounce))
+    )(createStore)
 }

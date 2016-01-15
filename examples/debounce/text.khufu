@@ -1,6 +1,7 @@
-import {id} from 'khufu-runtime'
+import {id} from './id'
 import {Text, update} from './text'
-import {delay_saga} from './delay'
+import {delay_saga, delay} from './delay'
+import {createStore} from 'redux'
 
 style:
   .table
@@ -19,20 +20,20 @@ style:
 
 view main():
   <div.table>
-    for delay of [0, 200, 1000]:
+    for ms of [0, 200, 1000]:
       <div.row>
-        store @value = delay_saga(20)(Text)
+        store @value = delay_saga(ms)(Text)
         <div.main>
-          store @id = id
+          store @id = createStore(id)
           <label for=@id>
             "Delay "
-            delay
+            ms
             " ms: "
           <input id=@id type="text">
-            link {blur, change, keyup, keydown} update(this.value) -> @value
+            link {blur, change, keyup, keydown} delay(update(this.value)) -> @value
 
         <div.clone>
-          store @id = id
+          store @id = createStore(id)
           <label.arrow for=@id>
             "⤷"
           <input id=@id disabled value=@value>

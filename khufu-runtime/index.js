@@ -1,9 +1,9 @@
 import {store_handler} from './stores'
 import {patch, attributes} from 'incremental-dom'
+import {REMOVED} from './stores'
+import {add_style} from './style'
 
-export {REMOVED} from './stores'
-export {add_style} from './style'
-export {id} from './id'
+export {REMOVED, add_style}
 
 function set_global_state(fun) {
     attributes.__stores = store_handler(fun)
