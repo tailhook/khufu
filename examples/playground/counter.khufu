@@ -1,5 +1,6 @@
-import {Counter, counter, range} from './counter'
-import {createStore} from 'redux'
+import {blockingCounter, counter} from './counter'
+import range from './range'
+import {delayableStore, count} from './slow'
 
 style:
   .bar1, bar2
@@ -19,26 +20,26 @@ style:
 
 view main():
   <p>
-    store @counter = createStore(Counter)
+    store @counter = delayableStore(blockingCounter)
 
     <div.bar1>
-      <button>
+      <button disabled=@counter.block>
          link {click} counter(1) -> @counter
          "+"
 
       " "
-      <input disabled value=@counter>
+      <input disabled value=@counter.value>
       " "
 
-      <button>
+      <button disabled=@counter.block>
          link {click} counter(-1) -> @counter
          "-"
 
     <div.bar2>
       <div>
         for x of range(3, 9):
-          <button>
-             link {click} counter(x) -> @counter
+          <button disabled=@counter.block>
+             link {click} count(x, 500) -> @counter
              "+"
              x
 
