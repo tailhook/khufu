@@ -36,6 +36,14 @@ function compile_block(block, path, opt) {
             }
             return;
         }
+        case 'import_default': {
+            let [_import, name, module] = block;
+            path.pushContainer("body", T.importDeclaration(
+                [T.importDefaultSpecifier(T.identifier(name))],
+                T.stringLiteral(module)))
+            path.scope.setData('binding:' + name, T.identifier(name))
+            return;
+        }
         default:
             throw parse_tree_error("Unknown block", block);
     }
