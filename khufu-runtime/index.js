@@ -1,16 +1,23 @@
-import {store_handler} from './stores'
-import {patch, attributes} from 'incremental-dom'
-import {REMOVED} from './stores'
+import {store_handler, cleanup_stores} from './stores'
+import {patch, attributes, notifications} from 'incremental-dom'
+import {CANCEL} from './stores'
 import {add_style} from './style'
 
-export {REMOVED, add_style}
+export {CANCEL, add_style}
 
 function set_global_state(fun) {
+    var old = {
+        stores: attributes.__stores,
+        deleted: notifications.nodesDeleted,
+    }
     attributes.__stores = store_handler(fun)
+    notifications.nodesDeleted = cleanup_stores
+    return old
 }
 
 function clean_global_state(old) {
-    // probably we don't need to clean attributes.__stores
+    attributes.__stores = old.stores
+    notifications.nodesDeleted = old.deleted
 }
 
 export default function init(element, template) {

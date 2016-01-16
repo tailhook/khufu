@@ -1,5 +1,5 @@
 import {applyMiddleware, createStore} from 'redux'
-import {REMOVED} from 'khufu-runtime'
+import {CANCEL} from 'khufu-runtime'
 import {fork, take, cancel, race, put} from 'redux-saga'
 import middleware from 'redux-saga'
 import regeneratorRuntime from 'regenerator/runtime'
@@ -12,7 +12,7 @@ export function delay(action) {
 
 function* guard(generator) {
     let task = yield fork(generator)
-    yield take(REMOVED)
+    yield take(CANCEL)
     yield cancel(task)
 }
 
