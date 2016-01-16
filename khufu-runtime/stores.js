@@ -5,8 +5,7 @@ export const REMOVED = '@@khufu/REMOVED'
 export function store_handler(do_render, unsubscriptions) {
     return function(element, name, defs) {
         let old = element.__stores || {};
-        let value = defs.__target;
-        delete defs.__target;
+        let value = {};
         for(let k in defs) {
             let store = old[k];
             if(store) {
@@ -24,8 +23,8 @@ export function store_handler(do_render, unsubscriptions) {
         }
         for(let k in old) {
             let store = old[k]
-            store.dispatch({'type': REMOVED})
             store.__redraw_unsubscr()
+            store.dispatch({'type': REMOVED})
         }
         element.__stores = value
     }

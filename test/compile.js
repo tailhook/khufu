@@ -143,13 +143,12 @@ describe("compiler", () => {
         .to.equal(imp +
             'import { createStore, mystore } from "./stores";\n' +
             "export function main() {\n" +
-            '  let _p_stores = {};\n' +
-            '  elementOpen("p", "p-1", null, "__stores", {\n' +
+            '  let _p_stores = elementOpen("p", "p-1", null, "__stores", {\n' +
             '    x: function (state) {\n' +
             '      return createStore(mystore, state);\n' +
-            '    },\n' +
-            '    __target: _p_stores\n' +
-            '  });\n' +
+            '    }\n' +
+            '  }).__stores;\n' +
+            '\n' +
             '  {\n' +
             '    let _x_state = _p_stores.x.getState();\n' +
             '\n' +
@@ -171,13 +170,12 @@ describe("compiler", () => {
         .to.equal(imp +
             'import { createStore, mystore, action } from "./stores";\n' +
             "export function main() {\n" +
-            '  let _p_stores = {};\n' +
-            '  elementOpen("p", "p-1", null, "__stores", {\n' +
+            '  let _p_stores = elementOpen("p", "p-1", null, "__stores", {\n' +
             '    x: function (state) {\n' +
             '      return createStore(mystore, state);\n' +
-            '    },\n' +
-            '    __target: _p_stores\n' +
-            '  });\n' +
+            '    }\n' +
+            '  }).__stores;\n' +
+            '\n' +
             '  {\n' +
             '    let _x_state = _p_stores.x.getState();\n' +
             '\n' +

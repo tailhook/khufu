@@ -80,12 +80,6 @@ function insert_static(elname, attributes, path, opt) {
 }
 
 function insert_stores(elname, stores, genattrs, path, opt) {
-    let stores_id = path.scope.generateUidIdentifier(elname + '_stores');
-    path.scope.push({
-        id: stores_id,
-        init: T.objectExpression([]),
-        kind: 'let' })
-
     genattrs.push(['__stores', T.objectExpression(
         stores.map(([_store, name, value]) => {
             let [call, expr, args] = value
@@ -104,9 +98,7 @@ function insert_stores(elname, stores, genattrs, path, opt) {
                         [expression.compile(args[0], path, opt),
                          T.identifier('state')]))
                 ])))
-        }).concat([T.objectProperty(
-            T.identifier('__target'), stores_id)]))])
-    return stores_id;
+        }))])
 }
 
 function insert_links(links, genattrs, path, opt) {
@@ -158,9 +150,10 @@ export function compile(element, path, opt, key) {
         attrib_expr = insert_static(name, stat, path, opt)
     }
     let genattrs = [];
-    let stores_id = null;
+    let stores_id;
     if(stores.length) {
-        stores_id = insert_stores(name, stores, genattrs, path, opt)
+        insert_stores(name, stores, genattrs, path, opt)
+        stores_id = path.scope.generateUidIdentifier(name + '_stores');
     }
     if(links.length) {
         insert_links(links, genattrs, path, opt)
@@ -196,8 +189,15 @@ export function compile(element, path, opt, key) {
         let node = T.callExpression(T.identifier('elementVoid'), attribs)
         path.node.body.push(T.expressionStatement(node))
     } else {
-        path.node.body.push(T.expressionStatement(
-            T.callExpression(T.identifier('elementOpen'), attribs)))
+        let el = T.callExpression(T.identifier('elementOpen'), attribs);
+        if(stores_id) {
+            el = T.variableDeclaration('let', [
+                T.variableDeclarator(stores_id,
+                    T.memberExpression(el, T.identifier('__stores')))])
+        } else {
+            el = T.expressionStatement(el)
+        }
+        push_to_body(path, el)
 
         let blockpath = push_to_body(path, T.blockStatement([]));
         if(stores_id) {
