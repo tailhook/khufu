@@ -19,6 +19,10 @@ Overview
 5. Blocks ``view``, ``style``, ``for``, ``if``, ``elif``, ``else`` require
    the colon before indented block, just like in python
 
+
+.. hint:: We have a :ref:`demo` page showing some useful code examples
+
+
 Global Scope
 ============
 
@@ -192,8 +196,8 @@ In angular-brackets you might wrap line as you wish::
     <p class="big-paragraph"
        align="left">
 
-
-You can't write anything on the same line after closing angular bracket.
+There is never need to write an ``onclick`` or similar event handler directly
+inside the attribute. See ``link`` for an idea of how we work with events.
 
 We have a short syntax for defining ``class`` attribute, similar to one used
 in CSS::
@@ -220,6 +224,8 @@ Elements can be nested, and text nodes (see below) can be inside the tag::
 The element is a basis for defining scope of things in khufu. For example,
 ``store`` is linked to the element where it is defined. The ``store`` and
 ``let`` variables are limited to the element scope.
+
+You can't write anything on the same line after closing angular bracket.
 
 
 Text Nodes
