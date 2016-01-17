@@ -1,7 +1,7 @@
 {
   "name": "khufu",
   "version": "0.1.0",
-  "description": "",
+  "description": "A template language for incremental-dom or DSL for javascript views",
   "main": "src/index.js",
   "dependencies": {
     "babel-core": "6.3.26",
@@ -54,5 +54,5 @@
     "plugins": ["transform-object-rest-spread"]
   },
   "author": "Paul Colomiets <paul@colomiets.name>",
-  "license": "MIT"
+  "license": "MIT/Apache-2.0"
 }
