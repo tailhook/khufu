@@ -2,6 +2,10 @@
 Khufu
 =====
 
+:Documentation: http://tailhook.github.io/khufu/
+:Demo: http://tailhook.github.io/khufu/demo.html
+:Status: beta [*]
+
 At a glance Khufu is a template-engine for incremental-dom_.
 
 But more characteristically I call it is a domain-specific language (DSL) for
@@ -14,6 +18,12 @@ The boring list of features:
 * Styles in the same file as view (HTML), properly namespaced
 * Avoids separate code to compose redux_ stores (kinda auto-generates it)
 * Supports webpack hot module replacement (aka hot reload)
+
+.. [*] *More verbose status:* I feel that the language itself (the syntax) is
+   90% complete (thanks to it's predecessor_). There are ugly edge cases of the
+   compiler here and there. And the server-side render is not implemented yet.
+   Otherwise, the project is small enough to just work.
+
 
 Why?
 ====
@@ -136,3 +146,4 @@ much more readable?
 .. _angular: https://angularjs.org/
 .. _RxJS: https://github.com/acdlite/redux-rx
 .. _redux-saga: https://github.com/yelouafi/redux-saga
+.. _predecessor: http://github.com/tailhook/marafet
