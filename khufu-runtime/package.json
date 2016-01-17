@@ -1,0 +1,21 @@
+{
+  "name": "khufu-runtime",
+  "version": "0.1.0",
+  "description": "A runtime support library for khufu template engine",
+  "keywords": ["redux", "html", "web", "hot", "incremental-dom"],
+  "homepage": "http://github.com/tailhook/khufu",
+  "main": "index.js",
+  "dependencies": {
+    "incremental-dom": "0.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tailhook/khufu.git"
+  },
+  "babel": {
+    "presets": ["es2015"],
+    "plugins": ["transform-object-rest-spread"]
+  },
+  "author": "Paul Colomiets <paul@colomiets.name>",
+  "license": "MIT/Apache-2.0"
+}
