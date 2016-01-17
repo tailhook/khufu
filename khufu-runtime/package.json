@@ -1,12 +1,23 @@
 {
   "name": "khufu-runtime",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A runtime support library for khufu template engine",
   "keywords": ["redux", "html", "web", "hot", "incremental-dom"],
   "homepage": "http://github.com/tailhook/khufu",
-  "main": "index.js",
+  "main": "lib/khufu-runtime/index.js",
+  "scripts": {
+    "build": "babel src --out-dir lib/khufu-runtime",
+    "prepublish": "rimraf lib && npm run build"
+  },
   "dependencies": {
     "incremental-dom": "0.3.0"
+  },
+  "devDependencies": {
+    "babel-core": "6.3.26",
+    "babel-cli": "6.3.17",
+    "babel-preset-es2015": "6.3.13",
+    "babel-plugin-transform-object-rest-spread": "6.3.13",
+    "rimraf": "2.4.3"
   },
   "repository": {
     "type": "git",
