@@ -115,8 +115,167 @@ start of the file immediately following the ``import`` statements but before
 any ``view``.
 
 
+.. _view-blocks:
+
 View Blocks
 -----------
 
+The ``view`` block definition defines a function which renders virtual DOM (in
+particular of incremental-dom_ kind) for some HTML fragment.
+
+It also allows to anchor redux_ stores to particular nodes of the virtual DOM
+tree.
+
+The ``view`` statement defined a plain javascript function, for example::
+
+    view main(x):
+      x
+
+Defines and exports function that renders bare text node, equivalent to the
+following javascript:
+
+.. code-block:: javascript
+
+    import {text} from 'incremental-dom'
+    export function main(x) {
+        text(x)
+    }
+
+If you don't want to export the function, just prefix it with underscore::
+
+    view _helper(value, defvalue):
+        if value == defvalue:
+            "<default>"
+        else:
+            value
+
+This creates internal function named ``_helper``.
+
+More information in :ref:`views` section.
+
+
+.. _views:
+
+View Definition
+===============
+
+This section defines what to write **inside** the ``view`` section.
+For instructions writing view function signature see :ref:`view-blocks`.
+Everthing described below can only be used in ``view`` function.
+
+
+Elements
+--------
+
+The most useful thing is creating an expression. You create expression by
+starting HTML-like angular-bracket tag **at the start of a line** after
+indentation, for example::
+
+    <p>
+
+Writing attributes look a lot like in HTML::
+
+    <p align="left">
+
+But actually the attribute value is a limited kind of javascript expression.
+For example you might write::
+
+    <p align=x>
+
+But you can't write complex expressions here like ``align=x+x`` instead you
+may either use ``let`` syntax or wrap the expression in parenthessis::
+
+    <p size=(x+y)>
+
+In angular-brackets you might wrap line as you wish::
+
+    <p class="big-paragraph"
+       align="left">
+
+
+You can't write anything on the same line after closing angular bracket.
+
+We have a short syntax for defining ``class`` attribute, similar to one used
+in CSS::
+
+    <p.big-paragraph>
+
+Additionally we have syntax for optional styles::
+
+    <p.pagragraph.justified?(settings.is_justified)>
+
+Any valid expression is allowed in ``?(..)`` and the operator is only applied
+to a class immediately preceeding the operator, ``justified`` in the case
+above, but you can use it multiple times. The parenthesis are the part of the
+operator and *no alternative* value (like in ternary ``x ? y : z`` operator) is
+present.
+
+Elements can be nested, and text nodes (see below) can be inside the tag::
+
+    <p>
+      "Here is a link"
+      <a.download-link href="http://example.org/download" download>
+        "to download file"
+
+The element is a basis for defining scope of things in khufu. For example,
+``store`` is linked to the element where it is defined. The ``store`` and
+``let`` variables are limited to the element scope.
+
+
+Text Nodes
+----------
+
+Every expression, that is not an element or one of the special argument below,
+is treated as a javascript expression defining text node. For example::
+
+    <ul>
+      <li>
+        "This is a string"
+      <li>
+        x + y
+      <li>
+        some_fn()
+
+All three ``<li>`` elements above have a text node inside. In the first case
+the text is just a constant string value. For the second element the expression
+``x + y`` is evaluated, and whatever javascript decides is the result of the
+expression it will be inserted into a text node.
+
+The ``some_fn()`` case may work the same. If it returns a non-undefined value
+it will be used as a text value. But because of how incremental-dom_ works, it
+may also output any HTML elements. And this is exactly a way to call views for
+another views.
+
+There are two precautions:
+
+1. Don't write functions which both output HTML and return the value. While it
+   will work it is extremely confusing to users and may not work for
+   alternative compilers
+2. All ``undefined`` and ``null`` values are **suppressed**
+
+
+Stores
+------
+
+
+Links
+-----
+
+
+Let Statements
+--------------
+
+
+If Statements
+-------------
+
+
+For Statements
+--------------
+
+
 
 .. _babel: https://babeljs.io/
+.. _incremental-dom: https://github.com/google/incremental-dom
+.. _redux: http://redux.js.org/
+
