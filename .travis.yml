@@ -5,6 +5,6 @@ env:
 after_success: |
   [ $TRAVIS_PULL_REQUEST = false ] &&
   pip install sphinx sphinx_rtd_theme ghp-import --user &&
-  make html -C doc SPHINXBUILD=~/.local/bin/sphinx-build &&
+  make html -C doc SPHINXBUILD=~/.local/bin/sphinx-build WEBPACK=$(npm bin)/webpack &&
   ~/.local/bin/ghp-import -n doc/_build/html &&
   git push -fq https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages
