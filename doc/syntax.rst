@@ -263,25 +263,195 @@ There are two precautions:
 Stores
 ------
 
+The ``store`` statement let you declare a redux_ store, for example::
+
+    import {createStore} from 'redux'
+    import {counter} from './counter'
+    view main():
+      <p>
+        store @x = createStore(counter)
+
+The stores are always denoted by ``@name``. In expression context the store
+name resolves to it's state, for example::
+
+    <span>
+      "Counter value: " + @x
+      "Next value: "
+      <input disabled value=(@x + 1)>
+
+Attribute access and methods calls are supported, too::
+
+    store @m = createStore(immutableJsMapStore)
+    "Primary: " + @m.get('primary_value')
+    for key of @m.keys():
+        "Additional key: " + key
+
+.. note:: Stores may appear only directly inside the element. This is how our
+   diffing technique works: if element is removed, we remove the store too. If
+   on the next rerender the element is still rendered, the store is reused.
+
+The ``createStore`` function above, in many cases isn't just the one from
+module ``redux``. It's often some more elaborate store creator with a
+middleware. The powerful examples of middleware are redux-saga_ and
+and redux-rx_.
+
+See `redux documentation`__ for more information on actions, stores and
+middlewares.
+
+__ http://redux.js.org/
+
 
 Links
 -----
+
+The ``link`` statement allows you to create an event handler that sumbits
+and event to the store. For example::
+
+    import {crateStore} from 'redux'
+    import {counter, incr} from './counter'
+    view main():
+      <p>
+        store @counter_store = createStore(counter)
+        <button>
+          link {click} incr() -> @counter_store
+
+In the example ``counter`` is a "reducer" in terms of redux_. Where redux uses
+terms store and reducer mostly interchangeably. The ``incr`` is an action
+creator. Which means it's utility is to create an action object.
+
+The action object is dispatched within the redux store by calling
+``counter_store.dispatch(incr())`` when ``onclick`` event happens.
+
+In the link expression there are two implicit variables (see examples below):
+
+* ``event`` which is browser's event object
+* ``this`` the element which has the event handler
+
+Mutliple event handlers may be bound at once::
+
+  <input type="text">
+    link {change, keyup, keydown, blur} set_text(this.value) -> @user_input
+
+And if you need more details on the actual event happened just pass the
+event to an action creator::
+
+  <input type="text">
+    link {keyup, keydown} key_press(event) -> @ui_state
 
 
 Let Statements
 --------------
 
+Let statements allows to bind a variable to some value. Used mostly for
+shortcut variables::
+
+  let img = user.get('avatar').small_image
+  <img src=img.src width=img.width height=img.height>
+
+The ``let`` bindings are scoped to the block they are used in. For example::
+
+  let x = "outer"
+  <p>
+    let x = "inner"
+    x
+  if true:
+    let x = "if_var"
+    x
+  <p>
+    x
+
+Will generate the following html:
+
+.. code-block:: html
+
+   <p>inner</p>if_var<p>outer</p>
+
+There is **no assigment** statement or expression. So basically all variables
+behave like javascript ``const`` declarations. But conflicting names are not
+discouraged, so you can rebind a variable::
+
+    let text = @user_input
+    "Raw user input: " + text + ", "
+    let text = validate_and_clean(text)
+    "Validated user input: " + text
+
 
 If Statements
 -------------
+
+If statements define conditional blocks of a template::
+
+    if @user_input.length == 0:
+      <p>
+        '-- no value --'
+
+There are also ``elif`` and ``else`` blocks::
+
+    if @user_input == "":
+      <b>
+        "Please, enter some value"
+    elif @user_input == 'fruits':
+      "apple, banana"
+      <input type="button" value="add fruit">
+    elif @user_input == 'vegetables':
+      "tomato, carrot"
+    else:
+      "unknown request"
+
+Any mix of elements, text nodes and function calls can be in each block. You
+can't have optional ``link``. Currently to add an optional ``store`` you need
+to wrap it into a HTML element.
 
 
 For Statements
 --------------
 
+For statement allows to iterate over a collection::
+
+  <ul>
+    for item of ["apple", "banana", "cherry"]:
+      <li>
+        item
+
+There is only a ``for..of`` loop, to iterate over the keys of the object or
+to iterate over the range of integer values you need a helper function.
+Otherwise any ES2015 iterator will work, for example you may use one from
+the immutablejs_::
+
+  <ul>
+    for item of map.keys():
+      item
+
+Since we are building virtual DOM (incremental-dom_) and not plain HTML, every
+loop needs a key to have diffing algorithm work well. By default the key is a
+string representation of the item, but it can be either non-useful (if you are
+iterating over the objects) or not efficient enough. You can override it
+easily::
+
+    for obj of items key obj.id:
+        <a href=("/objects/" + id)>
+          obj.title
+
+Note that unlike in react_ and many other virtual DOM implementations, you
+don't put ``key`` onto the element itself. It's the property of the loop. And
+khufu is smart enough to add a suffix to a key if you have more than one
+element in the loop body.
+
+The variables in a loop as well as a variable in the ``for`` statement itself
+is scoped to a loop iteration. So events work as expected::
+
+    for obj of @objects key obj.id:
+      let image = obj.image
+      <input type="image" src=image.url>
+        link {click} edit_image(image.id) -> @objects
+      <input type="button" value="remove_object">
+        link {click} remove(obj.id) -> @objects
 
 
 .. _babel: https://babeljs.io/
 .. _incremental-dom: https://github.com/google/incremental-dom
 .. _redux: http://redux.js.org/
-
+.. _immutablejs: https://facebook.github.io/immutable-js/
+.. _redux-rx: https://github.com/acdlite/redux-rx
+.. _redux-saga: https://github.com/yelouafi/redux-saga
+.. _react: https://facebook.github.io/react/

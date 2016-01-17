@@ -3,7 +3,8 @@ from pygments.token import *
 
 KEYWORDS = [
     'store', 'link', 'view', 'style',
-    'import', 'from', 'for', 'of',
+    'import', 'from',
+    'for', 'of', 'key',
     'if', 'elif', 'else',
 ]
 

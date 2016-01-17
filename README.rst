@@ -55,7 +55,7 @@ For example:
     import {Image, load} from 'myapp/util/image_loading'
     import {select} from 'myapp/action_creators'
 
-    view main(@selected_item):
+    view main():
       <div>
         store @results = createStore(Search)
         <form>
@@ -76,7 +76,6 @@ For example:
                 else:
                     <div.icon-loading>
                 <div.title>
-                    link {click} select(item.id) -> @selected_item
                     item.title
 
 This example displays search box. When some search query is typed into the
@@ -114,9 +113,15 @@ Isn't it Like Good Old HTML?
 Right. You do a Khufu view, add events and everything works. Just like you
 have been doing HTML page and add jQuery_ plugins to make that work.
 
-**Except you get proper scopes and namespaces**. I mean you never give elements
-globally accessible id attribute or something that prevents them to be reused
-and composed. You can also think of each view function being a component
+There are few crutial improvements, however:
+
+1. All your variables are properly namespaced (and styles too). So there is no
+   global identifiers which prevent composing and reusing things
+2. This plays well with javascript module system (every template is a module,
+   imports work, and so on)
+2. The updates of fragments are much better using virtual DOM
+
+You can also think of each view function being a component
 similar to what you find in react_ or angular_. Have I said that syntax is
 much more readable?
 
