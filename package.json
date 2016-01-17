@@ -1,6 +1,6 @@
 {
   "name": "khufu",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A template language for incremental-dom or DSL for javascript views",
   "keywords": ["redux", "html", "web", "hot", "incremental-dom"],
   "homepage": "http://github.com/tailhook/khufu",
@@ -11,6 +11,7 @@
     "babel-cli": "6.3.17",
     "babel-register": "6.3.13",
     "babel-types": "6.4.1",
+    "babel-polyfill": "6.3.14",
     "jison": "0.4.15",
     "lex": "1.7.9",
     "postcss": "5.0.14"
@@ -31,7 +32,6 @@
     "regenerator": "0.8.42",
     "babel-regenerator-runtime": "6.3.13",
     "core-js": "2.0.3",
-    "babel-polyfill": "6.3.14",
 
     "webpack-dev-server": "// For hot reload, with dependencies",
     "webpack-dev-server": "1.14",
