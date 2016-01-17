@@ -1,10 +1,11 @@
 {
   "name": "khufu",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A template language for incremental-dom or DSL for javascript views",
   "keywords": ["redux", "html", "web", "hot", "incremental-dom"],
   "homepage": "http://github.com/tailhook/khufu",
   "main": "src/index.js",
+  "files": ["lib", "src"],
   "dependencies": {
     "babel-core": "6.3.26",
     "babel-cli": "6.3.17",
@@ -53,7 +54,9 @@
     "url": "https://github.com/tailhook/khufu.git"
   },
   "scripts": {
-    "test": "mocha --compilers js:babel-register"
+    "test": "mocha --compilers js:babel-register",
+    "build": "babel src --out-dir lib",
+    "prepublish": "rimraf lib && npm run build"
   },
   "babel": {
     "presets": ["es2015"],
