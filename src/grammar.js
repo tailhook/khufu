@@ -27,17 +27,21 @@ export var parser = new Parser({
         ],
         "blocks": list('block'),
         "block": [
-            ["import { names } from STRING NL",
+            ["import { impnames } from STRING NL",
                 "$$ = ['import_names', $3, $6];"],
             ["import IDENT from STRING NL",
                 "$$ = ['import_default', $2, $4];"],
+            ["import * as IDENT from STRING NL",
+                "$$ = ['import_namespace', $4, $6];"],
             ["style : NL INDENT rules DEDENT", "$$ = ['style', $5];"],
             ["style : NL", "$$ = ['style', []]"],
             ["view IDENT ( args ) : NL stmtblock", "$$ = ['view', $2, $4, $8]"],
         ],
-        "names": [
-            ["IDENT , names", "$$ = [$1].concat($3);"],
-            ["IDENT", "$$ = [$1];"],
+        "impnames": [
+            ["IDENT , impnames", "$$ = [[$1, $1]].concat($3);"],
+            ["IDENT as IDENT , impnames", "$$ = [[$1, $3]].concat($5);"],
+            ["IDENT", "$$ = [[$1, $1]];"],
+            ["IDENT as IDENT", "$$ = [[$1, $3]];"],
         ],
         // CSS
         "rules": [
@@ -132,7 +136,7 @@ export var parser = new Parser({
         "elstatement": [
             ["statement", "$$ = $1;"],
             // TODO(tailhook) support other targets than stores
-            ["link { names } e -> STORE NL",
+            ["link { linknames } e -> STORE NL",
                 "$$ = ['link', $3, $5, ['store', $7]];"],
             ["store STORE = e NL", "$$ = ['store', $2, $4]"],
         ],
@@ -152,6 +156,10 @@ export var parser = new Parser({
         ],
         "lval": [
             ["IDENT", "$$ = ['name', $1]"],
+        ],
+        "linknames": [
+            ["IDENT , linknames", "$$ = [$1].concat($3);"],
+            ["IDENT", "$$ = [$1];"],
         ],
         "comma_separated": [
             ["e , comma_separated", "$$ = [$1].concat($3);"],

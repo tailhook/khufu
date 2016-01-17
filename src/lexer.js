@@ -1,7 +1,7 @@
 import Lexer from 'lex';
 
 const TOPLEVEL = 0;
-const TOPLEVEL_KW = ["import", "from", "style", "view"]
+const TOPLEVEL_KW = ["import", "from", "style", "view", "as"]
 const NEWLINE = 1;
 const VIEW_KW = [
     "store", "link", "let",

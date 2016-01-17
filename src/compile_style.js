@@ -7,7 +7,7 @@ import postcss from 'postcss'
 export function to_postcss(body, opt) {
     let root = postcss.root();
     let buf = []
-    let cls = opt.additional_class.replace(/^\s*|\s+/g, '.')
+    let cls = (opt.additional_class || "").replace(/^\s*|\s+/g, '.')
     for(var item of body) {
         switch(item[0]) {
             case 'rule': {

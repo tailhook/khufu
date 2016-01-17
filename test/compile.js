@@ -276,4 +276,20 @@ describe("compiler", () => {
             '  expr(_other(x));\n' +
             "}")
     })
+    it("compiles an import", () => {
+        expect(compile("import {a} from 'module'"))
+        .to.equal('import { a } from "module";')
+    })
+    it("compiles an aliased import", () => {
+        expect(compile("import {a as b, c} from 'module'\n"))
+        .to.equal('import { a as b, c } from "module";')
+    })
+    it("compiles an import default", () => {
+        expect(compile("import mod from 'module'"))
+        .to.equal('import mod from "module";')
+    })
+    it("compiles an import module", () => {
+        expect(compile("import * as mod from 'module'\n"))
+        .to.equal('import * as mod from "module";')
+    })
 })

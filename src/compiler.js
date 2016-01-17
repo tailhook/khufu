@@ -37,11 +37,11 @@ function compile_block(block, path, opt) {
         case 'import_names': {
             let [_import, names, module] = block;
             path.pushContainer("body", T.importDeclaration(
-                names.map(i =>
-                    T.importSpecifier(T.identifier(i), T.identifier(i))),
+                names.map(([n, a]) =>
+                    T.importSpecifier(T.identifier(a), T.identifier(n))),
                 T.stringLiteral(module)))
-            for(var i of names) {
-                path.scope.setData('binding:' + i, T.identifier(i))
+            for(var [name, alias] of names) {
+                path.scope.setData('binding:' + alias, T.identifier(alias))
             }
             return;
         }
@@ -49,6 +49,14 @@ function compile_block(block, path, opt) {
             let [_import, name, module] = block;
             path.pushContainer("body", T.importDeclaration(
                 [T.importDefaultSpecifier(T.identifier(name))],
+                T.stringLiteral(module)))
+            path.scope.setData('binding:' + name, T.identifier(name))
+            return;
+        }
+        case 'import_namespace': {
+            let [_import, name, module] = block;
+            path.pushContainer("body", T.importDeclaration(
+                [T.importNamespaceSpecifier(T.identifier(name))],
                 T.stringLiteral(module)))
             path.scope.setData('binding:' + name, T.identifier(name))
             return;

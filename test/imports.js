@@ -15,10 +15,12 @@ describe("imports", () => {
     })
     it("names", () => {
         expect(parser.parse("import {x, y, z} from 'aaa'"))
-            .to.deep.equal([['import_names', ['x', 'y', 'z'], 'aaa']])
+            .to.deep.equal([['import_names',
+                [['x', 'x'], ['y', 'y'], ['z', 'z']], 'aaa']])
     })
     it("names with newline", () => {
         expect(parser.parse("import { \n x, \n y, \n z } from 'aaa'"))
-            .to.deep.equal([['import_names', ['x', 'y', 'z'], 'aaa']])
+            .to.deep.equal([['import_names',
+                [['x', 'x'], ['y', 'y'], ['z', 'z']], 'aaa']])
     })
 })
