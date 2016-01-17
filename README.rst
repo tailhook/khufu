@@ -129,7 +129,7 @@ There are few crutial improvements, however:
    global identifiers which prevent composing and reusing things
 2. This plays well with javascript module system (every template is a module,
    imports work, and so on)
-2. The updates of fragments are much better using virtual DOM
+3. The updates of fragments are much better using virtual DOM
 
 You can also think of each view function being a component
 similar to what you find in react_ or angular_. Have I said that syntax is
