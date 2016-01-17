@@ -147,6 +147,8 @@ export var parser = new Parser({
             ["TAG_NAME", "$$ = ['name', $1];"],
             ["STORE", "$$ = ['store', $1];"],
             ["attrvalue . TAG_NAME", "$$ = ['attr', $1, $3];"],
+            ["( e )", "$$ = $2;"],
+            ["attrvalue ( comma_separated )", "$$ = ['call', $1, $3];"],
         ],
         "lval": [
             ["IDENT", "$$ = ['name', $1]"],
