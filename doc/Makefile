@@ -54,8 +54,12 @@ clean:
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	npm config ls -l
+	env
 	cd ../examples/counter; $(WEBPACK)
+	cp ../examples/counter/index.html _build/html/examples/counter/
 	cd ../examples/debounce; $(WEBPACK)
+	cp ../examples/debounce/index.html _build/html/examples/debounce/
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
