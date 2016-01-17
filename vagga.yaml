@@ -61,18 +61,8 @@ commands:
   doc: !Command
     description: Build documentation and examples
     container: doc
-    run: |
-      set -ex
-      cd /work/doc
-      make html
-      # example: counter
-      cd /work/examples/counter
-      cp index.html ../../doc/_build/html/examples/counter
-      webpack
-      # example: debounce
-      cd /work/examples/debounce
-      cp index.html ../../doc/_build/html/examples/debounce
-      webpack
+    work-dir: doc
+    run: [make, html]
     epilog: |
       --------------------------------------------------------
       Documentation is built under doc/_build/html/index.html

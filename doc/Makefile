@@ -3,7 +3,8 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = sphinx-build
+SPHINXBUILD  ?= sphinx-build
+WEBPACK		 ?= webpack
 PAPER         =
 BUILDDIR      = _build
 
@@ -53,6 +54,10 @@ clean:
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	cd ../examples/counter; $(WEBPACK)
+	cp ../examples/counter/index.html _build/html/examples/counter/
+	cd ../examples/debounce; $(WEBPACK)
+	cp ../examples/debounce/index.html _build/html/examples/debounce/
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 

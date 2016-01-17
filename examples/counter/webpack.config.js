@@ -17,9 +17,12 @@ module.exports = {
         }],
     },
     resolve: {
-        modulesDirectories: ["/usr/local/lib/node_modules", "../.."],
+        modulesDirectories: ["/usr/local/lib/node_modules",
+                             __dirname + "/../..",
+                             __dirname + "/../../node_modules"],
     },
     resolveLoader: {
-        modulesDirectories: ["/usr/local/lib/node_modules"],
+        modulesDirectories: ["/usr/local/lib/node_modules",
+                             __dirname + "/../../node_modules"],
     },
 }
