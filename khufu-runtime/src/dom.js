@@ -1,5 +1,4 @@
-import {elementOpen, elementClose, elementVoid, text} from 'incremental-dom'
-export {elementOpen, elementClose, elementVoid, text}
+import {text} from 'incremental-dom'
 
 export function expr(value) {
     if(value != null) { // Yes I mean null or undefined, hence `!=`

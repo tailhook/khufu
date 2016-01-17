@@ -4,7 +4,7 @@ import {expect} from 'chai'
 describe("compiler", () => {
     const imp = 'import ' +
         '{ elementVoid, elementOpen, elementClose, text, expr }' +
-        ' from "khufu-runtime/dom";\n';
+        ' from "khufu-runtime";\n';
     it("compiles function call", () => {
         expect(compile('import {x} from "y"\n' +
             "view main():\n x(1)"))

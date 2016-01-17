@@ -110,7 +110,7 @@ export function compile(view, path, opt) {
             T.importDeclaration(
                 DOM_FUNCTIONS.map(
                     x => T.importSpecifier(T.identifier(x), T.identifier(x))),
-                T.stringLiteral('khufu-runtime/dom')))
+                T.stringLiteral('khufu-runtime')))
         path.scope.setData('khufu:dom-imported', true)
     }
 
