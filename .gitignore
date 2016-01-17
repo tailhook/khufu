@@ -1,4 +1,5 @@
 /.vagga
 /doc/_build
 /tmp
+/lib
 __pycache__
