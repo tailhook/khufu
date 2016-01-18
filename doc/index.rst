@@ -22,6 +22,7 @@ Contents:
 
    syntax
    demo
+   api
 
 
 .. _incremental-dom: https://github.com/google/incremental-dom
