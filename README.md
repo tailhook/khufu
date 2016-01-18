@@ -6,7 +6,7 @@ Khufu
 |--------------|-------------------------------------------|
 |Documentation | http://tailhook.github.io/khufu/          |
 |Demo          | http://tailhook.github.io/khufu/demo.html |
-|Status        | beta [^status]                            |
+|Status        | beta [¹](#1)                         |
 
 
 At a glance, Khufu is a template-engine for [incremental-dom].
@@ -22,7 +22,7 @@ The boring list of features:
 * Avoids separate code to compose [redux] stores (kinda auto-generates it)
 * Supports webpack hot module replacement (aka hot reload)
 
-[^status]: *More verbose status:* I feel that the language itself (the syntax) is
+<a name=1>[1] **More verbose status:** I feel that the language itself (the syntax) is
    90% complete (thanks to it's [predecessor]). There are ugly edge cases of the
    compiler here and there. And the server-side render is not implemented yet.
    Otherwise, the project is small enough to just work.
@@ -32,12 +32,11 @@ Why?
 ----
 
 1. JSX is ugly. Mixing javascript and HTML is ugly
-2. Conversely, I want to mix CSS with HTML and enough dynamic features [^1]
-3. I'm tired of composing views and stores independently [^2]
+2. Conversely, I want to mix CSS with HTML and enough dynamic features [²](#2)
+3. I'm tired of composing views and stores independently [³](#3)
 
-[^1]: Indentation-based syntax is a bonus.
-[^2]: Sure, the model proposed here doesn't work for everyone.
-
+<a name=2>[2] Indentation-based syntax is a bonus.<br>
+<a name=3>[3] Sure, the model proposed here doesn't work for everyone.
 
 So What Is It?
 --------------
@@ -91,7 +90,7 @@ For example:
                     item.title
 ```
 This example displays a search box. When some search query is typed into the
-input box, search request is sent to the server immediately [^5]. This displays
+input box, search request is sent to the server immediately[⁴](#4). This displays
 "Loading..." stub and replaces the stub with the results when they are loaded
 from a server. There is also the code to download images asynchronously.
 
@@ -108,16 +107,15 @@ The store thing might need a more comprehensive explanation:
 1. Stores are lexically scoped
 2. More so, on each loop iteration we get new scope
 3. Diffing algorithm of incremental-dom drops unused stores automatically
-4. They provide lifecycle hooks, so can dispose resources properly [^3]
-5. Store is prefixed by ``@`` to get nice property access syntax [^4]
+4. They provide lifecycle hooks, so can dispose resources properly[⁵](#5)
+5. Store is prefixed by ``@`` to get nice property access syntax[⁶](#6)
 
-[^3]: Yes, we attach resources (such as network requests) to stores, using
-   middleware
-[^4]: Otherwise would need to call ``getState()`` each time. We also cache
+<a name=4>[4] Sure, you can delay requests by adding [RxJS] or [redux-saga] middlewares
+   to the store<br>
+<a name=5>[5] Yes, we attach resources (such as network requests) to stores, using
+   middleware<br>
+<a name=6>[6] Otherwise would need to call ``getState()`` each time. We also cache
    the result of the method for subsequent attribute access
-[^5]: Sure, you can delay requests by adding [RxJS] or [redux-saga] middlewares
-   to the store
-
 
 Isn't it Like Good Old HTML?
 ----------------------------
