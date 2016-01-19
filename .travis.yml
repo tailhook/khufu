@@ -6,6 +6,6 @@ after_success: |
   [ $TRAVIS_BRANCH = master ] &&
   [ $TRAVIS_PULL_REQUEST = false ] &&
   pip install sphinx sphinx_rtd_theme ghp-import --user &&
-  make html -C doc SPHINXBUILD=~/.local/bin/sphinx-build WEBPACK=$(npm bin)/webpack &&
+  make html -C doc SPHINXBUILD=~/.local/bin/sphinx-build WEBPACK=$(npm bin)/webpack BABEL=$(npm bin)/babel &&
   ~/.local/bin/ghp-import -n doc/_build/html &&
   git push -fq https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages

@@ -5,6 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD  ?= sphinx-build
 WEBPACK		 ?= webpack
+BABEL		 ?= babel
 PAPER         =
 BUILDDIR      = _build
 
@@ -54,7 +55,7 @@ clean:
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
-	cd ../khufu-runtime; npm run build
+	cd ../khufu-runtime; $(BABEL) src --out-dir lib/khufu-runtime
 	cd ../examples/counter; $(WEBPACK)
 	cp ../examples/counter/index.html _build/html/examples/counter/
 	cd ../examples/debounce; $(WEBPACK)
