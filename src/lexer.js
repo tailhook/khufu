@@ -1,4 +1,4 @@
-import Lexer from 'lex';
+import Lexer from './baselexer';
 
 const TOPLEVEL = 0;
 const TOPLEVEL_KW = ["import", "from", "style", "view", "as"]
@@ -41,34 +41,6 @@ function lex(value) {
 
 export default function () {
     let lexer = new Lexer();
-
-    lexer.showPosition = function() {
-        let lex = this.original_lexeme || ''
-        let prefix = /(?:\n|^)(.*)$/.exec(this.input.substr(0, this.index))[1]
-        let suffix = /.*$/m.exec(this.input.substr(this.index))[0]
-        let indent = prefix.substr(0, prefix.length - lex.length)
-        let arrow = lex.replace(/./g, '^') || '^'
-        let ln = this.yylineno + ':';
-        return (ln + prefix + suffix + "\n" +
-            ln + indent.replace(/./g, ' ') + arrow + ' ---')
-    }
-    let old_set_input = lexer.setInput;
-    lexer.setInput = function(x) {
-        this.yylineno = 0;
-        this.brackets = [];
-        this.original_lexeme = '';
-        this.indent = [0];
-        this.newline = true;
-        old_set_input.call(this, x)
-    }
-    let original_lex = lexer.lex;
-    lexer.lex = function() {
-        try {
-            return original_lex.call(this)
-        } catch(e) {
-            throw Error(e.message + '\n' + this.showPosition())
-        }
-    }
 
     /********************* Common tokens *****************************/
 
@@ -245,5 +217,5 @@ export default function () {
         "(?:[eE][-+]?[0-9]+)?\\b"),      // exponent
         lex("NUMBER"), [VIEW, VIEW_TAG, VIEW_LINESTART])
 
-    return lexer;
+    return lexer.factory();
 }

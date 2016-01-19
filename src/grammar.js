@@ -11,7 +11,6 @@ function list(item) {
 }
 
 export var parser = new Parser({
-
     "operators": [
         ["left", "+", "-"],
         ["left", "*", "/"],
@@ -186,4 +185,5 @@ export var parser = new Parser({
         ],
     }
 })
+
 parser.lexer = new Lexer()

@@ -14,7 +14,6 @@
     "babel-types": "6.4.1",
     "babel-polyfill": "6.3.14",
     "jison": "0.4.15",
-    "lex": "1.7.9",
     "postcss": "5.0.14"
   },
   "devDependencies": {
