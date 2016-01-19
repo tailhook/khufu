@@ -54,6 +54,7 @@ clean:
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	cd ../khufu-runtime; npm run build
 	cd ../examples/counter; $(WEBPACK)
 	cp ../examples/counter/index.html _build/html/examples/counter/
 	cd ../examples/debounce; $(WEBPACK)
