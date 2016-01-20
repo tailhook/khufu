@@ -10,7 +10,13 @@ function list(item) {
     ]
 }
 
+function node(info, ...args) {
+    Object.defineProperty(args, '_location', {value: info, enumerable: false})
+    return args
+}
+
 export var parser = new Parser({
+    actionInclude: node.toString(),
     "operators": [
         ["left", "+", "-"],
         ["left", "*", "/"],
@@ -27,19 +33,20 @@ export var parser = new Parser({
         "blocks": list('block'),
         "block": [
             ["import { impnames } from STRING NL",
-                "$$ = ['import_names', $3, $6];"],
+                "$$ = node(@$, 'import_names', $3, $6);"],
             ["import IDENT from STRING NL",
-                "$$ = ['import_default', $2, $4];"],
+                "$$ = node(@$, 'import_default', $2, $4);"],
             ["import * as IDENT from STRING NL",
-                "$$ = ['import_namespace', $4, $6];"],
-            ["style : NL INDENT rules DEDENT", "$$ = ['style', $5];"],
-            ["style : NL", "$$ = ['style', []]"],
-            ["view IDENT ( args ) : NL stmtblock", "$$ = ['view', $2, $4, $8]"],
+                "$$ = node(@$, 'import_namespace', $4, $6);"],
+            ["style : NL INDENT rules DEDENT", "$$ = node(@$, 'style', $5);"],
+            ["style : NL", "$$ = node(@$, 'style', [])"],
+            ["view IDENT ( args ) : NL stmtblock",
+                "$$ = node(@$, 'view', $2, $4, $8)"],
         ],
         "impnames": [
             ["IDENT , impnames", "$$ = [[$1, $1]].concat($3);"],
             ["IDENT as IDENT , impnames", "$$ = [[$1, $3]].concat($5);"],
-            ["IDENT", "$$ = [[$1, $1]];"],
+            ["IDENT", "$$ = node(@$, [$1, $1]);"],
             ["IDENT as IDENT", "$$ = [[$1, $3]];"],
         ],
         // CSS
@@ -48,8 +55,9 @@ export var parser = new Parser({
             ["", "$$ = [];"],
         ],
         "rule": [
-            ["selectors NL INDENT properties DEDENT", "$$ = ['rule', $1, $4]"],
-            ["selectors NL", "$$ = ['rule', $1, []]"],
+            ["selectors NL INDENT properties DEDENT",
+                "$$ = node(@$, 'rule', $1, $4)"],
+            ["selectors NL", "$$ = node(@$, 'rule', $1, [])"],
         ],
         "selectors": [
             ["selector", "$$ = [$1]"],
@@ -71,7 +79,8 @@ export var parser = new Parser({
             ["", "$$ = [];"],
         ],
         "property": [
-            ["IDENT_TOKEN : property_value", "$$ = ['property', $1, $3]"],
+            ["IDENT_TOKEN : property_value",
+                "$$ = node(@$, 'property', $1, $3)"],
         ],
         "property_value": [
             ["NL", "$$ = '';"],
@@ -108,17 +117,19 @@ export var parser = new Parser({
         "elstatements": list('elstatement'),
         "statement": [
             ["< TAG_NAME classes attributes > NL",
-                "$$ = ['element', $2, $3, $4, []];" ],
+                "$$ = node(@$, 'element', $2, $3, $4, []);" ],
             ["< TAG_NAME classes attributes > NL INDENT elstatements DEDENT",
-                "$$ = ['element', $2, $3, $4, $8];" ],
-            ["let IDENT = e NL", "$$ = ['assign', $2, $4]"],
-            ["if e : NL stmtblock elifblocks", "$$ = ['if', [$2, $5], $6]"],
+                "$$ = node(@$, 'element', $2, $3, $4, $8);" ],
+            ["let IDENT = e NL", "$$ = node(@$, 'assign', $2, $4)"],
+            ["if e : NL stmtblock elifblocks",
+                "$$ = node(@$, 'if', [$2, $5], $6)"],
             ["if e : NL stmtblock elifblocks elseblock",
-                "$$ = ['if', [$2, $5], $6, $7]"],
-            ["for lval of e : NL stmtblock", "$$ = ['for', $2, $4, $2, $7]"],
+                "$$ = node(@$, 'if', [$2, $5], $6, $7)"],
+            ["for lval of e : NL stmtblock",
+                "$$ = node(@$, 'for', $2, $4, $2, $7)"],
             ["for lval of e key e : NL stmtblock",
-                "$$ = ['for', $2, $4, $6, $9]"],
-            ["e NL", "$$ = ['expression', $1];" ],
+                "$$ = node(@$, 'for', $2, $4, $6, $9)"],
+            ["e NL", "$$ = node(@$, 'expression', $1);" ],
         ],
         "classes": list('classe'),
         "classe": [
@@ -136,8 +147,8 @@ export var parser = new Parser({
             ["statement", "$$ = $1;"],
             // TODO(tailhook) support other targets than stores
             ["link { linknames } e -> STORE NL",
-                "$$ = ['link', $3, $5, ['store', $7]];"],
-            ["store STORE = e NL", "$$ = ['store', $2, $4]"],
+                "$$ = node(@$, 'link', $3, $5, ['store', $7]);"],
+            ["store STORE = e NL", "$$ = node(@$, 'store', $2, $4)"],
         ],
         "attributes": list('attribute'),
         "attribute": [
@@ -145,16 +156,16 @@ export var parser = new Parser({
             ["TAG_NAME", "$$ = [$1];"],
         ],
         "attrvalue": [
-            ["NUMBER", "$$ = ['number', $1];"],
-            ["STRING", "$$ = ['string', $1];"],
-            ["TAG_NAME", "$$ = ['name', $1];"],
-            ["STORE", "$$ = ['store', $1];"],
-            ["attrvalue . TAG_NAME", "$$ = ['attr', $1, $3];"],
+            ["NUMBER", "$$ = node(@$, 'number', $1);"],
+            ["STRING", "$$ = node(@$, 'string', $1);"],
+            ["TAG_NAME", "$$ = node(@$, 'name', $1);"],
+            ["STORE", "$$ = node(@$, 'store', $1);"],
+            ["attrvalue . TAG_NAME", "$$ = node(@$, 'attr', $1, $3);"],
             ["( e )", "$$ = $2;"],
-            ["attrvalue ( comma_separated )", "$$ = ['call', $1, $3];"],
+            ["attrvalue ( comma_separated )", "$$ = node(@$, 'call', $1, $3);"],
         ],
         "lval": [
-            ["IDENT", "$$ = ['name', $1]"],
+            ["IDENT", "$$ = node(@$, 'name', $1)"],
         ],
         "linknames": [
             ["IDENT , linknames", "$$ = [$1].concat($3);"],
@@ -166,22 +177,22 @@ export var parser = new Parser({
             ["", "$$ = [];"],
         ],
         "e" :[
-              [ "e + e",   "$$ = ['binop', '+', $1, $3];" ],
-              [ "e - e",   "$$ = ['binop', '-', $1, $3];" ],
-              [ "e * e",   "$$ = ['binop', '*', $1, $3];" ],
-              [ "e / e",   "$$ = ['binop', '/', $1, $3];" ],
-              [ "e ^ e",   "$$ = ['pow', $1, $3];" ],
-              [ "- e",     "$$ = ['minus', $2];", {"prec": "UNARY"} ],
-              [ "+ e",     "$$ = ['plus', $2];", {"prec": "UNARY"} ],
+              [ "e + e",   "$$ = node(@$, 'binop', '+', $1, $3);" ],
+              [ "e - e",   "$$ = node(@$, 'binop', '-', $1, $3);" ],
+              [ "e * e",   "$$ = node(@$, 'binop', '*', $1, $3);" ],
+              [ "e / e",   "$$ = node(@$, 'binop', '/', $1, $3);" ],
+              [ "e ^ e",   "$$ = node(@$, 'pow', $1, $3);" ],
+              [ "- e",     "$$ = node(@$, 'minus', $2);", {"prec": "UNARY"} ],
+              [ "+ e",     "$$ = node(@$, 'plus', $2);", {"prec": "UNARY"} ],
               [ "( e )",   "$$ = $2;" ],
-              [ "e ( comma_separated )", "$$ = ['call', $1, $3];" ],
-              [ "e [ e ]", "$$ = ['index', $1, $3];" ],
-              [ "e . IDENT", "$$ = ['attr', $1, $3];" ],
-              [ "[ comma_separated ]",       "$$ = ['list', $2];" ],
-              [ "NUMBER",  "$$ = ['number', $1];" ],
-              [ "STRING",  "$$ = ['string', $1];" ],
-              [ "IDENT",  "$$ = ['name', $1];" ],
-              [ "STORE",  "$$ = ['store', $1];" ],
+              [ "e ( comma_separated )", "$$ = node(@$, 'call', $1, $3);" ],
+              [ "e [ e ]", "$$ = node(@$, 'index', $1, $3);" ],
+              [ "e . IDENT", "$$ = node(@$, 'attr', $1, $3);" ],
+              [ "[ comma_separated ]",       "$$ = node(@$, 'list', $2);" ],
+              [ "NUMBER",  "$$ = node(@$, 'number', $1);" ],
+              [ "STRING",  "$$ = node(@$, 'string', $1);" ],
+              [ "IDENT",  "$$ = node(@$, 'name', $1);" ],
+              [ "STORE",  "$$ = node(@$, 'store', $1);" ],
         ],
     }
 })

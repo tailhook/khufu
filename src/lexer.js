@@ -19,11 +19,6 @@ function lex(value) {
         return lex(lexeme => value);
     } else {
         return function(lexeme) {
-            for(var i of lexeme) {
-                if(i == '\n') {
-                    this.yylineno += 1;
-                }
-            }
             this.original_lexeme = lexeme;
             this.yytext = lexeme;
             let old_state = this.state;

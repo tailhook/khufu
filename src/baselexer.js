@@ -74,6 +74,7 @@ class LexerInstance {
         this.index = 0;
         this.input = input;
         this.yylineno = 0;
+        this.column = 0;
         this.brackets = [];
         this.original_lexeme = '';
         this.indent = [0];
@@ -93,7 +94,26 @@ class LexerInstance {
 
     lex() {
         try {
-            return this._lex()
+            var token = this._lex()
+            let loc = {
+                first_line: this.yylineno,
+                first_column: this.column,
+            }
+            for(var i of this.original_lexeme) {
+                if(i == '\n') {
+                    this.yylineno += 1;
+                    this.column = 1;
+                } else if(i == '\t') {
+                    this.column += 8;
+                } else {
+                    this.column += 1;
+                }
+            }
+            this.yylloc = {
+                last_column: this.column,
+                last_line: this.yylineno,
+                ...loc}
+            return token;
         } catch(e) {
             throw Error(e.message + '\n' + this.showPosition())
         }
