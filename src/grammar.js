@@ -166,6 +166,7 @@ export var parser = new Parser({
             ["attrvalue . TAG_NAME", "$$ = node(@$, 'attr', $1, $3);"],
             ["( e )", "$$ = $2;"],
             ["attrvalue ( comma_separated )", "$$ = node(@$, 'call', $1, $3);"],
+            [ "template", "$$ = node(@$, 'template', $1);" ],
         ],
         "lval": [
             ["IDENT", "$$ = node(@$, 'name', $1)"],
@@ -178,6 +179,15 @@ export var parser = new Parser({
             ["e , comma_separated", "$$ = [$1].concat($3);"],
             ["e", "$$ = [$1];"],
             ["", "$$ = [];"],
+        ],
+        "template": [
+            ["TEMPLATE_BEGIN template_pair TEMPLATE_END",
+                "$$ = [['const', $1]].concat($2).concat([['const', $3]])"],
+        ],
+        "template_pair": [
+            ["e", "$$ = [['expr', $1]]"],
+            ["e TEMPLATE_INTER template_pair",
+                "$$ = [['expr', $1], ['const', $2]].concat($3)"],
         ],
         "e" :[
               [ "e + e",   "$$ = node(@$, 'binop', '+', $1, $3);" ],
@@ -192,6 +202,7 @@ export var parser = new Parser({
               [ "e [ e ]", "$$ = node(@$, 'index', $1, $3);" ],
               [ "e . IDENT", "$$ = node(@$, 'attr', $1, $3);" ],
               [ "[ comma_separated ]",       "$$ = node(@$, 'list', $2);" ],
+              [ "template", "$$ = node(@$, 'template', $1);" ],
               [ "NUMBER",  "$$ = node(@$, 'number', $1);" ],
               [ "STRING",  "$$ = node(@$, 'string', $1);" ],
               [ "IDENT",  "$$ = node(@$, 'name', $1);" ],

@@ -71,6 +71,7 @@ class LexerInstance {
         this.yylineno = 1;
         this.column = 1;
         this.brackets = [];
+        this.templates = 0;
         this.original_lexeme = '';
         this.indent = [0];
         this.newline = true;

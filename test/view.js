@@ -114,4 +114,43 @@ describe("views", () => {
                         ['store', 'y']]
             ]]]]])
     })
+    it("empty template", () => {
+        expect(parser.parse("view main():\n ``"))
+            .to.deep.equal([['view', 'main', [], [
+                ['expression', ['string', ""]]
+            ]]])
+    })
+    it("const template", () => {
+        expect(parser.parse("view main():\n `hello`"))
+            .to.deep.equal([['view', 'main', [], [
+                ['expression', ['string', "hello"]]
+            ]]])
+    })
+    it("var in template", () => {
+        expect(parser.parse("view main(x):\n\n `${x}`"))
+            .to.deep.equal([['view', 'main', ['x'], [
+                ['expression', ['template', [
+                    ['const', ''], ['expr', ['name', "x"]], ['const', '']
+                ]]]
+            ]]])
+    })
+    it("operator in template", () => {
+        expect(parser.parse("view main(x):\n\n `${x+1}`"))
+            .to.deep.equal([['view', 'main', ['x'], [
+                ['expression', ['template', [
+                    ['const', ''], ['expr', ['binop', '+',
+                        ['name', "x"], ['number', '1']]], ['const', '']
+                ]]]
+            ]]])
+    })
+    it("template in attr", () => {
+        expect(parser.parse("view main(x):\n <a href=`${x}`>"))
+            .to.deep.equal([['view', 'main', ['x'], [
+                ['element', 'a', [], [['href',
+                    ['template', [
+                        ['const', ''], ['expr', ['name', "x"]], ['const', '']
+                    ]]
+                ]], []]
+            ]]])
+    })
 })

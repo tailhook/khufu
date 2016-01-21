@@ -12,6 +12,7 @@ const STYLE = 2;
 const VIEW = 10;
 const VIEW_LINESTART = 12;  // "<" at tag open
 const VIEW_TAG = 14;        // "abc-def" identifiers
+const VIEW_TEMPLATE = 16;   // ${vars} identifiers
 const MATCHING_BRACKET = { '<': '>', '(': ')', '[': ']', '{': '}' }
 
 function lex(value) {
@@ -118,7 +119,7 @@ export default function () {
             this.state = VIEW;
         }
         this.brackets.shift();
-        if(this.brackets[0] == '>') {
+        if(this.brackets[0] == '<') {
             this.state = VIEW_TAG;
         }
         return lexeme;
@@ -129,13 +130,13 @@ export default function () {
             // TODO(tailhook) unescape
             this.yytext = lex.substr(1, lex.length-2);
             return 'STRING';
-        }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART]);
+        }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART, VIEW_TEMPLATE]);
     lexer.addRule(/'(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|[^'\\])*'/,
         lex(function (lex) {
             // TODO(tailhook) unescape
             this.yytext = lex.substr(1, lex.length-2);
             return 'STRING';
-        }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART]);
+        }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART, VIEW_TEMPLATE]);
 
     /********************* Toplevel tokens ***************************/
 
@@ -190,25 +191,60 @@ export default function () {
 
     lexer.addRule(/->/, lex(x => x), [VIEW, VIEW_LINESTART]);
     lexer.addRule(/<-/, lex(x => x), [VIEW, VIEW_LINESTART]);
-    lexer.addRule(/[:,.*+/=<>!-]/, lex(x => x), [VIEW, VIEW_LINESTART]);
+    lexer.addRule(/[:,.*+/=<>!-]/, lex(x => x),
+        [VIEW, VIEW_LINESTART, VIEW_TEMPLATE]);
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, lex(function(lexeme) {
         if(VIEW_KW.indexOf(lexeme) >= 0) {
             return lexeme;
         } else {
             return 'IDENT';
         }
-    }), [VIEW, VIEW_LINESTART]);
+    }), [VIEW, VIEW_LINESTART, VIEW_TEMPLATE]);
     lexer.addRule(/@[a-zA-Z_][a-zA-Z0-9_]*/, lex(function(lexeme) {
         this.yytext = lexeme.substr(1);
         return 'STORE';
-    }), [VIEW, VIEW_LINESTART, VIEW_TAG]);
+    }), [VIEW, VIEW_LINESTART, VIEW_TAG, VIEW_TEMPLATE]);
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_-]*/, lex('TAG_NAME'), [VIEW_TAG]);
     lexer.addRule(/[=.?]/, lex(x => x), [VIEW_TAG]);
     lexer.addRule(new RegExp(
         "-?(?:[0-9]|[1-9][0-9]+)" +  // integer part
         "(?:\\.[0-9]+)?" +           // fractional part
         "(?:[eE][-+]?[0-9]+)?\\b"),      // exponent
-        lex("NUMBER"), [VIEW, VIEW_TAG, VIEW_LINESTART])
+        lex("NUMBER"), [VIEW, VIEW_TAG, VIEW_LINESTART, VIEW_TEMPLATE])
+    lexer.addRule(
+        /`(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|\$(?!\{)|[^$`\\])*(?:`|\$\{)/,
+        lex(function (lex) {
+            // TODO(tailhook) unescape
+            if(lex.charAt(lex.length-1) == '`') {
+                this.yytext = lex.substr(1, lex.length-2);
+                return 'STRING';
+            } else {
+                this.yytext = lex.substr(1, lex.length-3);
+                this.templates += 1;
+                this.state = VIEW_TEMPLATE;
+                return 'TEMPLATE_BEGIN';
+            }
+        }), [VIEW, VIEW_TAG, VIEW_LINESTART]);
+    lexer.addRule(
+        /}(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|\$(?!\{)|[^$`\\])*(?:`|\$\{)/,
+        lex(function (lex) {
+            // TODO(tailhook) unescape
+            if(lex.charAt(lex.length-1) == '`') {
+                this.yytext = lex.substr(1, lex.length-2);
+                this.templates -= 1;
+                if(!this.templates) {
+                    if(this.brackets[0] == '<') {
+                        this.state = VIEW_TAG;
+                    } else {
+                        this.state = VIEW;
+                    }
+                }
+                return 'TEMPLATE_END';
+            } else {
+                this.yytext = lex.substr(1, lex.length-3);
+                return 'TEMPLATE_INTER';
+            }
+        }), [VIEW_TEMPLATE]);
 
     return lexer.factory();
 }
