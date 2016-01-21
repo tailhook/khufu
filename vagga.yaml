@@ -5,11 +5,11 @@ containers:
     #- !Alpine v3.3
     - !Ubuntu trusty
     - !UbuntuUniverse
-    - !Install [npm]
+    - !NpmInstall [npm]
     - !NpmDependencies
     environ:
       NODE_PATH: /usr/local/lib/node_modules
-      HOME: /tmp
+      HOME: /work/tmp
 
   doc:
     setup:
