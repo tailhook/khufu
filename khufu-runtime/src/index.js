@@ -26,7 +26,7 @@ function clean_global_state(old) {
 
 export default function init(element, template) {
     let queued = false;
-    function rerender() {
+    function queue_render() {
         if(!queued) {
             queued = true;
             window.requestAnimationFrame(render)
@@ -34,7 +34,7 @@ export default function init(element, template) {
     }
     function render() {
         queued = false;
-        let obj = set_global_state(rerender)
+        let obj = set_global_state(queue_render)
         try {
             patch(element, template)
         } catch(e) {
@@ -43,5 +43,7 @@ export default function init(element, template) {
         clean_global_state(obj)
     }
     render() // Immediate render works better with hot reload
-    return rerender
+    return {
+        queue_render
+    }
 }

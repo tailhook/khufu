@@ -1,4 +1,5 @@
 .. highlight:: javascript
+.. default-domain:: javascript
 
 ===
 API
@@ -26,6 +27,19 @@ Adding support for hot reload is straightforward::
     if(module.hot) {
         module.hot.accept()
     }
+
+The object that is returned by ``khufu`` has the following methods:
+
+.. js:function:: khufu_obj.queue_redraw
+
+   Schedules next redraw of the view with ``requestAnimationFrame``. You don't
+   have to call it manually whenever the stores in the view change. But you may
+   need it if you have some external shared state which is changing.
+
+   For example, if you have time displayed in the view::
+
+       var khufu_obj = khufu(el, main)
+       setTimeout(khufu_obj.queue_redraw, 1000)
 
 
 Compilation With Webpack
