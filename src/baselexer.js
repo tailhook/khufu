@@ -73,8 +73,8 @@ class LexerInstance {
         this.state = 0;
         this.index = 0;
         this.input = input;
-        this.yylineno = 0;
-        this.column = 0;
+        this.yylineno = 1;
+        this.column = 1;
         this.brackets = [];
         this.original_lexeme = '';
         this.indent = [0];
@@ -94,11 +94,14 @@ class LexerInstance {
 
     lex() {
         try {
+            var old_index = this.index;
             var token = this._lex()
             let loc = {
                 first_line: this.yylineno,
                 first_column: this.column,
             }
+            this.original_lexeme = this.input.substr(
+                old_index, this.index - old_index);
             for(var i of this.original_lexeme) {
                 if(i == '\n') {
                     this.yylineno += 1;

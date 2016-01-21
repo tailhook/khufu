@@ -5,18 +5,21 @@ var statement;
 
 function list(item) {
     return [
-        [`${item} ${item}s`, "$$ = [$1].concat($2);" ],
+        [`${item} ${item}s`, "$$ = add_location(@$, [$1].concat($2));" ],
         ["", "$$ = [];" ],
     ]
 }
 
+function add_location(info, node) {
+    Object.defineProperty(node, '_location', {value: info, enumerable: false})
+    return node
+}
 function node(info, ...args) {
-    Object.defineProperty(args, '_location', {value: info, enumerable: false})
-    return args
+    return add_location(info, args)
 }
 
 export var parser = new Parser({
-    actionInclude: node.toString(),
+    actionInclude: node.toString() + add_location.toString(),
     "operators": [
         ["left", "+", "-"],
         ["left", "*", "/"],

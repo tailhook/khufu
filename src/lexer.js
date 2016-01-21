@@ -19,7 +19,6 @@ function lex(value) {
         return lex(lexeme => value);
     } else {
         return function(lexeme) {
-            this.original_lexeme = lexeme;
             this.yytext = lexeme;
             let old_state = this.state;
             let result = value.call(this, lexeme)
@@ -110,7 +109,6 @@ export default function () {
         return lexeme;
     }), []);
     lexer.addRule(/[)}\]>]/, lex(function (lexeme) {
-        this.original_lexeme = lexeme;
         this.yytext = lexeme;
         if(MATCHING_BRACKET[this.brackets[0]] != lexeme) {
             this.reject = true;
