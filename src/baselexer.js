@@ -31,11 +31,6 @@ export default class Lexer {
         this._rules = []
     }
 
-    defunct(chr) {
-        throw new Error("Unexpected character at index " +
-            (this.index - 1) + ": " + chr);
-    }
-
     addRule(pattern, action, start) {
         var global = pattern.global;
 
@@ -86,40 +81,41 @@ class LexerInstance {
         let prefix = /(?:\n|^)(.*)$/.exec(this.input.substr(0, this.index))[1]
         let suffix = /.*$/m.exec(this.input.substr(this.index))[0]
         let indent = prefix.substr(0, prefix.length - lex.length)
-        let arrow = lex.replace(/./g, '^') || '^'
-        let ln = this.yylineno + ':';
+        let arrow = lex.replace(/[\s\S]/g, '^') || '^'
+        let ln = this.yylineno + ': ';
         return (ln + prefix + suffix + "\n" +
-            ln + indent.replace(/./g, ' ') + arrow + ' ---')
+            ln + indent.replace(/[\s\S]/g, ' ') + arrow + ' ---')
+    }
+
+    defunct(chr) {
+        throw Error('Unexpected character "' + chr + '"\n' +
+            this.showPosition())
     }
 
     lex() {
-        try {
-            var old_index = this.index;
-            var token = this._lex()
-            let loc = {
-                first_line: this.yylineno,
-                first_column: this.column,
-            }
-            this.original_lexeme = this.input.substr(
-                old_index, this.index - old_index);
-            for(var i of this.original_lexeme) {
-                if(i == '\n') {
-                    this.yylineno += 1;
-                    this.column = 1;
-                } else if(i == '\t') {
-                    this.column += 8;
-                } else {
-                    this.column += 1;
-                }
-            }
-            this.yylloc = {
-                last_column: this.column,
-                last_line: this.yylineno,
-                ...loc}
-            return token;
-        } catch(e) {
-            throw Error(e.message + '\n' + this.showPosition())
+        var old_index = this.index;
+        var token = this._lex()
+        let loc = {
+            first_line: this.yylineno,
+            first_column: this.column,
         }
+        this.original_lexeme = this.input.substr(
+            old_index, this.index - old_index);
+        for(var i of this.original_lexeme) {
+            if(i == '\n') {
+                this.yylineno += 1;
+                this.column = 1;
+            } else if(i == '\t') {
+                this.column += 8;
+            } else {
+                this.column += 1;
+            }
+        }
+        this.yylloc = {
+            last_column: this.column,
+            last_line: this.yylineno,
+            ...loc}
+        return token;
     }
 
     _lex() {
@@ -160,7 +156,7 @@ class LexerInstance {
             if (index < input.length) {
                 if (this.reject) {
                     this._remove = 0;
-                    var token = defunct.call(this, input.charAt(this.index++));
+                    var token = this.defunct(input.charAt(this.index++));
                     if (typeof token !== "undefined") {
                         if (Object.prototype.toString.call(token) === "[object Array]") {
                             this._tokens = token.slice(1);
