@@ -259,6 +259,15 @@ There are two precautions:
    alternative compilers
 2. All ``undefined`` and ``null`` values are **suppressed**
 
+**New khufu 0.2.1:** ES2015 templates strings are supported::
+
+    <a href=`http://${host}/${path}`>
+        `Go to ${path}`
+
+Note that ```${expr}``` is not exactly the same as ``expr``. The latter does
+not output anything if "expr" is ``null`` or ``undefined``, while the former
+will output the value, just like in javascript.
+
 
 Stores
 ------
