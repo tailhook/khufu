@@ -8,6 +8,22 @@ export function compile(item, path, opt) {
             let [_string, value] = item;
             return T.stringLiteral(value);
         }
+        case 'template': {
+            let [_template, items] = item;
+            let quasis = []
+            let exprs = []
+            for(var [kind, val] of items) {
+                if(kind == 'const') {
+                    quasis.push(T.templateElement({raw: val}))
+                } else {
+                    exprs.push(compile(val, path, opt))
+                }
+            }
+            quasis[quasis.length-1].tail = true;
+            console.log("ITEMS", items, quasis, exprs)
+
+            return T.templateLiteral(quasis, exprs);
+        }
         case 'number': {
             let [_number, value] = item;
             return T.numericLiteral(Number(value));

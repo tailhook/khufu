@@ -292,4 +292,14 @@ describe("compiler", () => {
         expect(compile("import * as mod from 'module'\n"))
         .to.equal('import * as mod from "module";')
     })
+    it("compiles template attribute", () => {
+        expect(compile("view main():\n let x=1\n <p a=`a${x}b${x+1}`>"))
+            .to.equal(
+                imp +
+                'export function main() {\n' +
+                '  let _x = 1;\n' +
+                '  elementVoid("p", "p-1", null, "a",' +
+                              ' `a${ _x }b${ _x + 1 }`);\n' +
+                '}')
+    })
 })
