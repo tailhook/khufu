@@ -191,7 +191,7 @@ export default function () {
 
     lexer.addRule(/->/, lex(x => x), [VIEW, VIEW_LINESTART]);
     lexer.addRule(/<-/, lex(x => x), [VIEW, VIEW_LINESTART]);
-    lexer.addRule(/[:,.*+/=<>!-]/, lex(x => x),
+    lexer.addRule(/[:,.*+/=<>!?-]/, lex(x => x),
         [VIEW, VIEW_LINESTART, VIEW_TEMPLATE]);
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, lex(function(lexeme) {
         if(VIEW_KW.indexOf(lexeme) >= 0) {

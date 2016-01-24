@@ -92,6 +92,13 @@ export function compile(item, path, opt) {
             return T.logicalExpression(oper,
                 compile(left, path, opt), compile(right, path, opt))
         }
+        case 'ternary': {
+            let [_ternary, cond, positive, negative] = item
+            return T.conditionalExpression(
+                compile(cond, path, opt),
+                compile(positive, path, opt),
+                compile(negative, path, opt))
+        }
         case 'if': {
             let [_if, cond, norm, alter] = item
             return T.conditionalExpression(

@@ -69,4 +69,15 @@ describe("compiler", () => {
                 '  };\n' +
                 "}")
     })
+
+    it("compiles ternary", () => {
+        expect(compile(
+            "view main():\n 1 and 2 ? 3 : 4"))
+            .to.equal(imp +
+                "export function main() {\n" +
+                '  return function main(key) {\n' +
+                '    text(1 && 2 ? 3 : 4);\n' +
+                '  };\n' +
+                "}")
+    })
 })

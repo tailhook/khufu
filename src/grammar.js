@@ -21,6 +21,7 @@ function node(info, ...args) {
 export var parser = new Parser({
     actionInclude: node.toString() + add_location.toString(),
     "operators": [
+        ["left", "?"],
         ["left", "or"],
         ["left", "and"],
         ["left", "+", "-"],
@@ -192,6 +193,7 @@ export var parser = new Parser({
                 "$$ = [['expr', $1], ['const', $2]].concat($3)"],
         ],
         "e" :[
+              [ "e ? e : e", "$$ = node(@$, 'ternary', $1, $3, $5);" ],
               [ "e and e", "$$ = node(@$, 'logop', '&&', $1, $3);" ],
               [ "e or e",  "$$ = node(@$, 'logop', '||', $1, $3);" ],
               [ "e + e",   "$$ = node(@$, 'binop', '+', $1, $3);" ],
