@@ -191,6 +191,10 @@ may either use ``let`` syntax or wrap the expression in parenthessis::
 
     <p size=(x+y)>
 
+And ES2015 (ES6) templates are supported too::
+
+    <a href=`http://${host}/${path}`>
+
 In angular-brackets you might wrap line as you wish::
 
     <p class="big-paragraph"
@@ -240,33 +244,17 @@ is treated as a javascript expression defining text node. For example::
       <li>
         x + y
       <li>
-        some_fn()
+        `Hello ${ generate name() }`
 
 All three ``<li>`` elements above have a text node inside. In the first case
 the text is just a constant string value. For the second element the expression
 ``x + y`` is evaluated, and whatever javascript decides is the result of the
-expression it will be inserted into a text node.
+expression it will be inserted into a text node. The third element uses
+template string as defined in ES2015 (ES6) (currently only bare backticks
+are supported no custom prefix).
 
-The ``some_fn()`` case may work the same. If it returns a non-undefined value
-it will be used as a text value. But because of how incremental-dom_ works, it
-may also output any HTML elements. And this is exactly a way to call views for
-another views.
-
-There are two precautions:
-
-1. Don't write functions which both output HTML and return the value. While it
-   will work it is extremely confusing to users and may not work for
-   alternative compilers
-2. All ``undefined`` and ``null`` values are **suppressed**
-
-**New khufu 0.2.1:** ES2015 templates strings are supported::
-
-    <a href=`http://${host}/${path}`>
-        `Go to ${path}`
-
-Note that ```${expr}``` is not exactly the same as ``expr``. The latter does
-not output anything if "expr" is ``null`` or ``undefined``, while the former
-will output the value, just like in javascript.
+Note that bare function calls like ``fun(x, y)`` also may work as
+`Subviews`_
 
 
 Stores
@@ -455,6 +443,41 @@ is scoped to a loop iteration. So events work as expected::
         link {click} edit_image(image.id) -> @objects
       <input type="button" value="remove_object">
         link {click} remove(obj.id) -> @objects
+
+.. _subviews:
+
+Calling Other Views
+===================
+
+
+The subviews can be called by writing function call::
+
+    view button(x):
+      <button>
+        x
+
+    view main():
+      <div>
+        button("a")
+        button("b")
+
+Note that for views, only function call syntax is supported not arbitrary
+expression. The following will **not** work::
+
+    view main():
+      <div>
+        button("a") + button("b")
+
+Otherwise you are free to use imported functions both as view and as a regular
+functions and they should work as expected.
+
+.. warning:: If you have a function that returns another function and you use
+   former in a call expression you will get returned function called
+   automatically.  This is the way we use views. The ``view main()`` defined in
+   a template is a function that returns a closure. The closure accepts a
+   ``key`` as an argument and renders a dom as a side effect (this is how
+   incremental-dom_ works). Usually it's not a problem as you never expect
+   functions to be rendered as a text node.
 
 
 .. _babel: https://babeljs.io/

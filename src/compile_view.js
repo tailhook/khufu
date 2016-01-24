@@ -12,23 +12,31 @@ const DOM_FUNCTIONS = [
     'elementOpen',
     'elementClose',
     'text',
-    'expr',
+    'item',
 ]
 
-export function compile_string(item, path, opt) {
+export function compile_string(item, path, opt, key) {
     let [_expression, value] = item;
-    path.node.body.push(T.expressionStatement(
-        T.callExpression(T.identifier('expr'), [
-            compile_expression(value, path, opt)
-        ])))
+    let expr = compile_expression(value, path, opt);
+    if(value[0] == 'call') {
+        push_to_body(path, T.expressionStatement(
+            T.callExpression(T.identifier('item'), [expr, key])))
+    } else {
+        push_to_body(path, T.expressionStatement(
+            T.callExpression(T.identifier('text'), [expr])))
+    }
 }
 
 export function join_key(x, y) {
-    if(x.type == 'StringLiteral' && y.type == 'StringLiteral') {
+    if(T.isStringLiteral(x) && T.isStringLiteral(y)) {
         return T.stringLiteral(x.value + y.value)
     }
     if(x.value === '') return y;
     if(y.value === '') return x;
+    if(T.isBinaryExpression(x) && T.isStringLiteral(x.right)) {
+        return T.binaryExpression("+", x.left,
+            T.stringLiteral(x.right.value + y.value))
+    }
     return T.binaryExpression("+", x, y)
 }
 
@@ -43,7 +51,9 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
                 break;
             }
             case 'expression': {
-                compile_string(item, path, opt)
+                elements += 1;
+                compile_string(item, path, opt,
+                    join_key(key, T.stringLiteral('-' + elements)))
                 break;
             }
             case 'assign': {
@@ -55,6 +65,7 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
                 break;
             }
             case 'for': {
+                elements += 1;
                 let [_for, assign, source, loopkey, block] = item;
                 let [decl, bindings] = lval.compile(assign, path, opt)
                 let stmt = T.forOfStatement(decl,
@@ -65,7 +76,8 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
                     npath.scope.setData('binding:' + x, bindings[x])
                 }
                 compile_body(block, npath.get('body'), opt,
-                    join_key(key, compile_expression(loopkey, npath, opt)))
+                    join_key(join_key(key, T.stringLiteral('-' + elements)),
+                        compile_expression(loopkey, npath, opt)))
                 break;
             }
             case 'if': {
@@ -114,16 +126,21 @@ export function compile(view, path, opt) {
         path.scope.setData('khufu:dom-imported', true)
     }
 
-    let node = T.functionDeclaration(T.identifier(name),
+    let ext_node = T.functionDeclaration(T.identifier(name),
         params.map(x => T.identifier(x)),
-        T.blockStatement([]), false, false);
-    let child_path
+        T.blockStatement([
+            T.returnStatement(T.functionExpression(T.identifier(name),
+                [T.identifier('key')],
+                T.blockStatement([]), false, false)),
+        ]), false, false);
+    let ext_path
     if(name[0] != '_') {
-        node = T.exportNamedDeclaration(node, [])
-        child_path = push_to_body(path, node).get('declaration.body')
+        ext_node = T.exportNamedDeclaration(ext_node, [])
+        ext_path = push_to_body(path, ext_node).get('declaration.body')
     } else {
-        child_path = push_to_body(path, node).get('body')
+        ext_path = push_to_body(path, ext_node).get('body')
     }
+    let child_path = ext_path.get('body')[0].get('argument.body')
 
     // bind params
     for(let x of params) {
@@ -133,5 +150,5 @@ export function compile(view, path, opt) {
     // bind itself
     path.scope.setData('binding:' + name, T.identifier(name))
 
-    compile_body(body, child_path, opt)
+    compile_body(body, child_path, opt, T.identifier('key'))
 }

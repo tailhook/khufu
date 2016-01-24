@@ -1,4 +1,4 @@
 import khufu from 'khufu-runtime'
 import {main} from './counter.khufu'
 
-khufu(document.getElementById('app'), main)
+khufu(document.getElementById('app'), main())

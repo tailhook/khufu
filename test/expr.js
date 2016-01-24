@@ -3,7 +3,7 @@ import {expect} from 'chai'
 
 describe("compiler", () => {
     const imp = 'import ' +
-        '{ elementVoid, elementOpen, elementClose, text, expr }' +
+        '{ elementVoid, elementOpen, elementClose, text, item }' +
         ' from "khufu-runtime";\n';
     it("compiles function call", () => {
         expect(compile('import {x} from "y"\n' +
@@ -11,7 +11,9 @@ describe("compiler", () => {
             .to.equal(imp +
                 'import { x } from "y";\n' +
                 "export function main() {\n" +
-                '  expr(x(1));\n' +
+                '  return function main(key) {\n' +
+                '    item(x(1), key + "-1");\n' +
+                '  };\n' +
                 "}")
     })
     it("compiles function call with multiple args", () => {
@@ -20,21 +22,27 @@ describe("compiler", () => {
             .to.equal(imp +
                 'import { x } from "y";\n' +
                 "export function main() {\n" +
-                '  expr(x(1, 2, 3));\n' +
+                '  return function main(key) {\n' +
+                '    item(x(1, 2, 3), key + "-1");\n' +
+                '  };\n' +
                 "}")
     })
     it("compiles a list", () => {
         expect(compile("view main():\n [1, 2, 3]"))
             .to.equal(imp +
                 "export function main() {\n" +
-                '  expr([1, 2, 3]);\n' +
+                '  return function main(key) {\n' +
+                '    text([1, 2, 3]);\n' +
+                '  };\n' +
                 "}")
     })
     it("compiles math", () => {
         expect(compile("view main():\n (1+2*3)/4"))
             .to.equal(imp +
                 "export function main() {\n" +
-                '  expr((1 + 2 * 3) / 4);\n' +
+                '  return function main(key) {\n' +
+                '    text((1 + 2 * 3) / 4);\n' +
+                '  };\n' +
                 "}")
     })
 })

@@ -3,10 +3,10 @@ import {patch, attributes, notifications} from 'incremental-dom'
 import {elementOpen, elementClose, elementVoid, text} from 'incremental-dom'
 import {CANCEL} from './stores'
 import {add_style} from './style'
-import {expr} from './dom'
+import {item} from './dom'
 
 
-export {CANCEL, add_style, expr,
+export {CANCEL, add_style, item,
         elementOpen, elementClose, elementVoid, text}
 
 function set_global_state(fun) {

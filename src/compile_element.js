@@ -170,7 +170,7 @@ export function compile(element, path, opt, key) {
         // name is is only possible with hot-reload, though.
         //
         // TODO(tailhook) should we do it only if hot-reload is enabled?
-        join_key(T.stringLiteral(name), key),
+        join_key(key, T.stringLiteral('-'+name)),
     ];
     if(attributes.length || genattrs.length) {
         attribs.push(attrib_expr || T.nullLiteral())

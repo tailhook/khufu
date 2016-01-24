@@ -5,7 +5,7 @@ window.regeneratorRuntime = regeneratorRuntime
 
 import {main} from './counter.khufu'
 
-khufu(document.getElementById('app'), main)
+khufu(document.getElementById('app'), main())
 
 if(module.hot) {
     module.hot.accept()

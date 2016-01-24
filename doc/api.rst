@@ -10,19 +10,20 @@ Rendering a Template
 --------------------
 
 To use khufu, you just need to import a root template function and render it
-inside the element::
+inside the element (note template function is called, so you can pass
+parameters to it)::
 
     import khufu from 'khufu-runtime'
     import {main} from './template.khufu'
 
-    khufu(document.getElementById('app'), main)
+    khufu(document.getElementById('app'), main())
 
 Adding support for hot reload is straightforward::
 
     import khufu from 'khufu-runtime'
     import {main} from './template.khufu'
 
-    khufu(document.getElementById('app'), main)
+    khufu(document.getElementById('app'), main())
 
     if(module.hot) {
         module.hot.accept()
@@ -38,7 +39,7 @@ The object that is returned by ``khufu`` has the following methods:
 
    For example, if you have time displayed in the view::
 
-       var khufu_obj = khufu(el, main)
+       var khufu_obj = khufu(el, main())
        setTimeout(khufu_obj.queue_redraw, 1000)
 
 
