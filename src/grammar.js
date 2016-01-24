@@ -208,6 +208,7 @@ export var parser = new Parser({
               [ "e * e",   "$$ = node(@$, 'binop', '*', $1, $3);" ],
               [ "e / e",   "$$ = node(@$, 'binop', '/', $1, $3);" ],
               [ "e ^ e",   "$$ = node(@$, 'binop', '**', $1, $3);" ],
+              [ "-> STORE","$$ = node(@$, 'raw_store', $2);", {"prec": "UNARY"} ],
               [ "- e",     "$$ = node(@$, 'unary', '-', $2);", {"prec": "UNARY"} ],
               [ "+ e",     "$$ = node(@$, 'unary', '+', $2);", {"prec": "UNARY"} ],
               [ "not e",   "$$ = node(@$, 'unary', '!', $2);", {"prec": "UNARY"} ],

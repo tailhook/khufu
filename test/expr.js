@@ -94,4 +94,27 @@ describe("compiler", () => {
                 '  };\n' +
                 "}")
     })
+    it("compiles raw store", () => {
+        expect(compile('import {a, b, x} from "y"\n' +
+            "view main():\n <p>\n  store @x = a(b)\n  x(@x, ->@x)"))
+            .to.equal(imp +
+                'import { a, b, x } from "y";\n' +
+                "export function main() {\n" +
+                '  return function main(key) {\n' +
+                '    let _p_stores = elementOpen("p", key + "-1-p", ' +
+                                                'null, "__stores", {\n' +
+                '      x: function (state) {\n' +
+                '        return a(b, state);\n' +
+                '      }\n' +
+                '    }).__stores;\n' +
+                '\n' +
+                '    {\n' +
+                '      let _x_state = _p_stores.x.getState();\n' +
+                '\n' +
+                '      item(x(_x_state, _p_stores.x), "-1");\n' +
+                '    }\n' +
+                '    elementClose("p");\n' +
+                '  };\n' +
+                "}")
+    })
 })

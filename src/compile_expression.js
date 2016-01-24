@@ -83,6 +83,14 @@ export function compile(item, path, opt) {
             }
             return state;
         }
+        case 'raw_store': {
+            let [_raw_store, name] = item
+            let store = path.scope.getData('khufu:store:raw:' +name);
+            if(!store) {
+                throw Error("Unknown store: " + name);
+            }
+            return store;
+        }
         case 'attr': {
             let [_attr, object, name] = item
             return T.memberExpression(compile(object, path, opt),
