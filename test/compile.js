@@ -348,4 +348,15 @@ describe("compiler", () => {
                               ' `a${ _x }b${ _x + 1 }`);\n' +
                 '  };\n}')
     })
+    it("compiles text inline", () => {
+        expect(compile("view main():\n <p>'text'\n"))
+            .to.equal(imp +
+            'export function main() {\n' +
+            '  return function main(key) {\n' +
+            '    elementOpen("p", key + "-1-p");\n' +
+            '    text("text");\n' +
+            '    elementClose("p");\n' +
+            '  };\n' +
+            '}')
+    })
 })
