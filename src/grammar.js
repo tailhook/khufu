@@ -106,7 +106,9 @@ export var parser = new Parser({
         ],
         "css_value": [
             ["css_item", "$$ = $1;"],
+            ["css_item ,", "$$ = $1 + ',';"],
             ["css_item css_value", "$$ = $1 + ' ' + $2"],
+            ["css_item , css_value", "$$ = $1 + ', ' + $3"],
         ],
         "css_item": [
             ["IDENT_TOKEN", "$$ = $1"],
@@ -114,6 +116,7 @@ export var parser = new Parser({
             ["URL", "$$ = $1"],
             ["DIMENSION", "$$ = $1"],
             ["NUMBER", "$$ = $1"],
+            ["css_item ( css_value ) ", "$$ = $1 + '(' + $3 + ')'"],
         ],
         // HTML
         "args": [
