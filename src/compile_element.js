@@ -43,7 +43,11 @@ function sort_attributes(attributes, elname, opt) {
         cls_stat.unshift(['string', opt.additional_class])
     }
     if(cls_stat.length && !cls_dyn.length) {
-        stat.push(['class', ['string', cls_stat.map(x => x[1]).join(' ')]])
+        if(opt.static_attrs) {
+            stat.push(['class', ['string', cls_stat.map(x => x[1]).join(' ')]])
+        } else {
+            dyn.push(['class', ['string', cls_stat.map(x => x[1]).join(' ')]])
+        }
     } else if(cls_stat.length && cls_dyn.length) {
         dyn.push(['class', cls_dyn.reduce((x, y) =>
             optimize_plus(optimize_plus(x, ['string', ' ']), y),
