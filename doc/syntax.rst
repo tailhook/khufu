@@ -287,6 +287,32 @@ Attribute access and methods calls are supported, too::
    diffing technique works: if element is removed, we remove the store too. If
    on the next rerender the element is still rendered, the store is reused.
 
+Ocasionally, you may find it useful to import a store::
+
+    import {@router} from './myrouting'
+
+    view main():
+        if @router.current_page == '/home':
+            ...
+
+Or you might pass store as an argument. Declaring function argument to a store
+is as easy as prefix the name with ``@``. But if you pass the ``@x`` as an
+argument you will pass the *value*. So to pass the *store itself* you need to
+add an arrow to the store ``-> @name``. For example::
+
+    view button(name, num, @mystore):
+      <button>
+        link {click} incr(num) -> @mystore
+        name
+
+    view main():
+      <div>
+        store @cnt = createStore(Counter)
+        button('+1', +1, @cnt)
+        button('-1', -1, @cnt)
+        <input value=@cnt>
+
+
 The ``createStore`` function above, in many cases isn't just the one from
 module ``redux``. It's often some more elaborate store creator with a
 middleware. The powerful examples of middleware are redux-saga_ and
