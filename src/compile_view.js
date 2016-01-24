@@ -127,7 +127,16 @@ export function compile(view, path, opt) {
     }
 
     let ext_node = T.functionDeclaration(T.identifier(name),
-        params.map(x => T.identifier(x)),
+        params.map(x => {
+            if(x.substr(0, 1) == '@') {
+                path.scope.setData('khufu:store:raw:' + x.substr(1),
+                    T.identifier(x.substr(1)))
+                path.scope.setData('khufu:store:state:' + x.substr(1), null);
+                return T.identifier(x.substr(1))
+            } else {
+                return T.identifier(x)
+            }
+        }),
         T.blockStatement([
             T.returnStatement(T.functionExpression(T.identifier(name),
                 [T.identifier('key')],

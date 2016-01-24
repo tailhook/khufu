@@ -134,4 +134,16 @@ describe("compiler", () => {
                 '  };\n' +
                 "}")
     })
+    it("compiles passed by argument store", () => {
+        expect(compile(
+            "view main(@x):\n @x"))
+            .to.equal(imp +
+                "export function main(x) {\n" +
+                '  return function main(key) {\n' +
+                '    let _x_state = x.getState();\n' +
+                '\n' +
+                '    text(_x_state);\n' +
+                '  };\n' +
+                "}")
+    })
 })

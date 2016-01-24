@@ -118,7 +118,9 @@ export var parser = new Parser({
         // HTML
         "args": [
             ["IDENT , args", "$$ = [$1].concat($3);"],
+            ["STORE , args", "$$ = ['@' + $1].concat($3);"],
             ["IDENT", "$$ = [$1];"],
+            ["STORE", "$$ = ['@' + $1];"],
             ["", "$$ = [];"],
         ],
         "stmtblock": [
