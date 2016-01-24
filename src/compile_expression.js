@@ -20,7 +20,6 @@ export function compile(item, path, opt) {
                 }
             }
             quasis[quasis.length-1].tail = true;
-            console.log("ITEMS", items, quasis, exprs)
 
             return T.templateLiteral(quasis, exprs);
         }
