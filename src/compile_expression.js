@@ -1,6 +1,12 @@
 import * as T from "babel-types"
 import {parse_tree_error} from './compiler'
 
+const GLOBAL_NAMES = new Set([
+    'true',
+    'false',
+    'null',
+])
+
 
 export function compile(item, path, opt) {
     switch(item[0]) {
@@ -34,6 +40,9 @@ export function compile(item, path, opt) {
         }
         case 'name': {
             let [_name, name] = item;
+            if(GLOBAL_NAMES.has(name)) {
+                return T.identifier(name);
+            }
             let binding = path.scope.getData('binding:' + name);
             if(!binding) {
                 throw Error("Unknown variable: " + name);

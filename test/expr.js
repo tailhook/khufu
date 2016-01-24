@@ -45,4 +45,15 @@ describe("compiler", () => {
                 '  };\n' +
                 "}")
     })
+    it("compiles global names", () => {
+        expect(compile('import {x} from "y"\n' +
+            "view main():\n x(true, false, null)"))
+            .to.equal(imp +
+                'import { x } from "y";\n' +
+                "export function main() {\n" +
+                '  return function main(key) {\n' +
+                '    item(x(true, false, null), key + "-1");\n' +
+                '  };\n' +
+                "}")
+    })
 })
