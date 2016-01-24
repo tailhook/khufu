@@ -117,4 +117,21 @@ describe("compiler", () => {
                 '  };\n' +
                 "}")
     })
+    it("compiles imported store", () => {
+        expect(compile('import {a, @x} from "y"\n' +
+            "view main():\n <p>\n  a(@x)"))
+            .to.equal(imp +
+                'import { a, x } from "y";\n' +
+                "export function main() {\n" +
+                '  return function main(key) {\n' +
+                '    elementOpen("p", key + "-1-p");\n' +
+                '    {\n' +
+                '      let _x_state = x.getState();\n' +
+                '\n' +
+                '      item(a(_x_state), "-1");\n' +
+                '    }\n' +
+                '    elementClose("p");\n' +
+                '  };\n' +
+                "}")
+    })
 })

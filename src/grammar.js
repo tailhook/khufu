@@ -51,9 +51,15 @@ export var parser = new Parser({
         ],
         "impnames": [
             ["IDENT , impnames", "$$ = [[$1, $1]].concat($3);"],
-            ["IDENT as IDENT , impnames", "$$ = [[$1, $3]].concat($5);"],
+            ["STORE , impnames", "$$ = [['@' + $1, '@' + $1]].concat($3);"],
+            ["IDENT as IDENT , impnames",
+                "$$ = [[$1, $3]].concat($5);"],
+            ["STORE as STORE , impnames",
+                "$$ = [['@' + $1, '@' + $3]].concat($5);"],
             ["IDENT", "$$ = node(@$, [$1, $1]);"],
+            ["STORE", "$$ = node(@$, ['@' + $1, '@' + $1]);"],
             ["IDENT as IDENT", "$$ = [[$1, $3]];"],
+            ["STORE as STORE", "$$ = [['@' + $1, '@' + $3]];"],
         ],
         // CSS
         "rules": [

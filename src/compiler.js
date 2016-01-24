@@ -37,11 +37,26 @@ function compile_block(block, path, opt) {
         case 'import_names': {
             let [_import, names, module] = block;
             path.pushContainer("body", T.importDeclaration(
-                names.map(([n, a]) =>
-                    T.importSpecifier(T.identifier(a), T.identifier(n))),
+                names.map(([n, a]) => {
+                    if(n.substr(0, 1) == '@') {
+                        return T.importSpecifier(
+                            T.identifier(a.substr(1)),
+                            T.identifier(n.substr(1)))
+                    } else {
+                        return T.importSpecifier(
+                            T.identifier(a), T.identifier(n))
+                    }
+                }),
                 T.stringLiteral(module)))
             for(var [name, alias] of names) {
-                path.scope.setData('binding:' + alias, T.identifier(alias))
+                if(name.substr(0, 1) == '@') {
+                    path.scope.setData('khufu:store:raw:' + alias.substr(1),
+                        T.identifier(name.substr(1)))
+                    path.scope.setData('khufu:store:state:' + alias.substr(1),
+                        null);
+                } else {
+                    path.scope.setData('binding:' + alias, T.identifier(alias))
+                }
             }
             return;
         }
