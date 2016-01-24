@@ -135,6 +135,9 @@ export var parser = new Parser({
             ["< TAG_NAME classes attributes > STRING NL",
                 "$$ = node(@$, 'element', $2, $3, $4, " +
                     "[['expression', ['string', $6]]]);" ],
+            ["< TAG_NAME classes attributes > template NL",
+                "$$ = node(@$, 'element', $2, $3, $4, " +
+                    "[['expression', ['template', $6]]]);" ],
             ["< TAG_NAME classes attributes > NL INDENT elstatements DEDENT",
                 "$$ = node(@$, 'element', $2, $3, $4, $8);" ],
             ["let IDENT = e NL", "$$ = node(@$, 'assign', $2, $4)"],

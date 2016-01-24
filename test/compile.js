@@ -359,4 +359,15 @@ describe("compiler", () => {
             '  };\n' +
             '}')
     })
+    it("compiles inline ES6 template", () => {
+        expect(compile("view main(x):\n <p>`text: ${x}`\n"))
+            .to.equal(imp +
+            'export function main(x) {\n' +
+            '  return function main(key) {\n' +
+            '    elementOpen("p", key + "-1-p");\n' +
+            '    text(`text: ${ x }`);\n' +
+            '    elementClose("p");\n' +
+            '  };\n' +
+            '}')
+    })
 })
