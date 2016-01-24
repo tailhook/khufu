@@ -21,6 +21,8 @@ function node(info, ...args) {
 export var parser = new Parser({
     actionInclude: node.toString() + add_location.toString(),
     "operators": [
+        ["left", "or"],
+        ["left", "and"],
         ["left", "+", "-"],
         ["left", "*", "/"],
         ["left", "^"],
@@ -190,13 +192,16 @@ export var parser = new Parser({
                 "$$ = [['expr', $1], ['const', $2]].concat($3)"],
         ],
         "e" :[
+              [ "e and e", "$$ = node(@$, 'logop', '&&', $1, $3);" ],
+              [ "e or e",  "$$ = node(@$, 'logop', '||', $1, $3);" ],
               [ "e + e",   "$$ = node(@$, 'binop', '+', $1, $3);" ],
               [ "e - e",   "$$ = node(@$, 'binop', '-', $1, $3);" ],
               [ "e * e",   "$$ = node(@$, 'binop', '*', $1, $3);" ],
               [ "e / e",   "$$ = node(@$, 'binop', '/', $1, $3);" ],
-              [ "e ^ e",   "$$ = node(@$, 'pow', $1, $3);" ],
-              [ "- e",     "$$ = node(@$, 'minus', $2);", {"prec": "UNARY"} ],
-              [ "+ e",     "$$ = node(@$, 'plus', $2);", {"prec": "UNARY"} ],
+              [ "e ^ e",   "$$ = node(@$, 'binop', '**', $1, $3);" ],
+              [ "- e",     "$$ = node(@$, 'unary', '-', $2);", {"prec": "UNARY"} ],
+              [ "+ e",     "$$ = node(@$, 'unary', '+', $2);", {"prec": "UNARY"} ],
+              [ "not e",   "$$ = node(@$, 'unary', '!', $2);", {"prec": "UNARY"} ],
               [ "( e )",   "$$ = $2;" ],
               [ "e ( comma_separated )", "$$ = node(@$, 'call', $1, $3);" ],
               [ "e [ e ]", "$$ = node(@$, 'index', $1, $3);" ],

@@ -56,4 +56,17 @@ describe("compiler", () => {
                 '  };\n' +
                 "}")
     })
+    it("compiles boolean", () => {
+        expect(compile(
+            "view main():\n 1 and 2\n 3 or 4\n not 0\n 1 and 2 or 3"))
+            .to.equal(imp +
+                "export function main() {\n" +
+                '  return function main(key) {\n' +
+                '    text(1 && 2);\n' +
+                '    text(3 || 4);\n' +
+                '    text(!0);\n' +
+                '    text(1 && 2 || 3);\n' +
+                '  };\n' +
+                "}")
+    })
 })

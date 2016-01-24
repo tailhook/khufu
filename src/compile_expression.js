@@ -78,9 +78,18 @@ export function compile(item, path, opt) {
             return T.callExpression(compile(fun, path, opt),
                 args.map(x => compile(x, path, opt)))
         }
+        case 'unary': {
+            let [_unary, op, value] = item
+            return T.unaryExpression(op, compile(value, path, opt))
+        }
         case 'binop': {
             let [_binop, oper, left, right] = item
             return T.binaryExpression(oper,
+                compile(left, path, opt), compile(right, path, opt))
+        }
+        case 'logop': {
+            let [_logop, oper, left, right] = item
+            return T.logicalExpression(oper,
                 compile(left, path, opt), compile(right, path, opt))
         }
         case 'if': {
