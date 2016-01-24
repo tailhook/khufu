@@ -172,6 +172,7 @@ export var parser = new Parser({
             ["link { linknames } e -> STORE NL",
                 "$$ = node(@$, 'link', $3, $5, ['store', $7]);"],
             ["store STORE = e NL", "$$ = node(@$, 'store', $2, $4)"],
+            ["store STORE = e <- e NL", "$$ = node(@$, 'store', $2, $4, $6)"],
         ],
         "attributes": list('attribute'),
         "attribute": [

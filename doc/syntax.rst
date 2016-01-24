@@ -287,6 +287,15 @@ Attribute access and methods calls are supported, too::
    diffing technique works: if element is removed, we remove the store too. If
    on the next rerender the element is still rendered, the store is reused.
 
+To initialize a store to something other than it's default value you may want
+to send it an initial action:
+
+    store @m = createStore(store) <- init('value')
+
+The action is sent when store is first created (including when it's removed and
+added again). This action is also sent on live reload. The store or middleware
+may interpret the action in any sensible way.
+
 Ocasionally, you may find it useful to import a store::
 
     import {@router} from './myrouting'
@@ -295,10 +304,13 @@ Ocasionally, you may find it useful to import a store::
         if @router.current_page == '/home':
             ...
 
-Or you might pass store as an argument. Declaring function argument to a store
-is as easy as prefix the name with ``@``. But if you pass the ``@x`` as an
+Or you might pass store as an argument. Declaring function argument as a store
+is as easy as prefixing the name with ``@``. But if you pass the ``@x`` as an
 argument you will pass the *value*. So to pass the *store itself* you need to
-add an arrow to the store ``-> @name``. For example::
+add an arrow to the expression ``-> @name``. As the only reason to pass the
+store to the function is sending events to it (otherwise you can just pass the
+state), you may think of it as a "function call will send events to the store"
+(which is denoted by the arrow, see `Links`_). For example::
 
     view button(name, num, @mystore):
       <button>
@@ -308,8 +320,8 @@ add an arrow to the store ``-> @name``. For example::
     view main():
       <div>
         store @cnt = createStore(Counter)
-        button('+1', +1, @cnt)
-        button('-1', -1, @cnt)
+        button('+1', +1, -> @cnt)
+        button('-1', -1, -> @cnt)
         <input value=@cnt>
 
 

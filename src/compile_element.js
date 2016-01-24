@@ -85,23 +85,43 @@ function insert_static(elname, attributes, path, opt) {
 
 function insert_stores(elname, stores, genattrs, path, opt) {
     genattrs.push(['__stores', T.objectExpression(
-        stores.map(([_store, name, value]) => {
+        stores.map(([_store, name, value, init]) => {
             let [call, expr, args] = value
             if(call != 'call' || !Array.isArray(args) || args.length != 1) {
                 throw parse_tree_error("Store constructor must be a function" +
                     " call with exactly one argument. " +
                     "For example: `createStore(x)`. Got", value)
             }
-            return T.objectProperty(
-                T.identifier(name),
-                T.functionExpression(null,
-                    [T.identifier('state')], T.blockStatement([
-                    // TODO(tailhook) pass path to function rather than outer
-                    T.returnStatement(T.callExpression(
-                        expression.compile(expr, path, opt),
-                        [expression.compile(args[0], path, opt),
-                         T.identifier('state')]))
-                ])))
+            if(init == undefined) {
+                return T.objectProperty(
+                    T.identifier(name),
+                    T.functionExpression(null,
+                        [T.identifier('state')], T.blockStatement([
+                        // TODO(tailhook) pass path to function rather than outer
+                        T.returnStatement(T.callExpression(
+                            expression.compile(expr, path, opt),
+                            [expression.compile(args[0], path, opt),
+                             T.identifier('state')]))
+                    ])))
+            } else {
+                return T.objectProperty(
+                    T.identifier(name),
+                    T.functionExpression(null,
+                        [T.identifier('state')], T.blockStatement([
+                        // TODO(tailhook) pass path to function rather than outer
+                        T.variableDeclaration('let', [
+                            T.variableDeclarator(T.identifier('store'),
+                                T.callExpression(
+                                    expression.compile(expr, path, opt),
+                                    [expression.compile(args[0], path, opt),
+                                     T.identifier('state')]))]),
+                        T.expressionStatement(T.callExpression(
+                            T.memberExpression(T.identifier('store'),
+                                T.identifier('dispatch')),
+                            [expression.compile(init, path, opt)])),
+                        T.returnStatement(T.identifier('store'))
+                    ])))
+            }
         }))])
 }
 

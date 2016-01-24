@@ -186,6 +186,34 @@ describe("compiler", () => {
             '  };\n' +
             "}")
     })
+    it("compiles a store with init", () => {
+        expect(compile("import {createStore, mystore, init} from './stores'\n" +
+                       "view main():\n" +
+                       " <p>\n" +
+                       "  store @x = createStore(mystore) <- init(1)\n" +
+                       "  @x.value\n"))
+        .to.equal(imp +
+            'import { createStore, mystore, init } from "./stores";\n' +
+            "export function main() {\n" +
+            '  return function main(key) {\n' +
+            '    let _p_stores = elementOpen("p", key + "-1-p", null, ' +
+                                            '"__stores", {\n' +
+            '      x: function (state) {\n' +
+            '        let store = createStore(mystore, state);\n' +
+            '        store.dispatch(init(1));\n' +
+            '        return store;\n' +
+            '      }\n' +
+            '    }).__stores;\n' +
+            '\n' +
+            '    {\n' +
+            '      let _x_state = _p_stores.x.getState();\n' +
+            '\n' +
+            '      text(_x_state.value);\n' +
+            '    }\n' +
+            '    elementClose("p");\n' +
+            '  };\n' +
+            "}")
+    })
     it("compiles a link", () => {
         expect(compile(
             "import {createStore, mystore, action} from './stores'\n" +
