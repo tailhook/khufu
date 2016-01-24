@@ -183,6 +183,13 @@ export var parser = new Parser({
             ["e", "$$ = [$1];"],
             ["", "$$ = [];"],
         ],
+        "object_entries": [
+            ["IDENT : e , object_entries", "$$ = [[$1, $3]].concat($5);"],
+            ["STRING : e , object_entries", "$$ = [[$1, $3]].concat($5);"],
+            ["IDENT : e", "$$ = [[$1, $3]];"],
+            ["STRING : e", "$$ = [[$1, $3]];"],
+            ["", "$$ = [];"],
+        ],
         "template": [
             ["TEMPLATE_BEGIN template_pair TEMPLATE_END",
                 "$$ = [['const', $1]].concat($2).concat([['const', $3]])"],
@@ -205,6 +212,7 @@ export var parser = new Parser({
               [ "+ e",     "$$ = node(@$, 'unary', '+', $2);", {"prec": "UNARY"} ],
               [ "not e",   "$$ = node(@$, 'unary', '!', $2);", {"prec": "UNARY"} ],
               [ "( e )",   "$$ = $2;" ],
+              [ "{ object_entries }",   "$$ = node(@$, 'object', $2);" ],
               [ "e ( comma_separated )", "$$ = node(@$, 'call', $1, $3);" ],
               [ "e [ e ]", "$$ = node(@$, 'index', $1, $3);" ],
               [ "e . IDENT", "$$ = node(@$, 'attr', $1, $3);" ],

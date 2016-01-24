@@ -38,6 +38,21 @@ export function compile(item, path, opt) {
             return T.arrayExpression(expressions.map(x =>
                 compile(x, path, opt)))
         }
+        case 'object': {
+            let [_object, expressions] = item;
+            return T.objectExpression(
+                expressions.map(([k, v]) => {
+                    if(/[a-zA-Z_][a-zA_Z_0-9]*/.exec(k)) {
+                        return T.objectProperty(T.identifier(k),
+                            compile(v, path, opt),
+                            false, true, null);
+                    } else {
+                        return T.objectProperty(T.stringLiteral(k),
+                            compile(v, path, opt),
+                            true, false, null)
+                    }
+                }))
+        }
         case 'name': {
             let [_name, name] = item;
             if(GLOBAL_NAMES.has(name)) {

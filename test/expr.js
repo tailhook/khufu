@@ -80,4 +80,18 @@ describe("compiler", () => {
                 '  };\n' +
                 "}")
     })
+
+    it("compiles object expression", () => {
+        expect(compile(
+            "view main():\n {key1: 2+2, 'key2': 3*3}"))
+            .to.equal(imp +
+                "export function main() {\n" +
+                '  return function main(key) {\n' +
+                '    text({\n' +
+                '      key1: 2 + 2,\n' +
+                '      key2: 3 * 3\n' +
+                '    });\n' +
+                '  };\n' +
+                "}")
+    })
 })
