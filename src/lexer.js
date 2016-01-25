@@ -27,7 +27,7 @@ function lex(value) {
                 this.newline = false;
             }
             if(old_state == this.state && this.state == VIEW_LINESTART) {
-                this.state == VIEW;
+                this.state = VIEW;
             }
             return result;
         }
@@ -115,14 +115,15 @@ export default function () {
     lexer.addRule(/[ \t]+/, lex(() => {}), []);
 
     lexer.addRule(/[({\[<]/, lex(function (lexeme) {
-        this.brackets.unshift(lexeme);
-        if(lexeme == '<' && this.brackets.length == 1) {
-            if(this.state == VIEW_LINESTART) {
+        if(lexeme == '<') {
+            if(this.brackets.length == 0 && this.state == VIEW_LINESTART) {
+                this.brackets.unshift(lexeme);
                 this.state = VIEW_TAG;
             } else {
                 this.reject = true;
             }
         } else {
+            this.brackets.unshift(lexeme);
             if(this.state == VIEW_TAG) {
                 this.state = VIEW;
             }
@@ -135,12 +136,18 @@ export default function () {
             this.reject = true;
             return;
         }
-        if(lexeme == '>' && this.brackets.length == 1) {
-            this.state = VIEW;
-        }
-        this.brackets.shift();
-        if(this.brackets[0] == '<') {
-            this.state = VIEW_TAG;
+        if(lexeme == '>') {
+            if(this.brackets.length == 1 && this.brackets[0] == '<') {
+                this.brackets.shift();
+                this.state = VIEW;
+            } else {
+                this.reject = true;
+            }
+        } else {
+            this.brackets.shift();
+            if(this.brackets[0] == '<') {
+                this.state = VIEW_TAG;
+            }
         }
         return lexeme;
     }), []);
@@ -209,7 +216,11 @@ export default function () {
 
     lexer.addRule(/->/, lex(x => x), [VIEW, VIEW_LINESTART]);
     lexer.addRule(/<-/, lex(x => x), [VIEW, VIEW_LINESTART]);
-    lexer.addRule(/[:,.*+/=<>!?-]/, lex(x => x),
+    lexer.addRule(/[!=][=][=]/, lex(x => x),
+        [VIEW, VIEW_LINESTART, VIEW_TEMPLATE]);
+    lexer.addRule(/[><!=]\=/, lex(x => x),
+        [VIEW, VIEW_LINESTART, VIEW_TEMPLATE]);
+    lexer.addRule(/[:,.*+/%=<>!?-]/, lex(x => x),
         [VIEW, VIEW_LINESTART, VIEW_TEMPLATE]);
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, lex(function(lexeme) {
         if(VIEW_KW.indexOf(lexeme) >= 0) {

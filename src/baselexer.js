@@ -89,7 +89,8 @@ class LexerInstance {
     }
 
     defunct(chr) {
-        throw Error('Unexpected character "' + chr + '"\n' +
+        throw Error('Unexpected character "' + chr +
+            '" (state: ' + this.state + ')\n' +
             this.showPosition())
     }
 

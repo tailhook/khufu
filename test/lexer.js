@@ -36,4 +36,10 @@ describe("lexes", () => {
         expect(lextxt("'snowman -> \u2603'"))
             .to.deep.equal(['snowman -> ☃', ''/*NL*/, ''/*EOF*/])
     })
+    it("comparison operators", () => {
+        expect(lex("view\n == != >= <= > < === !=="))
+            .to.deep.equal(['view', 'NL', 'INDENT',
+                '==', '!=', '>=', '<=', '>', '<', '===', '!==',
+                'NL', 'DEDENT', 'EOF'])
+    })
 })
