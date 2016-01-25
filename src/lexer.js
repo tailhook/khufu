@@ -34,6 +34,26 @@ function lex(value) {
     }
 }
 
+function unquote(value) {
+    return value.replace(/\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}/, function(x) {
+        console.log(x)
+        switch(x.charAt(1)) {
+            case '"': return '"';
+            case "'": return "'";
+            case "b": return "\b";
+            case "f": return "\f";
+            case "n": return "\n";
+            case "r": return "\r";
+            case "t": return "\t";
+            case "/": return "/";
+            case "\\": return "\\";
+            case "u": return String.fromCharCode(parseInt(x.substr(2), 16));
+            default: return x;
+        }
+        return x
+    })
+}
+
 export default function () {
     let lexer = new Lexer();
 
@@ -127,14 +147,12 @@ export default function () {
 
     lexer.addRule(/"(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|[^"\\])*"/,
         lex(function (lex) {
-            // TODO(tailhook) unescape
-            this.yytext = lex.substr(1, lex.length-2);
+            this.yytext = unquote(lex.substr(1, lex.length-2));
             return 'STRING';
         }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART, VIEW_TEMPLATE]);
     lexer.addRule(/'(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|[^'\\])*'/,
         lex(function (lex) {
-            // TODO(tailhook) unescape
-            this.yytext = lex.substr(1, lex.length-2);
+            this.yytext = unquote(lex.substr(1, lex.length-2));
             return 'STRING';
         }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART, VIEW_TEMPLATE]);
 
@@ -214,12 +232,11 @@ export default function () {
     lexer.addRule(
         /`(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|\$(?!\{)|[^$`\\])*(?:`|\$\{)/,
         lex(function (lex) {
-            // TODO(tailhook) unescape
             if(lex.charAt(lex.length-1) == '`') {
-                this.yytext = lex.substr(1, lex.length-2);
+                this.yytext = unquote(lex.substr(1, lex.length-2));
                 return 'STRING';
             } else {
-                this.yytext = lex.substr(1, lex.length-3);
+                this.yytext = unquote(lex.substr(1, lex.length-3));
                 this.templates += 1;
                 this.state = VIEW_TEMPLATE;
                 return 'TEMPLATE_BEGIN';
@@ -228,9 +245,8 @@ export default function () {
     lexer.addRule(
         /}(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|\$(?!\{)|[^$`\\])*(?:`|\$\{)/,
         lex(function (lex) {
-            // TODO(tailhook) unescape
             if(lex.charAt(lex.length-1) == '`') {
-                this.yytext = lex.substr(1, lex.length-2);
+                this.yytext = unquote(lex.substr(1, lex.length-2));
                 this.templates -= 1;
                 if(!this.templates) {
                     if(this.brackets[0] == '<') {
@@ -241,7 +257,7 @@ export default function () {
                 }
                 return 'TEMPLATE_END';
             } else {
-                this.yytext = lex.substr(1, lex.length-3);
+                this.yytext = unquote(lex.substr(1, lex.length-3));
                 return 'TEMPLATE_INTER';
             }
         }), [VIEW_TEMPLATE]);

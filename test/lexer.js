@@ -12,9 +12,28 @@ function lex(str) {
     return res
 }
 
+function lextxt(str) {
+    let x = new Lexer();
+    let tok
+    let res = []
+    x.setInput(str);
+    while((tok = x.lex()) != undefined) {
+        res.push(x.yytext)
+    }
+    return res
+}
+
 describe("lexes", () => {
     it("default imports", () => {
         expect(lex("import x from 'y'"))
             .to.deep.equal(['import', 'IDENT', 'from', 'STRING', 'NL', 'EOF'])
+    })
+    it("unescape string", () => {
+        expect(lextxt("'y\\ny'"))
+            .to.deep.equal(['y\ny', ''/*NL*/, ''/*EOF*/])
+    })
+    it("unescape unicode", () => {
+        expect(lextxt("'snowman -> \u2603'"))
+            .to.deep.equal(['snowman -> ☃', ''/*NL*/, ''/*EOF*/])
     })
 })
