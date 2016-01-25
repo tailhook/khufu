@@ -203,6 +203,10 @@ In angular-brackets you might wrap line as you wish::
 There is never need to write an ``onclick`` or similar event handler directly
 inside the attribute. See ``link`` for an idea of how we work with events.
 
+.. note:: Unlike in incremental-dom_ by default we set boolean attributes using
+   property (``el[x]``) instead of ``el.setAttribute(x)``. This works better
+   for attributes like ``checked``.
+
 We have a short syntax for defining ``class`` attribute, similar to one used
 in CSS::
 
