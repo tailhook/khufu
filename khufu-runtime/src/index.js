@@ -1,6 +1,7 @@
 import {store_handler, cleanup_stores} from './stores'
 import {patch, attributes, notifications, symbols} from 'incremental-dom'
 import {elementOpen, elementClose, elementVoid, text} from 'incremental-dom'
+import {applyAttr, applyProp} from 'incremental-dom'
 import {CANCEL} from './stores'
 import {add_style} from './style'
 import {item} from './dom'
@@ -9,7 +10,7 @@ import {item} from './dom'
 export {CANCEL, add_style, item,
         elementOpen, elementClose, elementVoid, text}
 
-// This is different from incrementa-dom default, because it sets boolean
+// This is different from incremental-dom default, because it sets boolean
 // attributes as property instead of attribute. This works better for
 // properties like `checked`. May need better heuristics though.
 function applyAttribute(el, name, value) {
