@@ -11,7 +11,7 @@ describe("compiler", () => {
             .to.equal(imp +
                 'import { x } from "y";\n' +
                 "export function main() {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    item(x(1), key + "-1");\n' +
                 '  };\n' +
                 "}")
@@ -22,7 +22,7 @@ describe("compiler", () => {
             .to.equal(imp +
                 'import { x } from "y";\n' +
                 "export function main() {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    item(x(1, 2, 3), key + "-1");\n' +
                 '  };\n' +
                 "}")
@@ -31,7 +31,7 @@ describe("compiler", () => {
         expect(compile("view main():\n [1, 2, 3]"))
             .to.equal(imp +
                 "export function main() {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    text([1, 2, 3]);\n' +
                 '  };\n' +
                 "}")
@@ -40,7 +40,7 @@ describe("compiler", () => {
         expect(compile("view main():\n (1+2*3)/4"))
             .to.equal(imp +
                 "export function main() {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    text((1 + 2 * 3) / 4);\n' +
                 '  };\n' +
                 "}")
@@ -51,7 +51,7 @@ describe("compiler", () => {
             .to.equal(imp +
                 'import { x } from "y";\n' +
                 "export function main() {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    item(x(true, false, null), key + "-1");\n' +
                 '  };\n' +
                 "}")
@@ -61,7 +61,7 @@ describe("compiler", () => {
             "view main():\n 1 and 2\n 3 or 4\n not 0\n 1 and 2 or 3"))
             .to.equal(imp +
                 "export function main() {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    text(1 && 2);\n' +
                 '    text(3 || 4);\n' +
                 '    text(!0);\n' +
@@ -75,7 +75,7 @@ describe("compiler", () => {
             "view main():\n 1 and 2 ? 3 : 4"))
             .to.equal(imp +
                 "export function main() {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    text(1 && 2 ? 3 : 4);\n' +
                 '  };\n' +
                 "}")
@@ -86,7 +86,7 @@ describe("compiler", () => {
             "view main(x):\n x[0]"))
             .to.equal(imp +
                 "export function main(x) {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    text(x[0]);\n' +
                 '  };\n' +
                 "}")
@@ -97,7 +97,7 @@ describe("compiler", () => {
             "view main():\n {key1: 2+2, 'key2': 3*3}"))
             .to.equal(imp +
                 "export function main() {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    text({\n' +
                 '      key1: 2 + 2,\n' +
                 '      key2: 3 * 3\n' +
@@ -111,7 +111,7 @@ describe("compiler", () => {
             .to.equal(imp +
                 'import { a, b, x } from "y";\n' +
                 "export function main() {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    let _p_stores = elementOpen("p", key + "-1-p", ' +
                                                 'null, "__stores", {\n' +
                 '      x: function (state) {\n' +
@@ -134,7 +134,7 @@ describe("compiler", () => {
             .to.equal(imp +
                 'import { a, x } from "y";\n' +
                 "export function main() {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementOpen("p", key + "-1-p");\n' +
                 '    {\n' +
                 '      let _x_state = x.getState();\n' +
@@ -150,7 +150,7 @@ describe("compiler", () => {
             "view main(@x):\n @x"))
             .to.equal(imp +
                 "export function main(x) {\n" +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    let _x_state = x.getState();\n' +
                 '\n' +
                 '    text(_x_state);\n' +

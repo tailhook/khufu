@@ -138,7 +138,7 @@ export function compile(view, path, opt) {
             }
         }),
         T.blockStatement([
-            T.returnStatement(T.functionExpression(T.identifier(name),
+            T.returnStatement(T.functionExpression(T.identifier(name + '$'),
                 [T.identifier('key')],
                 T.blockStatement([]), false, false)),
         ]), false, false);

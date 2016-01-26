@@ -8,20 +8,20 @@ describe("compiler", () => {
     it("compiles empty function", () => {
         expect(compile("view main():"))
             .to.equal(imp + "export function main() {\n" +
-                "  return function main(key) {};\n" +
+                "  return function main$(key) {};\n" +
                 "}")
     })
     it("compiles private function", () => {
         expect(compile("view _main():"))
             .to.equal(imp + "\nfunction _main() {\n" +
-            "  return function _main(key) {};\n" +
+            "  return function _main$(key) {};\n" +
             "}")
     })
     it("compiles an element", () => {
         expect(compile("view main():\n <p>"))
             .to.equal(imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p");\n  };\n}')
     })
     it("compiles static attributes", () => {
@@ -30,7 +30,7 @@ describe("compiler", () => {
                 'let _P_ATTRS = ["a", "b"];\n' +
                 imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p", _P_ATTRS);\n' +
                 '  };\n}')
     })
@@ -38,7 +38,7 @@ describe("compiler", () => {
         expect(compile("view main():\n let x = 'b'\n <p a=x>"))
             .to.equal(imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    let _x = "b";\n' +
                 '    elementVoid("p", key + "-1-p", null, "a", _x);\n' +
                 '  };\n' +
@@ -49,7 +49,7 @@ describe("compiler", () => {
             .to.equal(
                 imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p", null, ' +
                                 '"a", "b", "c", "c");\n' +
                 '  };\n' +
@@ -61,7 +61,7 @@ describe("compiler", () => {
                 'let _P_ATTRS = ["class", "hello"];\n' +
                 imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p", _P_ATTRS);\n  };\n}')
     })
     it("compiles element with two classes", () => {
@@ -70,7 +70,7 @@ describe("compiler", () => {
                 'let _P_ATTRS = ["class", "hello world"];\n' +
                 imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p", _P_ATTRS);\n  };\n}')
     })
     it("compiles element with optional class", () => {
@@ -78,7 +78,7 @@ describe("compiler", () => {
             .to.equal(
                 imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p", null, ' +
                     '"class", "a b " + (0 ? "world" : ""));\n  };\n}')
     })
@@ -88,7 +88,7 @@ describe("compiler", () => {
             .to.equal(
                 imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p", null, ' +
                     '"class", "base a b " + (0 ? "world" : ""));\n' +
                 '    elementVoid("a", key + "-2-a");\n' +
@@ -101,7 +101,7 @@ describe("compiler", () => {
             .to.equal(
                 imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p", null, ' +
                                 '"class", "hello world");\n'+
                 '  };\n' +
@@ -111,7 +111,7 @@ describe("compiler", () => {
         expect(compile("view main():\n <p>\n  <a>\n   'text'\n <p>"))
             .to.equal(imp +
             'export function main() {\n' +
-            '  return function main(key) {\n' +
+            '  return function main$(key) {\n' +
             '    elementOpen("p", key + "-1-p");\n' +
             '    elementOpen("a", "-1-a");\n' +
             '    text("text");\n' +
@@ -127,7 +127,7 @@ describe("compiler", () => {
                        " let x = x + 1\n <p>\n  x\n"))
             .to.equal(imp +
             "export function main() {\n" +
-            '  return function main(key) {\n' +
+            '  return function main$(key) {\n' +
             '    let _x = 1,\n' +
             '        _x2 = _x + 1;\n' +
             '\n' +
@@ -146,7 +146,7 @@ describe("compiler", () => {
                        " <p>\n  x\n"))
             .to.equal(imp +
             "export function main() {\n" +
-            '  return function main(key) {\n' +
+            '  return function main$(key) {\n' +
             '    let _x = 1;\n' +
             '    elementOpen("p", key + "-1-p");\n' +
             '    {\n' +
@@ -169,7 +169,7 @@ describe("compiler", () => {
         .to.equal(imp +
             'import { createStore, mystore } from "./stores";\n' +
             "export function main() {\n" +
-            '  return function main(key) {\n' +
+            '  return function main$(key) {\n' +
             '    let _p_stores = elementOpen("p", key + "-1-p", null, ' +
                                             '"__stores", {\n' +
             '      x: function (state) {\n' +
@@ -195,7 +195,7 @@ describe("compiler", () => {
         .to.equal(imp +
             'import { createStore, mystore, init } from "./stores";\n' +
             "export function main() {\n" +
-            '  return function main(key) {\n' +
+            '  return function main$(key) {\n' +
             '    let _p_stores = elementOpen("p", key + "-1-p", null, ' +
                                             '"__stores", {\n' +
             '      x: function (state) {\n' +
@@ -227,7 +227,7 @@ describe("compiler", () => {
         .to.equal(imp +
             'import { createStore, mystore, action } from "./stores";\n' +
             "export function main() {\n" +
-            '  return function main(key) {\n' +
+            '  return function main$(key) {\n' +
             '    let _p_stores = elementOpen("p", key + "-1-p", null, ' +
                                             '"__stores", {\n' +
             '      x: function (state) {\n' +
@@ -255,7 +255,7 @@ describe("compiler", () => {
         expect(compile("view main():\n <p>\n if 0:\n  <a>"))
             .to.equal(imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p");\n' +
                 '\n' +
                 '    if (0) {\n' +
@@ -268,7 +268,7 @@ describe("compiler", () => {
         expect(compile("view main():\n <p>\n if 0:\n  <a>\n else:\n  <b>"))
             .to.equal(imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p");\n' +
                 '\n' +
                 '    if (0) {\n' +
@@ -284,7 +284,7 @@ describe("compiler", () => {
                        ' elif 1:\n  <div>'))
             .to.equal(imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p");\n' +
                 '\n' +
                 '    if (0) {\n' +
@@ -300,7 +300,7 @@ describe("compiler", () => {
                        ' elif 1:\n  <div>\n else:\n  <b>'))
             .to.equal(imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementVoid("p", key + "-1-p");\n' +
                 '\n' +
                 '    if (0) {\n' +
@@ -317,7 +317,7 @@ describe("compiler", () => {
         expect(compile("view main():\n <ul>\n  for a of []:\n   <li>\n    a"))
             .to.equal(imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    elementOpen("ul", key + "-1-ul");\n' +
                 '\n' +
                 '    for (let _a of []) {\n' +
@@ -339,13 +339,13 @@ describe("compiler", () => {
         .to.equal(imp +
             '\n' +
             'function _other(txt) {\n' +
-            '  return function _other(key) {\n' +
+            '  return function _other$(key) {\n' +
             '    text(txt);\n' +
             '  };\n' +
             '}\n' +
             '\n' +
             'export function main(x) {\n' +
-            '  return function main(key) {\n' +
+            '  return function main$(key) {\n' +
             '    item(_other(x), key + "-1");\n' +
             '  };\n}')
     })
@@ -370,7 +370,7 @@ describe("compiler", () => {
             .to.equal(
                 imp +
                 'export function main() {\n' +
-                '  return function main(key) {\n' +
+                '  return function main$(key) {\n' +
                 '    let _x = 1;\n' +
                 '    elementVoid("p", key + "-1-p", null, "a",' +
                               ' `a${ _x }b${ _x + 1 }`);\n' +
@@ -380,7 +380,7 @@ describe("compiler", () => {
         expect(compile("view main():\n <p>'text'\n"))
             .to.equal(imp +
             'export function main() {\n' +
-            '  return function main(key) {\n' +
+            '  return function main$(key) {\n' +
             '    elementOpen("p", key + "-1-p");\n' +
             '    text("text");\n' +
             '    elementClose("p");\n' +
@@ -391,7 +391,7 @@ describe("compiler", () => {
         expect(compile("view main(x):\n <p>`text: ${x}`\n"))
             .to.equal(imp +
             'export function main(x) {\n' +
-            '  return function main(key) {\n' +
+            '  return function main$(key) {\n' +
             '    elementOpen("p", key + "-1-p");\n' +
             '    text(`text: ${ x }`);\n' +
             '    elementClose("p");\n' +
