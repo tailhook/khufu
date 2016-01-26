@@ -1,8 +1,8 @@
 import {text} from 'incremental-dom'
 
-export function item(value) {
+export function item(value, key) {
     if(typeof value == 'function') {
-        value()
+        value(key)
     } else {
         text(value)
     }
