@@ -115,6 +115,7 @@ export var parser = new Parser({
         ],
         "css_item": [
             ["IDENT_TOKEN", "$$ = $1"],
+            ["PERCENTAGE_TOKEN", "$$ = $1"],
             ["HASH_TOKEN", "$$ = $1"],
             ["URL", "$$ = $1"],
             ["DIMENSION", "$$ = $1"],

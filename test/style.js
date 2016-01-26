@@ -79,6 +79,12 @@ describe("parses styles", () => {
                 ]]
             ]]])
     })
+    it("percent value", () => {
+        expect(parser.parse("style:\n  body\n    width: 75%\n"))
+            .to.deep.equal([['style', [
+                ['rule', ['body'], [['property', 'width', '75%']]]
+            ]]])
+    })
 })
 describe("parses styles", () => {
     it("empty", () => {

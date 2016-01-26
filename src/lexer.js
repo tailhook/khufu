@@ -205,6 +205,8 @@ export default function () {
 
     lexer.addRule(new RegExp(css_number + css_ident),
         lex("DIMENSION"), [STYLE]);
+    lexer.addRule(new RegExp(css_number + '%'),
+        lex("PERCENTAGE_TOKEN"), [STYLE]);
 
     lexer.addRule(new RegExp("url\\(\\s*(?:" +
         css_string + "|" + css_unquoted + ")\s*\\)"),
