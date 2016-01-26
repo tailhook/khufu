@@ -96,6 +96,11 @@ export function compile(item, path, opt) {
             return T.memberExpression(compile(object, path, opt),
                 T.identifier(name))
         }
+        case 'index': {
+            let [_index, object, key] = item
+            return T.memberExpression(compile(object, path, opt),
+                compile(key, path, opt), true)
+        }
         case 'call': {
             let [_call, fun, args] = item
             return T.callExpression(compile(fun, path, opt),

@@ -81,6 +81,17 @@ describe("compiler", () => {
                 "}")
     })
 
+    it("compiles computed attr access", () => {
+        expect(compile(
+            "view main(x):\n x[0]"))
+            .to.equal(imp +
+                "export function main(x) {\n" +
+                '  return function main(key) {\n' +
+                '    text(x[0]);\n' +
+                '  };\n' +
+                "}")
+    })
+
     it("compiles object expression", () => {
         expect(compile(
             "view main():\n {key1: 2+2, 'key2': 3*3}"))
