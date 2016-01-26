@@ -114,6 +114,12 @@ describe("views", () => {
                         ['store', 'y']]
             ]]]]])
     })
+    it("empty not precedence", () => {
+        expect(parser.parse("view main(x):\n not x.y"))
+            .to.deep.equal([['view', 'main', ['x'], [
+                ['expression', ['unary', '!', ['attr', ['name', 'x'], 'y']]]
+            ]]])
+    })
     it("empty template", () => {
         expect(parser.parse("view main():\n ``"))
             .to.deep.equal([['view', 'main', [], [
