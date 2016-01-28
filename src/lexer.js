@@ -36,7 +36,6 @@ function lex(value) {
 
 function unquote(value) {
     return value.replace(/\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}/, function(x) {
-        console.log(x)
         switch(x.charAt(1)) {
             case '"': return '"';
             case "'": return "'";
