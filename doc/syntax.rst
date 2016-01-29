@@ -18,6 +18,9 @@ Overview
    value, the javascript rules for expressions are used, with few limitations
 5. Blocks ``view``, ``style``, ``for``, ``if``, ``elif``, ``else`` require
    the colon before indented block, just like in python
+6. See `The Javascript Parlance`_ section for the expression language
+   description
+7. Be sure to read `No Side Effects Rule`_ section
 
 
 .. hint:: We have a :ref:`demo` page showing some useful code examples
@@ -534,6 +537,106 @@ functions and they should work as expected.
    ``key`` as an argument and renders a dom as a side effect (this is how
    incremental-dom_ works). Usually it's not a problem as you never expect
    functions to be rendered as a text node.
+
+
+The Javascript Parlance
+=======================
+
+In many places we allow arbitrary javascript-like expressions. They are mostly
+same as javascript but have important differences.
+
+The only thing that is different in expressions is the syntax of boolean
+operators: they are replaced with ``and``, ``or``, ``not`` keywords for
+readability.  ``not`` operator has lower precedence, it's just above ``and``,
+so ``not a == b`` is ``!(a == b)`` and not ``(!a) == b`` like in javascript.
+
+The functionality that is absent in khufu by design:
+
+1. Function declarations
+2. All mutation operators, including assignments, augmented assigments,
+   increments and ``delete`` operator (but see `let statements`_)
+3. Bitwise operators
+4. ``new``, ``void``, ``typeof``, ``instanceof``
+5. All kinds of Javascript statements (see above for khufu-specific ones)
+
+
+No Side Effects Rule
+====================
+
+It should be the first thing you should know about the khufu language, except
+you need to understand the language to read this section. The two rules of
+thumb are:
+
+1. Everything evaluated during single render assumed to have no side effects
+2. Every function or method call assumed to be pure (i.e. depend only
+   on arguments)
+
+In particular:
+
+* Attribute access assumed to be no-op
+* Function calls assumed to have no side effects
+* Objects passed to function calls are assumed to never mutate
+* Store state is assumed to never mutate during render
+
+Side effects are basically allowed in two places
+(``MUT_EXPR`` in the examples):
+
+1. The store constructor (``store @name = MUT_EXPR | middleware1``)
+2. The action creator expression (``link {ev} MUT_EXPR -> @store_name``)
+
+And the code in both places is assumed to have no influence on other variables
+used during render (actually an action creator expression is never
+evaluated during template render).
+
+This is important so that khufu can optimize things out. In particular khufu
+assumes that it's safe to do the following:
+
+1. Reorder evaluation of any expression. For example,
+   ``let x = a() + b()`` may be evaluated as
+   ``let b_ = b(), a_ = a(), x = a_ + b_``
+
+2. Evaluate expressions that depend neither on stores nor on function arguments
+   only once, at module intitialization. For example::
+
+       import {text} from './btn'
+       view render():
+            let x = 16
+            <input type='button' style={width: x + 'px'} value=text()>
+
+   May be compiled as::
+
+       import {text} from './btn'
+       const BUTTON_ATTRIBUTES = ['type', 'text',
+                                  'style', {width: '16px'},
+                                  'value', text()]
+       function render() {
+            elementVoid('button', 'x', BUTTON_ATTRIBUTES)
+       }
+
+   Note that neither the value of style nor the ``text()`` function are
+   evaluated on each call of ``render()``, they are cached in module
+   intitialization forever.
+
+3. Cache attribute access. For example::
+
+        <a href=`http://${lnk.host}/${lnk.path}`>
+            lnk.host
+
+   Is the same as::
+
+        let host_ = lnk.host
+        <a href=`http://${host_}/${lnk.path}`>
+            host_
+
+
+It may look like the rules are too complex. But they are not. Actually they
+are rules that most users of any virtual dom library obey anyway. The khufu
+is just a library that are going to make use of all of these assumptions
+for optimization
+
+.. note:: We do not make most optimizations yet. But they will be applied in
+   the future library and are assumed as non breaking with regards to
+   backwards compatibility
 
 
 .. _babel: https://babeljs.io/
