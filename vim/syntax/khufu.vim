@@ -14,7 +14,7 @@ syn match khufuComment "//.*$" contains=khufuTodo
 syn region khufuString start='"' end='"'
 syn region khufuString start="'" end="'"
 syn region khufuTag start="<" end=">" contains=khufuTagName,khufuAttr,khufuString,khufuStore
-syn match khufuTagName contained "<[a-z-]\+"ms=s+1
+syn match khufuTagName contained "<[a-zA-Z0-9-]\+"ms=s+1
 syn match khufuAttr contained "[a-z-]\+="me=e-1
 syn match khufuStore "@[a-zA-Z_][a-zA-Z0-9_]*"
 
