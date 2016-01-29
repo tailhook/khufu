@@ -104,6 +104,22 @@ These are set on object passed as the third argument to
             ));
         }
 
+   Or using `chrome DevTools extension`__::
+
+        import {createStore, applyMiddleware, compose} from 'redux'
+        import createLogger from 'redux-logger'
+        import thunk from 'redux-thunk'
+        import promise from 'redux-promise'
+
+        function store(reducer, middleware, state) {
+            return createStore(reducer, state, compose(
+                applyMiddleware(...middleware, thunk, promise, logger),
+                window.devToolsExtension ? window.devToolsExtension() : f => f
+            ));
+        }
+
+   __ https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd
+
    You don't have to treat everything in middleware list as redux_
    middleware. A lame example would be to allow actions to be used to seed some
    state in the store::
