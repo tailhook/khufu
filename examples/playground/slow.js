@@ -5,7 +5,7 @@ import {counter, block, unblock} from './counter'
 
 var sleep = (num) => new Promise((accept) => setTimeout(accept, num))
 
-function* delayable() {
+function* _delayable() {
     while(true) {
         let action = yield take('count')
         yield put(block())
@@ -25,4 +25,4 @@ export function count(num, step) {
     }
 }
 
-export var delayableStore = applyMiddleware(middleware(delayable))(createStore)
+export var delayable = middleware(_delayable)

@@ -1,6 +1,6 @@
 import {blockingCounter, counter} from './counter'
 import range from './range'
-import {delayableStore, count} from './slow'
+import {delayable, count} from './slow'
 
 style:
   .bar1, bar2
@@ -20,7 +20,7 @@ style:
 
 view main():
   <p>
-    store @counter = delayableStore(blockingCounter)
+    store @counter = blockingCounter | delayable
 
     <div.bar1>
       <button disabled=@counter.block>

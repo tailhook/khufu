@@ -161,19 +161,19 @@ describe("compiler", () => {
             "}")
     })
     it("compiles a store", () => {
-        expect(compile("import {createStore, mystore} from './stores'\n" +
+        expect(compile("import {mystore} from './stores'\n" +
                        "view main():\n" +
                        " <p>\n" +
-                       "  store @x = createStore(mystore)\n" +
+                       "  store @x = mystore\n" +
                        "  @x.value\n"))
         .to.equal(imp +
-            'import { createStore, mystore } from "./stores";\n' +
+            'import { mystore } from "./stores";\n' +
             "export function main() {\n" +
             '  return function main$(key) {\n' +
             '    let _p_stores = elementOpen("p", key + "-1-p", null, ' +
                                             '"__stores", {\n' +
-            '      x: function (state) {\n' +
-            '        return createStore(mystore, state);\n' +
+            '      x: function () {\n' +
+            '        return [mystore, []];\n' +
             '      }\n' +
             '    }).__stores;\n' +
             '\n' +
@@ -187,21 +187,19 @@ describe("compiler", () => {
             "}")
     })
     it("compiles a store with init", () => {
-        expect(compile("import {createStore, mystore, init} from './stores'\n" +
+        expect(compile("import {mystore, init} from './stores'\n" +
                        "view main():\n" +
                        " <p>\n" +
-                       "  store @x = createStore(mystore) <- init(1)\n" +
+                       "  store @x = mystore | init(1)\n" +
                        "  @x.value\n"))
         .to.equal(imp +
-            'import { createStore, mystore, init } from "./stores";\n' +
+            'import { mystore, init } from "./stores";\n' +
             "export function main() {\n" +
             '  return function main$(key) {\n' +
             '    let _p_stores = elementOpen("p", key + "-1-p", null, ' +
                                             '"__stores", {\n' +
-            '      x: function (state) {\n' +
-            '        let store = createStore(mystore, state);\n' +
-            '        store.dispatch(init(1));\n' +
-            '        return store;\n' +
+            '      x: function () {\n' +
+            '        return [mystore, [init(1)]];\n' +
             '      }\n' +
             '    }).__stores;\n' +
             '\n' +
@@ -216,22 +214,22 @@ describe("compiler", () => {
     })
     it("compiles a link", () => {
         expect(compile(
-            "import {createStore, mystore, action} from './stores'\n" +
+            "import {mystore, action} from './stores'\n" +
             "view main():\n" +
             " <p>\n" +
-            "  store @x = createStore(mystore)\n" +
+            "  store @x = mystore\n" +
             "  @x.value\n" +
             "  <button>\n" +
             "    link {click} action(1) -> @x\n"
             ))
         .to.equal(imp +
-            'import { createStore, mystore, action } from "./stores";\n' +
+            'import { mystore, action } from "./stores";\n' +
             "export function main() {\n" +
             '  return function main$(key) {\n' +
             '    let _p_stores = elementOpen("p", key + "-1-p", null, ' +
                                             '"__stores", {\n' +
-            '      x: function (state) {\n' +
-            '        return createStore(mystore, state);\n' +
+            '      x: function () {\n' +
+            '        return [mystore, []];\n' +
             '      }\n' +
             '    }).__stores;\n' +
             '\n' +

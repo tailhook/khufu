@@ -175,9 +175,13 @@ export var parser = new Parser({
             // TODO(tailhook) support other targets than stores
             ["link { linknames } e -> STORE NL",
                 "$$ = node(@$, 'link', $3, $5, ['store', $7]);"],
-            ["store STORE = e NL", "$$ = node(@$, 'store', $2, $4)"],
-            ["store STORE = e <- e NL", "$$ = node(@$, 'store', $2, $4, $6)"],
+            ["store STORE = e row_enhancers NL",
+                "$$ = node(@$, 'store', $2, $4, $5)"],
         ],
+        "row_enhancers": list('row_enhancer'),
+        "col_enhancers": list('col_enhancer'),
+        "row_enhancer": [["| e", "$$ = $2"]],
+        "col_enhancer": [["| e NL", "$$ = $2"]],
         "attributes": list('attribute'),
         "attribute": [
             ["TAG_NAME = attrvalue", "$$ = [$1, $3];"],

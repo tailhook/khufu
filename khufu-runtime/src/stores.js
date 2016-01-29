@@ -1,8 +1,9 @@
 import {attributes} from 'incremental-dom'
 
+export var store_constructor
 export const CANCEL = '@@khufu/CANCEL'
 
-export function store_handler(do_render, unsubscriptions) {
+export function store_handler(params, unsubscriptions) {
     return function(element, name, defs) {
         let old = element.__stores || {};
         let value = {};
@@ -10,15 +11,20 @@ export function store_handler(do_render, unsubscriptions) {
             let store = old[k];
             if(store) {
                 if(module.hot && module.hot.status() == 'apply') {
+                    // Let's get state before cancel in case cancel destructs
+                    // the state
+                    let old_state = store.getState()
                     store.__redraw_unsubscr()
                     store.dispatch({type: CANCEL, reason: 'hot-reload'})
-                    store = defs[k](store.getState())
-                    store.__redraw_unsubscr = store.subscribe(do_render)
+                    let [reducer, middleware] = defs[k]();
+                    store = params.store(reducer, middleware, old_state)
+                    store.__redraw_unsubscr = store.subscribe(params.render)
                 }
                 delete old[k];
             } else {
-                store = defs[k]();
-                store.__redraw_unsubscr = store.subscribe(do_render)
+                let [reducer, middleware] = defs[k]();
+                store = params.store(reducer, middleware)
+                store.__redraw_unsubscr = store.subscribe(params.render)
             }
             value[k] = store;
         }

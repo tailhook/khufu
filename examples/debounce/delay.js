@@ -18,6 +18,7 @@ function* guard(generator) {
 
 export function delay_saga(msec) {
     function* debounce() {
+        console.log("VALUE")
         while(true) {
             let action = yield take('delay')
             let deadline = Date.now() + msec
@@ -32,7 +33,5 @@ export function delay_saga(msec) {
             yield put(action.action)
         }
     }
-    return applyMiddleware(
-        middleware(() => guard(debounce))
-    )(createStore)
+    return middleware(() => guard(debounce))
 }

@@ -2,7 +2,7 @@ import {store_handler, cleanup_stores} from './stores'
 import {patch, attributes, notifications, symbols} from 'incremental-dom'
 import {elementOpen, elementClose, elementVoid, text} from 'incremental-dom'
 import {applyAttr, applyProp} from 'incremental-dom'
-import {CANCEL} from './stores'
+import stores, {CANCEL} from './stores'
 import {add_style} from './style'
 import {item} from './dom'
 
@@ -22,13 +22,13 @@ function applyAttribute(el, name, value) {
    }
 }
 
-function set_global_state(fun) {
+function set_global_state(params) {
     var old = {
         stores: attributes.__stores,
         applyAttr: attributes[symbols.default],
         deleted: notifications.nodesDeleted,
     }
-    attributes.__stores = store_handler(fun)
+    attributes.__stores = store_handler(params)
     attributes[symbols.default] = applyAttribute
     notifications.nodesDeleted = cleanup_stores
     return old
@@ -40,7 +40,14 @@ function clean_global_state(old) {
     attributes.__stores = old.stores
 }
 
-export default function init(element, template) {
+export default function init(element, template, settings) {
+    if(typeof settings.store !== 'function') {
+        throw Error("Third argument to khufu must be a settings object " +
+                    "and has `store` function (see http://bit.ly/store_cons)")
+    }
+
+    let params = {...settings, render: queue_render }
+
     let queued = false;
     function queue_render() {
         if(!queued) {
@@ -50,7 +57,7 @@ export default function init(element, template) {
     }
     function render() {
         queued = false;
-        let obj = set_global_state(queue_render)
+        let obj = set_global_state(params)
         try {
             patch(element, template)
         } catch(e) {

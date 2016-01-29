@@ -1,9 +1,8 @@
 import {Counter, counter} from './counter'
-import {createStore} from 'redux'
 
 view main():
   <p>
-    store @counter = createStore(Counter)
+    store @counter = Counter
 
     <button>
        link {click} counter(1) -> @counter

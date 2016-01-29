@@ -22,6 +22,9 @@ Overview
 
 .. hint:: We have a :ref:`demo` page showing some useful code examples
 
+.. note:: We refer to redux_ stores in multiple places. Actually you can
+   :ref:`customized what kind of stores to use<store_constructor>`
+
 
 Global Scope
 ============
@@ -266,11 +269,10 @@ Stores
 
 The ``store`` statement let you declare a redux_ store, for example::
 
-    import {createStore} from 'redux'
     import {counter} from './counter'
     view main():
       <p>
-        store @x = createStore(counter)
+        store @x = counter
 
 The stores are always denoted by ``@name``. In expression context the store
 name resolves to it's state, for example::
@@ -282,7 +284,7 @@ name resolves to it's state, for example::
 
 Attribute access and methods calls are supported, too::
 
-    store @m = createStore(immutableJsMapStore)
+    store @m = immutableJsMapStore
     "Primary: " + @m.get('primary_value')
     for key of @m.keys():
         "Additional key: " + key
@@ -291,14 +293,26 @@ Attribute access and methods calls are supported, too::
    diffing technique works: if element is removed, we remove the store too. If
    on the next rerender the element is still rendered, the store is reused.
 
-To initialize a store to something other than it's default value you may want
-to send it an initial action:
+You may apply middlewares to store. For example, here is our imaginary
+middleware that initializes the store with a value::
 
-    store @m = createStore(store) <- init('value')
+    store @m = reducer | init('value')
 
-The action is sent when store is first created (including when it's removed and
-added again). This action is also sent on live reload. The store or middleware
-may interpret the action in any sensible way.
+Multiple middlewares may be used::
+
+    store @m = reducer | init('value') | thunk | logger
+
+Middlewares can also be written on the following lines. In that case, they
+must be indented and only single middleware per line allowed::
+
+    store @store_name = reducer | init('value')
+        | createLogger({level: 'debug', duration: true, collapsed: true})
+
+You shoudn't apply logger here, but rather use it globally, by suplying custom
+:ref:`store initialization function<store_constructor>`. In the function you can
+also influence how middlewares are treated. For example, you can accept store
+enhancers instead of middlewares in the template code.  See :ref:`API
+documentation<store_constructor>` for more info.
 
 Ocasionally, you may find it useful to import a store::
 

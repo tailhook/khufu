@@ -1,7 +1,6 @@
 import {id} from './id'
 import {Text, update} from './text'
 import {delay_saga, delay} from './delay'
-import {createStore} from 'redux'
 
 style:
   .table
@@ -22,9 +21,9 @@ view main():
   <div.table>
     for ms of [0, 200, 1000]:
       <div.row>
-        store @value = delay_saga(ms)(Text)
+        store @value = Text | delay_saga(ms)
         <div.main>
-          store @id = createStore(id)
+          store @id = id
           <label for=@id>
             "Delay "
             ms
@@ -33,7 +32,7 @@ view main():
             link {blur, change, keyup, keydown} delay(update(this.value)) -> @value
 
         <div.clone>
-          store @id = createStore(id)
+          store @id = id
           <label.arrow for=@id>
             "⤷"
           <input id=@id disabled value=@value>

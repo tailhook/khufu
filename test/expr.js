@@ -114,8 +114,8 @@ describe("compiler", () => {
                 '  return function main$(key) {\n' +
                 '    let _p_stores = elementOpen("p", key + "-1-p", ' +
                                                 'null, "__stores", {\n' +
-                '      x: function (state) {\n' +
-                '        return a(b, state);\n' +
+                '      x: function () {\n' +
+                '        return [a(b), []];\n' +
                 '      }\n' +
                 '    }).__stores;\n' +
                 '\n' +

@@ -6,7 +6,7 @@ Khufu
 |--------------|-------------------------------------------|
 |Documentation | http://tailhook.github.io/khufu/          |
 |Demo          | http://tailhook.github.io/khufu/demo.html |
-|Status        | beta [¹](#1)                         |
+|Status        | beta [¹](#1)                              |
 
 
 At a glance, Khufu is a template-engine for [incremental-dom].
@@ -61,17 +61,16 @@ that's optimization orthogonal to what we're discussing here).
 For example:
 ```javascript
 
-    import {createStore} from 'redux'
-    import {Search, search} from 'myapp/search'
-    import {Image, load} from 'myapp/util/image_loading'
+    import {search, set_query} from 'myapp/search'
+    import {image, load} from 'myapp/util/image_loading'
     import {select} from 'myapp/action_creators'
 
     view main():
       <div>
-        store @results = createStore(Search)
+        store @results = search
         <form>
           <input type="text" placeholder="search">
-            link {change, keyup} search(this.value) -> @results
+            link {change, keyup} set_query(this.value) -> @results
 
         if @results.current_text:
           if @results.loading:
@@ -79,9 +78,9 @@ For example:
               "Loading..."
           else:
             <div.results>
-            for item in @results.items:
+            for item of @results.items:
               <div.result>
-                store @icon_loaded = createStore(Image) <- load(item.img)
+                store @icon_loaded = image | load(item.img)
                 if @icon_loaded.done:
                     <img src=item.img>
                 else:
@@ -99,8 +98,7 @@ Some explanations:
 1. Nesting of elements is denoted by indentation, hence no closing tags
 2. ``div.cls`` is shortcut for ``<div class="cls">``
 3. ``store`` denotes a [redux] store
-4. ``->`` and ``<-`` arrows dispatches an action for the store
-5. ``link`` allows to bind events to an action (or an action creator)
+4. ``link`` allows to bind events to an action (or an action creator)
 
 The store thing might need a more comprehensive explanation:
 
@@ -110,12 +108,12 @@ The store thing might need a more comprehensive explanation:
 4. They provide lifecycle hooks, so can dispose resources properly[⁵](#5)
 5. Store is prefixed by ``@`` to get nice property access syntax[⁶](#6)
 
-<a name=4>[4] Sure, you can delay requests by adding [RxJS] or [redux-saga] middlewares
-   to the store<br>
-<a name=5>[5] Yes, we attach resources (such as network requests) to stores, using
-   middleware<br>
-<a name=6>[6] Otherwise would need to call ``getState()`` each time. We also cache
-   the result of the method for subsequent attribute access
+<a name=4>[4] Sure, you can delay requests by adding [RxJS] or [redux-saga]
+or any other middleware to the store<br>
+<a name=5>[5] Yes, we attach resources (such as network requests) to stores,
+using middleware<br>
+<a name=6>[6] Otherwise would need to call ``getState()`` each time. We also
+cache the result of the method for subsequent attribute access
 
 Isn't it Like Good Old HTML?
 ----------------------------
