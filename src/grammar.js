@@ -196,6 +196,7 @@ export var parser = new Parser({
             ["STORE", "$$ = node(@$, 'store', $1);"],
             ["attrvalue . TAG_NAME", "$$ = node(@$, 'attr', $1, $3);"],
             ["( e )", "$$ = $2;"],
+            [ "{ object_entries }",   "$$ = node(@$, 'object', $2);" ],
             ["attrvalue ( comma_separated )", "$$ = node(@$, 'call', $1, $3);"],
             [ "template", "$$ = node(@$, 'template', $1);" ],
         ],

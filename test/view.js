@@ -60,6 +60,12 @@ describe("views", () => {
                 ], []]
             ]]])
     })
+    it("attribute obj", () => {
+        expect(parser.parse("view main():\n <button a={}>"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [], [['a', ['object', []]]], []]
+            ]]])
+    })
     it("text", () => {
         expect(parser.parse("view main():\n <button>\n  'x'"))
             .to.deep.equal([['view', 'main', [], [
