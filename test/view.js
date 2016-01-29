@@ -103,6 +103,14 @@ describe("views", () => {
                     ['store', 'name', ['name', 'expression'], []]]]
             ]]])
     })
+    it("store with pipe", () => {
+        expect(parser.parse("view main():\n <p>\n" +
+                            "  store @name = expression\n   | x"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'p', [], [], [
+                    ['store', 'name', ['name', 'expression'], [['name', 'x']]]]]
+            ]]])
+    })
     it("link", () => {
         expect(parser.parse(
                 "view main():\n <button>\n" +

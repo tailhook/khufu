@@ -177,6 +177,8 @@ export var parser = new Parser({
                 "$$ = node(@$, 'link', $3, $5, ['store', $7]);"],
             ["store STORE = e row_enhancers NL",
                 "$$ = node(@$, 'store', $2, $4, $5)"],
+            ["store STORE = e row_enhancers NL INDENT col_enhancers DEDENT",
+                "$$ = node(@$, 'store', $2, $4, $5.concat($8))"],
         ],
         "row_enhancers": list('row_enhancer'),
         "col_enhancers": list('col_enhancer'),
