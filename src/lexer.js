@@ -235,9 +235,9 @@ export default function () {
         return 'STORE';
     }), [TOPLEVEL, VIEW, VIEW_LINESTART, VIEW_TAG, VIEW_TEMPLATE]);
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_-]*/, lex('TAG_NAME'), [VIEW_TAG]);
-    lexer.addRule(/[=.?]/, lex(x => x), [VIEW_TAG]);
+    lexer.addRule(/[=.?+-]/, lex(x => x), [VIEW_TAG]);
     lexer.addRule(new RegExp(
-        "-?(?:[0-9]|[1-9][0-9]+)" +  // integer part
+        "(?:[0-9]|[1-9][0-9]+)" +  // integer part
         "(?:\\.[0-9]+)?" +           // fractional part
         "(?:[eE][-+]?[0-9]+)?\\b"),      // exponent
         lex("NUMBER"), [VIEW, VIEW_TAG, VIEW_LINESTART, VIEW_TEMPLATE])

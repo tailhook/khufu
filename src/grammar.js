@@ -191,6 +191,8 @@ export var parser = new Parser({
         ],
         "attrvalue": [
             ["NUMBER", "$$ = node(@$, 'number', $1);"],
+            ["- NUMBER", "$$ = node(@$, 'number', '-' + $2)"],
+            ["+ NUMBER", "$$ = node(@$, 'number', '+' + $2)"],
             ["STRING", "$$ = node(@$, 'string', $1);"],
             ["TAG_NAME", "$$ = node(@$, 'name', $1);"],
             ["STORE", "$$ = node(@$, 'store', $1);"],

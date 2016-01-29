@@ -66,6 +66,12 @@ describe("views", () => {
                 ['element', 'button', [], [['a', ['object', []]]], []]
             ]]])
     })
+    it("attribute -1", () => {
+        expect(parser.parse("view main():\n <button a=-1>"))
+            .to.deep.equal([['view', 'main', [], [
+                ['element', 'button', [], [['a', ['number', '-1']]], []]
+            ]]])
+    })
     it("text", () => {
         expect(parser.parse("view main():\n <button>\n  'x'"))
             .to.deep.equal([['view', 'main', [], [

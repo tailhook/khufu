@@ -157,4 +157,44 @@ describe("compiler", () => {
                 '  };\n' +
                 "}")
     })
+    it("compiles a-1", () => {
+        expect(compile(
+            "view main(a):\n a-1"))
+            .to.equal(imp +
+                "export function main(a) {\n" +
+                '  return function main$(key) {\n' +
+                '    text(a - 1);\n' +
+                '  };\n' +
+                "}")
+    })
+    it("compiles a(-1)", () => {
+        expect(compile(
+            "view main(a):\n a(-1)"))
+            .to.equal(imp +
+                "export function main(a) {\n" +
+                '  return function main$(key) {\n' +
+                '    item(a(-1), key + "-1");\n' +
+                '  };\n' +
+                "}")
+    })
+    it("compiles a+1", () => {
+        expect(compile(
+            "view main(a):\n a+1"))
+            .to.equal(imp +
+                "export function main(a) {\n" +
+                '  return function main$(key) {\n' +
+                '    text(a + 1);\n' +
+                '  };\n' +
+                "}")
+    })
+    it("compiles a(+1)", () => {
+        expect(compile(
+            "view main(a):\n a(+1)"))
+            .to.equal(imp +
+                "export function main(a) {\n" +
+                '  return function main$(key) {\n' +
+                '    item(a(+1), key + "-1");\n' +
+                '  };\n' +
+                "}")
+    })
 })
