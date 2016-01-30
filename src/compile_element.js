@@ -84,8 +84,12 @@ function insert_static(elname, attributes, path, opt) {
 }
 
 function insert_stores(elname, stores, genattrs, path, opt) {
+    let local_stores = new Map()
+    let stores_id = path.scope.generateUidIdentifier(elname + '_stores');
     genattrs.push(['__stores', T.objectExpression(
         stores.map(([_store, name, value, middlewares]) => {
+            local_stores.set(name,
+                T.memberExpression(stores_id, T.identifier(name)));
             return T.objectProperty(
                 T.identifier(name),
                 T.functionExpression(null,
@@ -97,9 +101,10 @@ function insert_stores(elname, stores, genattrs, path, opt) {
                                 expression.compile(m, path, opt)))]))
                 ])))
         }))])
+    return [stores_id, local_stores]
 }
 
-function insert_links(links, genattrs, path, opt) {
+function insert_links(links, genattrs, local_stores, path, opt) {
     let map = new Map()
     for(let [_link, names, action, target] of links) {
         for(let name of names) {
@@ -124,7 +129,10 @@ function insert_links(links, genattrs, path, opt) {
         console.assert(target[0] == 'store');
         let store = path.scope.getData('khufu:store:raw:' + target[1]);
         if(!store) {
-            throw Error("Unknown store: " + target[1]);
+            store = local_stores.get(target[1]);
+            if(!store) {
+                throw Error("Unknown store: " + target[1]);
+            }
         }
         fpath.scope.setData('binding:this', T.identifier('this'))
         fpath.scope.setData('binding:event', T.identifier('event'))
@@ -187,14 +195,14 @@ export function compile(element, path, opt, key) {
     if(stat.length) {
         attrib_expr = insert_static(name, stat, path, opt)
     }
-    let genattrs = [];
+    let genattrs = []
+    let local_stores = {}
     let stores_id;
     if(stores.length) {
-        insert_stores(name, stores, genattrs, path, opt)
-        stores_id = path.scope.generateUidIdentifier(name + '_stores');
+        [stores_id, local_stores] = insert_stores(name, stores, genattrs, path, opt)
     }
     if(links.length) {
-        insert_links(links, genattrs, path, opt)
+        insert_links(links, genattrs, local_stores, path, opt)
     }
 
     let attribs = [
@@ -223,7 +231,7 @@ export function compile(element, path, opt, key) {
     } else if(attrib_expr) {
         attribs.push(attrib_expr)
     }
-    if(body.length == 0) {
+    if(body.length == 0 && stores.length == 0) {
         let node = T.callExpression(T.identifier('elementVoid'), attribs)
         path.node.body.push(T.expressionStatement(node))
     } else {
@@ -239,9 +247,8 @@ export function compile(element, path, opt, key) {
 
         let blockpath = push_to_body(path, T.blockStatement([]));
         if(stores_id) {
-            for(let [_store, name, _] of stores) {
-                blockpath.scope.setData('khufu:store:raw:' + name,
-                    T.memberExpression(stores_id, T.identifier(name)));
+            for(let [name, expr] of local_stores) {
+                blockpath.scope.setData('khufu:store:raw:' + name, expr);
                 blockpath.scope.setData('khufu:store:state:' + name, null);
             }
         }

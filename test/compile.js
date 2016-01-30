@@ -290,6 +290,33 @@ describe("compiler", () => {
             '  };\n' +
             "}")
     })
+    it("compiles a link with store in single element", () => {
+        expect(compile(
+            "import {mystore, action} from './stores'\n" +
+            "view main():\n" +
+            " <p>\n" +
+            "  store @x = mystore\n" +
+            "  link {click} action(1) -> @x\n"
+            ))
+        .to.equal(imp +
+            'import { mystore, action } from "./stores";\n' +
+            "export function main() {\n" +
+            '  return function main$(key) {\n' +
+            '    function _ln_click(event) {\n' +
+            '      _p_stores.x.dispatch(action(1))\n' +
+            '    }\n' +
+            '\n' +
+            '    let _p_stores = elementOpen("p", key + "-1-p", null, ' +
+                                            '"__stores", {\n' +
+            '      x: function () {\n' +
+            '        return [mystore, []];\n' +
+            '      }\n' +
+            '    }, "onclick", _ln_click).__stores;\n' +
+            '\n' +
+            '    elementClose("p");\n' +
+            '  };\n' +
+            "}")
+    })
     it("compiles an if statement", () => {
         expect(compile("view main():\n <p>\n if 0:\n  <a>"))
             .to.equal(imp +
