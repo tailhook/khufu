@@ -37,15 +37,27 @@ export function store_handler(params, unsubscriptions) {
     }
 }
 
+function cleanup_stores_from(node) {
+    let stores = node.__stores;
+    if(stores) {
+        for(var k in stores) {
+            let store = stores[k]
+            store.__redraw_unsubscr()
+            store.dispatch({type: CANCEL, reason: 'element-removed'})
+        }
+    }
+}
+
 export function cleanup_stores(nodes) {
     for(let n of nodes) {
-        let stores = n.__stores;
-        if(stores) {
-            for(var k in stores) {
-                let store = stores[k]
-                store.__redraw_unsubscr()
-                store.dispatch({type: CANCEL, reason: 'element-removed'})
+        if(n.nodeType == 1) {
+            // The elements are in preorder, but we should do depth first
+            // cleanup of stores. So we iterate in reverse order
+            let children = n.getElementsByTagName('*');
+            for(let i = children.length-1; i >= 0; --i) {
+                cleanup_stores_from(children[i])
             }
+            cleanup_stores_from(n)
         }
     }
 }
