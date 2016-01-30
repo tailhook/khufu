@@ -4,7 +4,7 @@ import {parse_tree_error} from './compiler'
 import postcss from 'postcss'
 
 
-function rule(parent, item, opt) {
+function rule(parent, item, cls, opt) {
     let [_rule, selectors, properties] = item;
     if(opt.additional_class) {
         selectors = selectors.map(sel =>
@@ -31,14 +31,14 @@ export function to_postcss(body, opt) {
     for(var item of body) {
         switch(item[0]) {
             case 'rule': {
-                rule(root, item, opt)
+                rule(root, item, cls, opt)
                 break;
             }
             case 'media': {
                 let [_media, filter, rules] = item;
                 let atrule = postcss.rule({selector: '@media ' + filter})
                 for(var item of rules) {
-                    rule(atrule, item, opt)
+                    rule(atrule, item, cls, opt)
                 }
                 root.push(atrule)
                 break;
