@@ -100,8 +100,24 @@ function insert_stores(elname, stores, genattrs, path, opt) {
 }
 
 function insert_links(links, genattrs, path, opt) {
+    let map = new Map()
     for(let [_link, names, action, target] of links) {
-        let fid = path.scope.generateUidIdentifier('ln_' + names.join('_'))
+        for(let name of names) {
+            if(map.has(name)) {
+                map.get(name).push([action, target])
+            } else {
+                map.set(name, [[action, target]])
+            }
+        }
+    }
+    /// First visiting single-handler events
+    for(let [_link, names, action, target] of links) {
+        let single_refcnt_names = names.filter(x => map.get(x).length == 1);
+        if(single_refcnt_names.length == 0)
+            continue;
+
+        let fid = path.scope.generateUidIdentifier(
+            'ln_' + single_refcnt_names.join('_'))
         let fun = T.functionDeclaration(fid, [T.identifier('event')],
             T.blockStatement([]))
         let fpath = push_to_body(path, fun).get('body');
@@ -116,10 +132,34 @@ function insert_links(links, genattrs, path, opt) {
             T.memberExpression(store, T.identifier('dispatch')),
                 [expression.compile(action, fpath, opt)]));
 
-        for(let name of names) {
-            // TODO(tailhook) support multiple links
+        for(let name of single_refcnt_names) {
             genattrs.push(['on' + name, fid]);
         }
+    }
+    /// For now multiple handler events we create for each event separately
+    for(let [name, handlers] of map.entries()) {
+        if(handlers.length == 1)
+            continue;
+
+        let fid = path.scope.generateUidIdentifier('ln_' + name)
+        let fun = T.functionDeclaration(fid, [T.identifier('event')],
+            T.blockStatement([]))
+        let fpath = push_to_body(path, fun).get('body');
+
+        for(let [action, target] of handlers) {
+            console.assert(target[0] == 'store');
+            let store = path.scope.getData('khufu:store:raw:' + target[1]);
+            if(!store) {
+                throw Error("Unknown store: " + target[1]);
+            }
+            fpath.scope.setData('binding:this', T.identifier('this'))
+            fpath.scope.setData('binding:event', T.identifier('event'))
+            push_to_body(fpath, T.callExpression(
+                T.memberExpression(store, T.identifier('dispatch')),
+                    [expression.compile(action, fpath, opt)]));
+        }
+
+        genattrs.push(['on' + name, fid]);
     }
 }
 

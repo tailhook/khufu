@@ -257,6 +257,39 @@ describe("compiler", () => {
             '  };\n' +
             "}")
     })
+    it("two links", () => {
+        expect(compile(
+            "import {action} from './stores'\n" +
+            "view main(@x):\n" +
+            "  <button>\n" +
+            "    link {click, touch} action(1) -> @x\n" +
+            "    link {hover, click} action(2) -> @x\n"
+            ))
+        .to.equal(imp +
+            'import { action } from "./stores";\n' +
+            "export function main(_x) {\n" +
+            '  return function main$(key) {\n' +
+            '    function _ln_touch(event) {\n' +
+            '      _x.dispatch(action(1))\n' +
+            '    }\n' +
+            '\n' +
+            '    function _ln_hover(event) {\n' +
+            '      _x.dispatch(action(2))\n' +
+            '    }\n' +
+            '\n' +
+            '    function _ln_click(event) {\n' +
+            '      _x.dispatch(action(1))\n' +
+            '\n' +
+            '      _x.dispatch(action(2))\n' +
+            '    }\n' +
+            '\n' +
+            '    elementVoid("button", key + "-1-button", null,' +
+                              ' "ontouch", _ln_touch,' +
+                              ' "onhover", _ln_hover,' +
+                              ' "onclick", _ln_click);\n' +
+            '  };\n' +
+            "}")
+    })
     it("compiles an if statement", () => {
         expect(compile("view main():\n <p>\n if 0:\n  <a>"))
             .to.equal(imp +
