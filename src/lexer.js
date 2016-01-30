@@ -198,6 +198,7 @@ export default function () {
 
 
     lexer.addRule(/[:.,]/, lex(x => x), [STYLE]);
+    lexer.addRule(/@media/, lex("MEDIA"), [STYLE]);
     lexer.addRule(new RegExp(css_ident), lex("IDENT_TOKEN"), [STYLE]);
 
     lexer.addRule(new RegExp(css_number), lex("NUMBER"), [STYLE]);

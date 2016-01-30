@@ -4,6 +4,26 @@ import {parse_tree_error} from './compiler'
 import postcss from 'postcss'
 
 
+function rule(parent, item, opt) {
+    let [_rule, selectors, properties] = item;
+    if(opt.additional_class) {
+        selectors = selectors.map(sel =>
+            sel.replace(/^([a-zA-Z0-9-]*)/, '$1' + cls))
+    }
+    let rule = postcss.rule({'selector': selectors.join(', ')})
+    for(var line of properties) {
+        switch(line[0]) {
+            case 'property': {
+                let [_property, prop, value] = line;
+                rule.push(postcss.decl({prop, value}))
+                break;
+            }
+        }
+    }
+    parent.push(rule)
+}
+
+
 export function to_postcss(body, opt) {
     let root = postcss.root();
     let buf = []
@@ -11,22 +31,16 @@ export function to_postcss(body, opt) {
     for(var item of body) {
         switch(item[0]) {
             case 'rule': {
-                let [_rule, selectors, properties] = item;
-                if(opt.additional_class) {
-                    selectors = selectors.map(sel =>
-                        sel.replace(/^([a-zA-Z0-9-]*)/, '$1' + cls))
+                rule(root, item, opt)
+                break;
+            }
+            case 'media': {
+                let [_media, filter, rules] = item;
+                let atrule = postcss.rule({selector: '@media ' + filter})
+                for(var item of rules) {
+                    rule(atrule, item, opt)
                 }
-                let rule = postcss.rule({'selector': selectors.join(', ')})
-                for(var line of properties) {
-                    switch(line[0]) {
-                        case 'property': {
-                            let [_property, prop, value] = line;
-                            rule.push(postcss.decl({prop, value}))
-                            break;
-                        }
-                    }
-                }
-                root.push(rule)
+                root.push(atrule)
                 break;
             }
             default:

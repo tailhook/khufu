@@ -85,6 +85,14 @@ describe("parses styles", () => {
                 ['rule', ['body'], [['property', 'width', '75%']]]
             ]]])
     })
+    it("@media queries", () => {
+        expect(parser.parse('style:\n @media (max-width: 600px)\n' +
+                            '  body\n   width: 75%\n'))
+            .to.deep.equal([['style', [
+                ['media', '(max-width: 600px)', [
+                    ['rule', ['body'], [['property', 'width', '75%']]]]]
+            ]]])
+    })
 })
 describe("parses styles", () => {
     it("empty", () => {
@@ -103,6 +111,16 @@ describe("parses styles", () => {
         )[0][1], {always_add_class: new Set()})).to.equal(
             'p {\n' +
             '    text-align: left\n' +
+            '}')
+    })
+    it("media queries", () => {
+        expect(raw_style(parser.parse(
+            "style:\n @media screen\n  p\n   text-align: left"
+        )[0][1], {always_add_class: new Set()})).to.equal(
+            '@media screen {\n' +
+            '    p {\n' +
+            '        text-align: left\n' +
+            '    }\n' +
             '}')
     })
 })

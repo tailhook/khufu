@@ -47,7 +47,8 @@ export var parser = new Parser({
                 "$$ = node(@$, 'import_default', $2, $4);"],
             ["import * as IDENT from STRING NL",
                 "$$ = node(@$, 'import_namespace', $4, $6);"],
-            ["style : NL INDENT rules DEDENT", "$$ = node(@$, 'style', $5);"],
+            ["style : NL INDENT styleitems DEDENT",
+                "$$ = node(@$, 'style', $5);"],
             ["style : NL", "$$ = node(@$, 'style', [])"],
             ["view IDENT ( args ) : NL stmtblock",
                 "$$ = node(@$, 'view', $2, $4, $8)"],
@@ -65,14 +66,34 @@ export var parser = new Parser({
             ["STORE as STORE", "$$ = [['@' + $1, '@' + $3]];"],
         ],
         // CSS
+        "styleitems": [
+            ["styleitem styleitems", "$$ = [$1].concat($2);"],
+            ["", "$$ = [];"],
+        ],
         "rules": [
             ["rule rules", "$$ = [$1].concat($2);"],
             ["", "$$ = [];"],
+        ],
+        "styleitem": [
+            ["MEDIA media_queries NL INDENT rules DEDENT",
+                "$$ = node(@$, 'media', $2, $5)"],
+            ["MEDIA media_queries NL", "$$ = node(@$, 'media', $2, [])"],
+            ["rule", "$$ = $1"],
         ],
         "rule": [
             ["selectors NL INDENT properties DEDENT",
                 "$$ = node(@$, 'rule', $1, $4)"],
             ["selectors NL", "$$ = node(@$, 'rule', $1, [])"],
+        ],
+        "media_queries": [
+            ["media_query , media_queries", "$$ = $1 + ', ' + $3"],
+            ["media_query", "$$ = $1"],
+        ],
+        "media_query": [
+            ["IDENT_TOKEN", "$$ = $1"],
+            ["( media_query )", "$$ = '(' + $1 + ')'"],
+            ["( IDENT_TOKEN : css_item )", "$$ = '(' + $2 + ': ' + $4 + ')'"],
+            ["media_query and media_query", "$$ = $1 + ' and ' + $3"],
         ],
         "selectors": [
             ["selector", "$$ = [$1]"],
