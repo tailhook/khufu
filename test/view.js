@@ -8,11 +8,22 @@ describe("views", () => {
     })
     it("with arg", () => {
         expect(parser.parse("view some(x):"))
-            .to.deep.equal([['view', 'some', ['x'], []]])
+            .to.deep.equal([['view', 'some', [['name', 'x']], []]])
     })
     it("with args", () => {
         expect(parser.parse("view some(x, y, mm):"))
-            .to.deep.equal([['view', 'some', ['x', 'y', 'mm'], []]])
+            .to.deep.equal([['view', 'some',
+                [['name', 'x'], ['name', 'y'], ['name', 'mm']], []]])
+    })
+    it("with complex args", () => {
+        expect(parser.parse("view some(@s, x, [y, z], {k, l: [a, b]}):"))
+            .to.deep.equal([['view', 'some',
+                [['store', 's'],
+                 ['name', 'x'],
+                 ['unpack_list', [['name', 'y'], ['name', 'z']]],
+                 ['unpack_map', [['k', ['name', 'k']], ['l',
+                    ['unpack_list', [['name', 'a'], ['name', 'b']]]]]]],
+                []]])
     })
     it("element", () => {
         expect(parser.parse("view main():\n <button>"))
@@ -136,7 +147,7 @@ describe("views", () => {
     })
     it("empty not precedence", () => {
         expect(parser.parse("view main(x):\n not x.y"))
-            .to.deep.equal([['view', 'main', ['x'], [
+            .to.deep.equal([['view', 'main', [['name', 'x']], [
                 ['expression', ['unary', '!', ['attr', ['name', 'x'], 'y']]]
             ]]])
     })
@@ -154,7 +165,7 @@ describe("views", () => {
     })
     it("var in template", () => {
         expect(parser.parse("view main(x):\n\n `${x}`"))
-            .to.deep.equal([['view', 'main', ['x'], [
+            .to.deep.equal([['view', 'main', [['name', 'x']], [
                 ['expression', ['template', [
                     ['const', ''], ['expr', ['name', "x"]], ['const', '']
                 ]]]
@@ -162,7 +173,7 @@ describe("views", () => {
     })
     it("operator in template", () => {
         expect(parser.parse("view main(x):\n\n `${x+1}`"))
-            .to.deep.equal([['view', 'main', ['x'], [
+            .to.deep.equal([['view', 'main', [['name', 'x']], [
                 ['expression', ['template', [
                     ['const', ''], ['expr', ['binop', '+',
                         ['name', "x"], ['number', '1']]], ['const', '']
@@ -171,7 +182,7 @@ describe("views", () => {
     })
     it("template in attr", () => {
         expect(parser.parse("view main(x):\n <a href=`${x}`>"))
-            .to.deep.equal([['view', 'main', ['x'], [
+            .to.deep.equal([['view', 'main', [['name', 'x']], [
                 ['element', 'a', [], [['href',
                     ['template', [
                         ['const', ''], ['expr', ['name', "x"]], ['const', '']

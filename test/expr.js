@@ -85,9 +85,9 @@ describe("compiler", () => {
         expect(compile(
             "view main(x):\n x[0]"))
             .to.equal(imp +
-                "export function main(x) {\n" +
+                "export function main(_x) {\n" +
                 '  return function main$(key) {\n' +
-                '    text(x[0]);\n' +
+                '    text(_x[0]);\n' +
                 '  };\n' +
                 "}")
     })
@@ -149,9 +149,9 @@ describe("compiler", () => {
         expect(compile(
             "view main(@x):\n @x"))
             .to.equal(imp +
-                "export function main(x) {\n" +
+                "export function main(_x) {\n" +
                 '  return function main$(key) {\n' +
-                '    let _x_state = x.getState();\n' +
+                '    let _x_state = _x.getState();\n' +
                 '\n' +
                 '    text(_x_state);\n' +
                 '  };\n' +
@@ -161,9 +161,9 @@ describe("compiler", () => {
         expect(compile(
             "view main(a):\n a-1"))
             .to.equal(imp +
-                "export function main(a) {\n" +
+                "export function main(_a) {\n" +
                 '  return function main$(key) {\n' +
-                '    text(a - 1);\n' +
+                '    text(_a - 1);\n' +
                 '  };\n' +
                 "}")
     })
@@ -171,9 +171,9 @@ describe("compiler", () => {
         expect(compile(
             "view main(a):\n a(-1)"))
             .to.equal(imp +
-                "export function main(a) {\n" +
+                "export function main(_a) {\n" +
                 '  return function main$(key) {\n' +
-                '    item(a(-1), key + "-1");\n' +
+                '    item(_a(-1), key + "-1");\n' +
                 '  };\n' +
                 "}")
     })
@@ -181,9 +181,9 @@ describe("compiler", () => {
         expect(compile(
             "view main(a):\n a+1"))
             .to.equal(imp +
-                "export function main(a) {\n" +
+                "export function main(_a) {\n" +
                 '  return function main$(key) {\n' +
-                '    text(a + 1);\n' +
+                '    text(_a + 1);\n' +
                 '  };\n' +
                 "}")
     })
@@ -191,9 +191,9 @@ describe("compiler", () => {
         expect(compile(
             "view main(a):\n a(+1)"))
             .to.equal(imp +
-                "export function main(a) {\n" +
+                "export function main(_a) {\n" +
                 '  return function main$(key) {\n' +
-                '    item(a(+1), key + "-1");\n' +
+                '    item(_a(+1), key + "-1");\n' +
                 '  };\n' +
                 "}")
     })

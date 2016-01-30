@@ -57,24 +57,23 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
                 break;
             }
             case 'assign': {
-                let [_assign, name, value] = item;
+                let [_assign, target, value] = item;
                 let expr = compile_expression(value, path, opt);
-                let ident = path.scope.generateUidIdentifier(name);
-                path.scope.push({ id: ident, init: expr, kind: 'let' })
-                path.scope.setData('binding:' + name, ident);
+                let decl = lval.compile(target, path, opt)
+                path.scope.push({ id: decl, init: expr, kind: 'let' })
                 break;
             }
             case 'for': {
                 elements += 1;
                 let [_for, assign, source, loopkey, block] = item;
-                let [decl, bindings] = lval.compile(assign, path, opt)
-                let stmt = T.forOfStatement(decl,
+                let stmt = T.forOfStatement(
+                    T.variableDeclaration("let", []),
                     compile_expression(source, path, opt),
                     T.blockStatement([]))
                 let npath = push_to_body(path, stmt);
-                for(var x in bindings) {
-                    npath.scope.setData('binding:' + x, bindings[x])
-                }
+                let decl = lval.compile(assign, npath, opt)
+                npath.get('left').replaceWith(
+                    T.variableDeclaration("let", [T.variableDeclarator(decl)]))
                 compile_body(block, npath.get('body'), opt,
                     join_key(join_key(key, T.stringLiteral('-' + elements)),
                         compile_expression(loopkey, npath, opt)))
@@ -126,34 +125,22 @@ export function compile(view, path, opt) {
         path.scope.setData('khufu:dom-imported', true)
     }
 
-    let ext_node = T.functionDeclaration(T.identifier(name),
-        params.map(x => {
-            if(x.substr(0, 1) == '@') {
-                path.scope.setData('khufu:store:raw:' + x.substr(1),
-                    T.identifier(x.substr(1)))
-                path.scope.setData('khufu:store:state:' + x.substr(1), null);
-                return T.identifier(x.substr(1))
-            } else {
-                return T.identifier(x)
-            }
-        }),
+    let ext_node = T.functionDeclaration(T.identifier(name), [],
         T.blockStatement([
             T.returnStatement(T.functionExpression(T.identifier(name + '$'),
                 [T.identifier('key')],
                 T.blockStatement([]), false, false)),
         ]), false, false);
-    let ext_path
+    let ext_fun
     if(name[0] != '_') {
         ext_node = T.exportNamedDeclaration(ext_node, [])
-        ext_path = push_to_body(path, ext_node).get('declaration.body')
+        ext_fun = push_to_body(path, ext_node).get('declaration')
     } else {
-        ext_path = push_to_body(path, ext_node).get('body')
+        ext_fun = push_to_body(path, ext_node)
     }
-    let child_path = ext_path.get('body')[0].get('argument.body')
-
-    // bind params
-    for(let x of params) {
-        child_path.scope.setData('binding:' + x, T.identifier(x))
+    let child_path = ext_fun.get('body.body')[0].get('argument.body')
+    for(let param of params) {
+        ext_fun.node.params.push(lval.compile(param, child_path, opt))
     }
 
     // bind itself

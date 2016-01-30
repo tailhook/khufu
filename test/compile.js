@@ -124,17 +124,25 @@ describe("compiler", () => {
     it("compiles let", () => {
         expect(compile("view main():\n" +
                        " let x = 1\n <p>\n  x\n" +
+                       " let {y,z:a} = {}\n <p>\n  y + a\n" +
                        " let x = x + 1\n <p>\n  x\n"))
             .to.equal(imp +
             "export function main() {\n" +
             '  return function main$(key) {\n' +
             '    let _x = 1,\n' +
+            '        {\n' +
+            '      y: _y,\n' +
+            '      z: _a\n' +
+            '    } = {},\n' +
             '        _x2 = _x + 1;\n' +
             '\n' +
             '    elementOpen("p", key + "-1-p");\n' +
             '    text(_x);\n' +
             '    elementClose("p");\n' +
             '    elementOpen("p", key + "-2-p");\n' +
+            '    text(_y + _a);\n' +
+            '    elementClose("p");\n' +
+            '    elementOpen("p", key + "-3-p");\n' +
             '    text(_x2);\n' +
             '    elementClose("p");\n' +
             '  };\n' +
@@ -336,15 +344,15 @@ describe("compiler", () => {
             "view main(x):\n _other(x)"))
         .to.equal(imp +
             '\n' +
-            'function _other(txt) {\n' +
+            'function _other(_txt) {\n' +
             '  return function _other$(key) {\n' +
-            '    text(txt);\n' +
+            '    text(_txt);\n' +
             '  };\n' +
             '}\n' +
             '\n' +
-            'export function main(x) {\n' +
+            'export function main(_x) {\n' +
             '  return function main$(key) {\n' +
-            '    item(_other(x), key + "-1");\n' +
+            '    item(_other(_x), key + "-1");\n' +
             '  };\n}')
     })
     it("compiles an import", () => {
@@ -388,12 +396,18 @@ describe("compiler", () => {
     it("compiles inline ES6 template", () => {
         expect(compile("view main(x):\n <p>`text: ${x}`\n"))
             .to.equal(imp +
-            'export function main(x) {\n' +
+            'export function main(_x) {\n' +
             '  return function main$(key) {\n' +
             '    elementOpen("p", key + "-1-p");\n' +
-            '    text(`text: ${ x }`);\n' +
+            '    text(`text: ${ _x }`);\n' +
             '    elementClose("p");\n' +
             '  };\n' +
             '}')
+    })
+    it("compiles array unpacking", () => {
+        expect(compile("view main([a, b]):"))
+            .to.equal(imp + "export function main([_a, _b]) {\n" +
+                "  return function main$(key) {};\n" +
+                "}")
     })
 })
