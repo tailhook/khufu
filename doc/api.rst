@@ -197,6 +197,15 @@ khufu loader path is local there, you need a package name instead).
 
 __ https://github.com/tailhook/khufu/tree/master/examples/playground
 
+.. note:: As of webpack 2.0.7-beta you need to put the following into the
+   config, we're not sure if this is a bug or a feature (the first item in
+   the list needs to be added, others are by default)::
+
+        resolveLoader: {
+            mainFields: ["webpackLoader", "main", "browser"],
+        }
+
+
 
 Compilation Settings
 ````````````````````
