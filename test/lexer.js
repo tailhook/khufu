@@ -32,6 +32,10 @@ describe("lexes", () => {
         expect(lextxt("'y\\ny'"))
             .to.deep.equal(['y\ny', ''/*NL*/, ''/*EOF*/])
     })
+    it("unescape string 2", () => {
+        expect(lextxt("'a\\\\b\\\\c'"))
+            .to.deep.equal(['a\\b\\c', ''/*NL*/, ''/*EOF*/])
+    })
     it("unescape unicode", () => {
         expect(lextxt("'snowman -> \u2603'"))
             .to.deep.equal(['snowman -> ☃', ''/*NL*/, ''/*EOF*/])
