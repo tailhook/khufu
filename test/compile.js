@@ -415,6 +415,23 @@ describe("compiler", () => {
             '    item(_other(_x), key + "-1");\n' +
             '  };\n}')
     })
+    it("compiles multiple view functions in reverse order", () => {
+        expect(compile(
+            "view main(x):\n _other(x)\n" +
+            "view _other(txt):\n txt"))
+        .to.equal(imp +
+            'export function main(_x) {\n' +
+            '  return function main$(key) {\n' +
+            '    item(_other(_x), key + "-1");\n' +
+            '  };\n' +
+            '}\n' +
+            '\n' +
+            'function _other(_txt) {\n' +
+            '  return function _other$(key) {\n' +
+            '    text(_txt);\n' +
+            '  };\n' +
+            '}')
+    })
     it("compiles an import", () => {
         expect(compile("import {a} from 'module'"))
         .to.equal('import { a } from "module";')

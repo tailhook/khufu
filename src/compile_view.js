@@ -142,9 +142,5 @@ export function compile(view, path, opt) {
     for(let param of params) {
         ext_fun.node.params.push(lval.compile(param, child_path, opt))
     }
-
-    // bind itself
-    path.scope.setData('binding:' + name, T.identifier(name))
-
     compile_body(body, child_path, opt, T.identifier('key'))
 }

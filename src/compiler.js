@@ -91,6 +91,14 @@ export function compile(txt, options, wpack) {
     let ast = T.file(T.program([]));
     babel.traverse(ast, {
         Program: path => {
+            parse_tree
+                .filter(block => block[0] == 'view')
+                .map(([_block, name]) => {
+                    // Bind all views in scope, so they can call each other
+                    // (including recursively)
+                    path.scope.setData('binding:' + name, T.identifier(name))
+                })
+
             parse_tree.map(block => compile_block(block, path, opt))
         },
     });
