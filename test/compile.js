@@ -399,23 +399,9 @@ describe("compiler", () => {
     })
 
     it("compiles a loop over a pair", () => {
-        expect(compile(
+        expect(() => compile(
             "view main():\n <ul>\n  for [a,b] of []:\n   <li>\n    a"))
-            .to.equal(imp +
-                'export function main() {\n' +
-                '  return function main$(key) {\n' +
-                '    elementOpen("ul", key + "-1-ul");\n' +
-                '\n' +
-                '    for (let [_a, _b] of []) {\n' +
-                // TODO(tailhook) probably better serialization could be done
-                '      elementOpen("li", "-1" + _a + "-1-li");\n' +
-                '      text(_a);\n' +
-                '      elementClose("li");\n' +
-                '    }\n' +
-                '\n' +
-                '    elementClose("ul");\n' +
-                '  };\n' +
-                '}')
+            .to.throw(/Parse error[\s\S]*Expecting.*'key'.*got ':'/)
     })
 
     it("compiles multiple view functions", () => {

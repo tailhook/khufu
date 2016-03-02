@@ -146,6 +146,9 @@ export var parser = new Parser({
         // HTML
         "assign_tgt": [
             ["IDENT", "$$ = ['name', $1];"],
+            ["complex_assign_tgt", "$$ = $1;"],
+        ],
+        "complex_assign_tgt": [
             ["[ tgt_list ]", "$$ = ['unpack_list', $2];"],
             ["{ tgt_map }", "$$ = ['unpack_map', $2];"],
         ],
@@ -196,7 +199,9 @@ export var parser = new Parser({
                 "$$ = node(@$, 'if', [$2, $5], $6, $7)"],
             ["for IDENT of e : NL stmtblock",
                 "$$ = node(@$, 'for', ['name', $2], $4, ['name', $2], $7)"],
-            ["for assign_tgt of e key e : NL stmtblock",
+            ["for IDENT of e key e : NL stmtblock",
+                "$$ = node(@$, 'for', ['name', $2], $4, $6, $9)"],
+            ["for complex_assign_tgt of e key e : NL stmtblock",
                 "$$ = node(@$, 'for', $2, $4, $6, $9)"],
             ["e NL", "$$ = node(@$, 'expression', $1);" ],
         ],
