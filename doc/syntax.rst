@@ -493,6 +493,17 @@ don't put ``key`` onto the element itself. It's the property of the loop. And
 khufu is smart enough to add a suffix to a key if you have more than one
 element in the loop body.
 
+You can use destructuring for the loop variables, but in that case specifying
+``key`` is mandatory:
+
+
+    for [name, objects] in map.entries() key name:
+      <div>
+        name
+        for {id, color, title} in objects key id:
+            <span style={color: color}>
+                title
+
 The variables in a loop as well as a variable in the ``for`` statement itself
 is scoped to a loop iteration. So events work as expected::
 
