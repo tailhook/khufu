@@ -2,6 +2,8 @@ import Lexer from './baselexer';
 
 const TOPLEVEL = 0;
 const TOPLEVEL_KW = ["import", "from", "style", "view", "as"]
+const IMPORT = 4;
+const IMPORT_KW = ["style", "type", "from", "as"]
 const NEWLINE = 1;
 const VIEW_KW = [
     "store", "link", "let",
@@ -156,18 +158,21 @@ export default function () {
         lex(function (lex) {
             this.yytext = unquote(lex.substr(1, lex.length-2));
             return 'STRING';
-        }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART, VIEW_TEMPLATE]);
+        }), [TOPLEVEL, IMPORT, VIEW, VIEW_TAG, VIEW_LINESTART, VIEW_TEMPLATE]);
     lexer.addRule(/'(?:\\["'bfnrt/\\]|\\u[a-fA-F0-9]{4}|[^'\\])*'/,
         lex(function (lex) {
             this.yytext = unquote(lex.substr(1, lex.length-2));
             return 'STRING';
-        }), [TOPLEVEL, VIEW, VIEW_TAG, VIEW_LINESTART, VIEW_TEMPLATE]);
+        }), [TOPLEVEL, IMPORT, VIEW, VIEW_TAG, VIEW_LINESTART, VIEW_TEMPLATE]);
 
     /********************* Toplevel tokens ***************************/
 
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, lex(function (lexeme) {
         if(TOPLEVEL_KW.indexOf(lexeme) >= 0) {
             switch(lexeme) {
+                case "import":
+                    this.state = IMPORT;
+                    break;
                 case "style":
                     this.state = STYLE;
                     break;
@@ -180,8 +185,15 @@ export default function () {
             return 'IDENT';
         }
     }), [TOPLEVEL]);
+    lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_]*/, lex(function (lexeme) {
+        if(IMPORT_KW.indexOf(lexeme) >= 0) {
+            return lexeme;
+        } else {
+            return 'IDENT';
+        }
+    }), [IMPORT]);
 
-    lexer.addRule(/[/*+\\-^,\\.]/, lex(lexeme => lexeme), [TOPLEVEL]);
+    lexer.addRule(/[/*+\\-^,\\.]/, lex(lexeme => lexeme), [TOPLEVEL, IMPORT]);
 
     /********************* Style tokens ***************************/
 
@@ -235,7 +247,7 @@ export default function () {
     lexer.addRule(/@[a-zA-Z_][a-zA-Z0-9_]*/, lex(function(lexeme) {
         this.yytext = lexeme.substr(1);
         return 'STORE';
-    }), [TOPLEVEL, VIEW, VIEW_LINESTART, VIEW_TAG, VIEW_TEMPLATE]);
+    }), [TOPLEVEL, IMPORT, VIEW, VIEW_LINESTART, VIEW_TAG, VIEW_TEMPLATE]);
     lexer.addRule(/[a-zA-Z_][a-zA-Z0-9_-]*/, lex('TAG_NAME'), [VIEW_TAG]);
     lexer.addRule(/[=.?+-]/, lex(x => x), [VIEW_TAG]);
     lexer.addRule(new RegExp(

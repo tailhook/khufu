@@ -1,3 +1,4 @@
+import path from 'path'
 import 'babel-polyfill'
 import * as babel from 'babel-core'
 import * as T from 'babel-types'
@@ -63,6 +64,12 @@ function compile_block(block, path, opt) {
             }
             return;
         }
+        case 'import_style': {
+            let [_import, name, module] = block;
+            path.scope.getData('khufu:import-style:' + name,
+                               style.parse_stylesheet(module, opt))
+            return;
+        }
         case 'import_default': {
             let [_import, name, module] = block;
             path.pushContainer("body", T.importDeclaration(
@@ -90,6 +97,7 @@ export function compile(txt, options, wpack) {
         opt.additional_class = opt.additional_class(wpack)
     }
     opt.always_add_class = new Set(opt.always_add_class || []);
+    opt.base_directory = wpack ? path.dirname(wpack.resourcePath) : '.';
     let parse_tree = parser.parse(txt, opt);
     let ast = T.file(T.program([]));
     babel.traverse(ast, {

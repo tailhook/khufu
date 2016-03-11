@@ -45,6 +45,8 @@ export var parser = new Parser({
                 "$$ = node(@$, 'import_names', $3, $6);"],
             ["import IDENT from STRING NL",
                 "$$ = node(@$, 'import_default', $2, $4);"],
+            ["import style IDENT from STRING NL",
+                "$$ = node(@$, 'import_style', $3, $5);"],
             ["import * as IDENT from STRING NL",
                 "$$ = node(@$, 'import_namespace', $4, $6);"],
             ["style : NL INDENT styleitems DEDENT",

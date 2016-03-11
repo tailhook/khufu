@@ -2,6 +2,7 @@ import * as T from "babel-types"
 import {push_to_body} from './babel-util'
 import {parse_tree_error} from './compiler'
 import postcss from 'postcss'
+import safe from 'postcss-safe-parser'
 
 
 function rule(parent, item, cls, opt) {
@@ -97,4 +98,10 @@ export function compile(style, path, opt) {
             T.memberExpression(T.identifier('module'), T.identifier('hot')),
             T.identifier('dispose')),
             [id]))])))
+}
+
+export function parse_stylesheet(path, opt) {
+    let items = opt.base_directory.join(path);
+    return postcss(opt.postcss || [])
+        .process(body, {parser: safe})
 }

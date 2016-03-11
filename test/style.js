@@ -123,4 +123,11 @@ describe("parses styles", () => {
             '    }\n' +
             '}')
     })
+    it("import", () => {
+        expect(parser.parse("import style test from './test/test.css'\n" +
+                            "style:"))
+            .to.deep.equal([
+                ['import_style', 'test', './test/test.css'],
+                ['style', []]])
+    })
 })
