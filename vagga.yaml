@@ -40,6 +40,7 @@ commands:
   test: !Command
     description: Run unit tests
     container: node
+    environ: {NODE_PATH: /usr/lib/node_modules}
     run: [npm, test]
 
   playground: !Command
