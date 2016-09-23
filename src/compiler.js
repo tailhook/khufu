@@ -25,7 +25,10 @@ export function parse_tree_error(message, tree) {
     if(strtree.length > 20) {
         strtree = strtree.substr(0, 17) + '...';
     }
-    return Error(message + ': ' + strtree);
+    let loc = tree._location
+    return Error(message + ' at ' +
+        (loc ? loc.first_line + ':' + loc.first_column : 'unknown') +
+        ' (' + strtree + ')');
 }
 
 function compile_block(block, path, opt) {

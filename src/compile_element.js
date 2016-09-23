@@ -131,7 +131,7 @@ function insert_links(links, genattrs, local_stores, path, opt) {
         if(!store) {
             store = local_stores.get(target[1]);
             if(!store) {
-                throw Error("Unknown store: " + target[1]);
+                throw parse_tree_error("Unknown store: " + target[1], target);
             }
         }
         fpath.scope.setData('binding:this', T.identifier('this'))
@@ -158,7 +158,7 @@ function insert_links(links, genattrs, local_stores, path, opt) {
             console.assert(target[0] == 'store');
             let store = path.scope.getData('khufu:store:raw:' + target[1]);
             if(!store) {
-                throw Error("Unknown store: " + target[1]);
+                throw parse_tree_error("Unknown store: " + target[1], handlers);
             }
             fpath.scope.setData('binding:this', T.identifier('this'))
             fpath.scope.setData('binding:event', T.identifier('event'))

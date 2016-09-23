@@ -101,7 +101,8 @@ export default function () {
             }
             if(indentation != this.indent[0]) {
                 throw Error("Invalid indentation, expected " +
-                    `${this.indent[0]}, got ${indentation}`)
+                    `${this.indent[0]}, got ${indentation} ` +
+                    `at line ${this.yylineno}`)
             }
         }
         if(this.indent[0] == 0) {

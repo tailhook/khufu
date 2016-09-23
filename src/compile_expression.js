@@ -60,7 +60,7 @@ export function compile(item, path, opt) {
             }
             let binding = path.scope.getData('binding:' + name);
             if(!binding) {
-                throw Error("Unknown variable: " + name);
+                throw parse_tree_error("Unknown variable: " + name, item);
             }
             return binding;
         }
@@ -68,7 +68,7 @@ export function compile(item, path, opt) {
             let [_store, name] = item
             let store = path.scope.getData('khufu:store:raw:' +name);
             if(!store) {
-                throw Error("Unknown store: " + name);
+                throw parse_tree_error("Unknown store: " + name, item);
             }
             let state = path.scope.getData('khufu:store:state:' +name);
             if(!state) {
@@ -87,7 +87,7 @@ export function compile(item, path, opt) {
             let [_raw_store, name] = item
             let store = path.scope.getData('khufu:store:raw:' +name);
             if(!store) {
-                throw Error("Unknown store: " + name);
+                throw parse_tree_error("Unknown store: " + name, item);
             }
             return store;
         }
