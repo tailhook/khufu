@@ -10,16 +10,26 @@ import {item} from './dom'
 export {CANCEL, add_style, item,
         elementOpen, elementClose, elementVoid, text}
 
+/// Things that can only be assigned as properties
+const PROPERTIES = {
+    "value": "value",
+}
+
 // This is different from incremental-dom default, because it sets boolean
 // attributes as property instead of attribute. This works better for
 // properties like `checked`. May need better heuristics though.
+//
+// Also some things like "value" do nothing when not applied as properties
 function applyAttribute(el, name, value) {
-   var type = typeof value;
-   if (type === 'object' || type === 'function' || type == 'boolean') {
-       applyProp(el, name, value);
-   } else {
-       applyAttr(el, name, value);
-   }
+    let type = typeof value
+    let prop = PROPERTIES[name]
+    if(prop) {
+        applyProp(el, prop, value)
+    } else if (type === 'object' || type === 'function' || type == 'boolean') {
+        applyProp(el, name, value)
+    } else {
+        applyAttr(el, name, value)
+    }
 }
 
 function set_global_state(params) {

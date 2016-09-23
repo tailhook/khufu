@@ -1,4 +1,5 @@
 import {blockingCounter, counter} from './counter'
+import {value, set} from './text'
 import range from './range'
 import {delayable, count} from './slow'
 
@@ -42,4 +43,17 @@ view main():
              link {click} count(x, 500) -> @counter
              "+"
              x
+
+  <p>
+    store @data = value
+    <input placeholder="Some Data" value=@data>
+      link {input} set(this.value) -> @data
+    <button>
+      link {click} set("") -> @data
+      "Clear"
+    <div>
+      <strong> "Data "
+      <em>
+        @data
+
 
