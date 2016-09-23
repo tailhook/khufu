@@ -12,7 +12,7 @@ versions:
   regex: ^version\s*=\s*'(\S+)'
   partial-version: ^\d+\.\d+
 
-- file: docs/conf.py
+- file: doc/conf.py
   regex: ^release\s*=\s*'(\S+)'
 
 - file: README.md
