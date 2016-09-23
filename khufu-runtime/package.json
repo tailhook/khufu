@@ -1,6 +1,6 @@
 {
   "name": "khufu-runtime",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "A runtime support library for khufu template engine",
   "keywords": ["redux", "html", "web", "hot", "incremental-dom"],
   "homepage": "http://github.com/tailhook/khufu",
