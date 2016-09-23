@@ -56,9 +56,9 @@ clean:
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	cd ../khufu-runtime; $(BABEL) src --out-dir lib/khufu-runtime
-	cd ../examples/counter; $(WEBPACK)
+	cd ../examples/counter; $(WEBPACK) --bail
 	cp ../examples/counter/index.html _build/html/examples/counter/
-	cd ../examples/debounce; $(WEBPACK)
+	cd ../examples/debounce; $(WEBPACK) --bail
 	cp ../examples/debounce/index.html _build/html/examples/debounce/
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
