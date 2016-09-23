@@ -28,12 +28,19 @@ export function compile_string(item, path, opt, key) {
 }
 
 export function join_key(x, y) {
+    // Optimizes "a" + "b" -> "ab"
     if(T.isStringLiteral(x) && T.isStringLiteral(y)) {
         return T.stringLiteral(x.value + y.value)
     }
+    // Optimizes "" + "b" -> "b"
     if(x.value === '') return y;
+    // Optimizes "a" + "" -> "a"
     if(y.value === '') return x;
-    if(T.isBinaryExpression(x) && T.isStringLiteral(x.right)) {
+    // Optimizes (N + "a") + "b" -> N + "ab"
+    if(T.isBinaryExpression(x) &&
+        T.isStringLiteral(x.right) &&
+        T.isStringLiteral(y))
+    {
         return T.binaryExpression("+", x.left,
             T.stringLiteral(x.right.value + y.value))
     }

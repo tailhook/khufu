@@ -397,6 +397,30 @@ describe("compiler", () => {
                 '  };\n' +
                 '}')
     })
+    it("compiles a nested loop", () => {
+        expect(compile("view main():\n <ul>\n"
+            + "  for a of []:\n"
+            + "    for b of a:\n"
+            + "      <li>\n"
+            + "        b"))
+            .to.equal(imp +
+                'export function main() {\n' +
+                '  return function main$(key) {\n' +
+                '    elementOpen("ul", key + "-1-ul");\n' +
+                '\n' +
+                '    for (let _a of []) {\n' +
+                '      for (let _b of _a) {\n' +
+                '        elementOpen("li", "-1" + _a + "-1" + _b + "-1-li");\n'
+                +
+                '        text(_b);\n' +
+                '        elementClose("li");\n' +
+                '      }\n' +
+                '    }\n' +
+                '\n' +
+                '    elementClose("ul");\n' +
+                '  };\n' +
+                '}')
+    })
 
     it("compiles a loop over a pair", () => {
         expect(() => compile(
