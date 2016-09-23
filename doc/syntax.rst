@@ -220,7 +220,7 @@ in CSS::
 
 Additionally we have syntax for optional styles::
 
-    <p.pagragraph.justified?(settings.is_justified)>
+    <p.paragraph.justified?(settings.is_justified)>
 
 Any valid expression is allowed in ``?(..)`` and the operator is only applied
 to a class immediately preceeding the operator, ``justified`` in the case
@@ -239,7 +239,14 @@ The element is a basis for defining scope of things in khufu. For example,
 ``store`` is linked to the element where it is defined. The ``store`` and
 ``let`` variables are limited to the element scope.
 
-You can't write anything on the same line after closing angular bracket.
+You can write strings and simple expressions (attributes, function calls,
+template expressions) on the same line as tag if they are the only element
+in the tag:
+
+    <p>
+      <b> "bold"
+      <i> data.italic
+      <u> capitalize("underline")
 
 
 Text Nodes

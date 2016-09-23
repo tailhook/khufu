@@ -184,12 +184,9 @@ export var parser = new Parser({
         "statement": [
             ["< TAG_NAME classes attributes > NL",
                 "$$ = node(@$, 'element', $2, $3, $4, []);" ],
-            ["< TAG_NAME classes attributes > STRING NL",
+            ["< TAG_NAME classes attributes > simplevalue NL",
                 "$$ = node(@$, 'element', $2, $3, $4, " +
-                    "[['expression', ['string', $6]]]);" ],
-            ["< TAG_NAME classes attributes > template NL",
-                "$$ = node(@$, 'element', $2, $3, $4, " +
-                    "[['expression', ['template', $6]]]);" ],
+                    "[['expression', $6]]);" ],
             ["< TAG_NAME classes attributes > NL INDENT elstatements DEDENT",
                 "$$ = node(@$, 'element', $2, $3, $4, $8);" ],
             ["let assign_tgt = e NL", "$$ = node(@$, 'assign', $2, $4)"],
@@ -236,7 +233,7 @@ export var parser = new Parser({
             ["TAG_NAME = attrvalue", "$$ = [$1, $3];"],
             ["TAG_NAME", "$$ = [$1];"],
         ],
-        "attrvalue": [
+        "attrvalue": [  // This is similar to simplevalue but IDENT = TAG_NAME
             ["NUMBER", "$$ = node(@$, 'number', $1);"],
             ["- NUMBER", "$$ = node(@$, 'number', '-' + $2)"],
             ["+ NUMBER", "$$ = node(@$, 'number', '+' + $2)"],
@@ -245,9 +242,24 @@ export var parser = new Parser({
             ["STORE", "$$ = node(@$, 'store', $1);"],
             ["attrvalue . TAG_NAME", "$$ = node(@$, 'attr', $1, $3);"],
             ["( e )", "$$ = $2;"],
-            [ "{ object_entries }",   "$$ = node(@$, 'object', $2);" ],
-            ["attrvalue ( comma_separated )", "$$ = node(@$, 'call', $1, $3);"],
-            [ "template", "$$ = node(@$, 'template', $1);" ],
+            ["{ object_entries }",   "$$ = node(@$, 'object', $2);" ],
+            ["attrvalue ( comma_separated )",
+                "$$ = node(@$, 'call', $1, $3);"],
+            ["template", "$$ = node(@$, 'template', $1);" ],
+        ],
+        "simplevalue": [  // This is similar to attrvalue but TAG_NAME = IDENT
+            ["NUMBER", "$$ = node(@$, 'number', $1);"],
+            ["- NUMBER", "$$ = node(@$, 'number', '-' + $2)"],
+            ["+ NUMBER", "$$ = node(@$, 'number', '+' + $2)"],
+            ["STRING", "$$ = node(@$, 'string', $1);"],
+            ["IDENT", "$$ = node(@$, 'name', $1);"],
+            ["STORE", "$$ = node(@$, 'store', $1);"],
+            ["simplevalue . IDENT", "$$ = node(@$, 'attr', $1, $3);"],
+            ["( e )", "$$ = $2;"],
+            ["{ object_entries }",   "$$ = node(@$, 'object', $2);" ],
+            ["simplevalue ( comma_separated )",
+                "$$ = node(@$, 'call', $1, $3);"],
+            ["template", "$$ = node(@$, 'template', $1);" ],
         ],
         "linknames": [
             ["IDENT , linknames", "$$ = [$1].concat($3);"],

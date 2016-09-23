@@ -511,6 +511,17 @@ describe("compiler", () => {
             '  };\n' +
             '}')
     })
+    it("compiles inline attr access", () => {
+        expect(compile("view main(x):\n <p> x.a\n"))
+            .to.equal(imp +
+            'export function main(_x) {\n' +
+            '  return function main$(key) {\n' +
+            '    elementOpen("p", key + "-1-p");\n' +
+            '    text(_x.a);\n' +
+            '    elementClose("p");\n' +
+            '  };\n' +
+            '}')
+    })
     it("compiles array unpacking", () => {
         expect(compile("view main([a, b]):"))
             .to.equal(imp + "export function main([_a, _b]) {\n" +
