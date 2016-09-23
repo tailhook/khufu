@@ -1,0 +1,45 @@
+minimum-bulk: v0.4.1
+
+versions:
+
+- file: package.json
+  regex: ^\s*"version":\s*"([^"]+)"
+
+- file: khufu-runtime/package.json
+  regex: ^\s*"version":\s*"([^"]+)"
+
+- file: doc/conf.py
+  regex: ^version\s*=\s*'(\S+)'
+  partial-version: ^\d+\.\d+
+
+- file: docs/conf.py
+  regex: ^release\s*=\s*'(\S+)'
+
+- file: README.md
+  regex: khufu@(\S+)
+
+- file: README.md
+  regex: khufu-runtime@(\S+)
+
+
+repositories:
+
+- kind: debian
+  suite: static
+  component: vagga
+  keep-releases: 1
+  match-version: ^\d+\.\d+\.\d+$
+  add-empty-i386-repo: true
+
+- kind: debian
+  suite: static
+  component: vagga-stable
+  keep-releases: 1000
+  match-version: ^\d+\.\d+\.\d+$
+  add-empty-i386-repo: true
+
+- kind: debian
+  suite: static
+  component: vagga-testing
+  keep-releases: 100
+  add-empty-i386-repo: true

@@ -28,6 +28,15 @@ The boring list of features:
    Otherwise, the project is small enough to just work.
 
 
+Installation
+------------
+
+```sh
+npm install khufu@0.4.2 --save-dev
+npm install khufu-runtime@0.4.2 --save
+```
+
+
 Why?
 ----
 

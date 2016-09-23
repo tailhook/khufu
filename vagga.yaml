@@ -14,6 +14,10 @@ containers:
     - !Install [make]
     - !Repo edge/main
     - !Install [py-sphinx, py-sphinx_rtd_theme]
+    - &bulk !Tar
+      url: "http://files.zerogw.com/bulk/bulk-0.4.7.tar.gz"
+      sha256: faec9ee88ee079de3c7cfb95c5900489941b28b24b47411afaec1fae7a277546
+      path: /
     environ: *env
 
   serve:
@@ -73,3 +77,8 @@ commands:
     description: Run devd (useful to run inside the example directory)
     container: serve
     run: [devd]
+
+  bulk: !Command
+    description: Run arbitrary bulk command (maintains version number)
+    container: doc
+    run: [bulk]
