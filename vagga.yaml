@@ -2,25 +2,19 @@ containers:
 
   node:
     setup:
-    #- !Alpine v3.3
-    - !Ubuntu trusty
-    - !UbuntuUniverse
-    - !NpmInstall [npm]
+    - !Alpine v3.4
     - !NpmDependencies
-    environ:
-      NODE_PATH: /usr/local/lib/node_modules
-      HOME: /work/tmp
+    environ: &env
+      NODE_PATH: /usr/lib/node_modules
+      HOME: /tmp
 
   doc:
     setup:
     - !Container node
-    - !Install [make, python3-pkg-resources]
-    - !PipConfig {dependencies: true}
-    - !Py3Install [sphinx, sphinx_rtd_theme]
-    #[py-sphinx, py-sphinx_rtd_theme]
-    environ:
-      NODE_PATH: /usr/local/lib/node_modules
-      HOME: /tmp
+    - !Install [make]
+    - !Repo edge/main
+    - !Install [py-sphinx, py-sphinx_rtd_theme]
+    environ: *env
 
   serve:
     setup:
@@ -40,7 +34,6 @@ commands:
   test: !Command
     description: Run unit tests
     container: node
-    environ: {NODE_PATH: /usr/lib/node_modules}
     run: [npm, test]
 
   playground: !Command

@@ -17,12 +17,12 @@ module.exports = {
         }],
     },
     resolve: {
-        modulesDirectories: ["/usr/local/lib/node_modules",
-                             __dirname + "/../../khufu-runtime/lib",
-                             __dirname + "/../../node_modules"],
+        root: ["/usr/lib/node_modules",
+               __dirname + "/../../khufu-runtime/lib",
+               __dirname + "/../../node_modules"],
     },
     resolveLoader: {
-        modulesDirectories: ["/usr/local/lib/node_modules",
-                             __dirname + "/../../node_modules"],
+        root: ["/usr/lib/node_modules",
+               __dirname + "/../../node_modules"],
     },
 }
