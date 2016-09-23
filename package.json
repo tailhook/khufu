@@ -1,6 +1,6 @@
 {
   "name": "khufu",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "A template language for incremental-dom or DSL for javascript views",
   "keywords": ["redux", "html", "web", "hot", "incremental-dom"],
   "homepage": "http://github.com/tailhook/khufu",
