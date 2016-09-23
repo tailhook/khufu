@@ -6,7 +6,8 @@ containers:
     - !NpmDependencies
     environ: &env
       NODE_PATH: /usr/lib/node_modules
-      HOME: /tmp
+      HOME: /work/tmp
+      USER: user
 
   doc:
     setup:
@@ -33,7 +34,7 @@ commands:
   npm: !Command
     description: Npm command
     container: node
-    run: [npm]
+    run: [npm, --unsafe-perm]
 
   make: !Command
     description: Build khufu-runtime. This is needed to run/rebuild examples
