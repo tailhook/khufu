@@ -31,6 +31,12 @@ commands:
     container: node
     run: [npm]
 
+  make: !Command
+    description: Build khufu-runtime. This is needed to run/rebuild examples
+    container: node
+    work-dir: khufu-runtime
+    run: [npm, run, build]
+
   test: !Command
     description: Run unit tests
     container: node
@@ -40,6 +46,7 @@ commands:
     description: Run webpack dev server with hot-reload in examples/playground
     container: node
     work-dir: examples/playground
+    prerequisites: [make]
     run:
     - webpack-dev-server
     - --hot
