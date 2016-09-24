@@ -50,8 +50,10 @@ export var parser = new Parser({
             ["style : NL INDENT styleitems DEDENT",
                 "$$ = node(@$, 'style', $5);"],
             ["style : NL", "$$ = node(@$, 'style', [])"],
+            ["view IDENT ( args ) { kwargs } : NL stmtblock",
+                "$$ = node(@$, 'view', $2, $4, $7, $11)"],
             ["view IDENT ( args ) : NL stmtblock",
-                "$$ = node(@$, 'view', $2, $4, $8)"],
+                "$$ = node(@$, 'view', $2, $4, [], $8)"],
         ],
         "impnames": [
             ["IDENT , impnames", "$$ = [[$1, $1]].concat($3);"],
@@ -175,6 +177,11 @@ export var parser = new Parser({
             ["arg_def", "$$ = [$1];"],
             ["", "$$ = [];"],
         ],
+        "kwargs": [
+            ["IDENT , kwargs", "$$ = [['name', $1]].concat($3);"],
+            ["IDENT", "$$ = [['name', $1]];"],
+            ["", "$$ = [];"],
+        ],
         "stmtblock": [
             ["INDENT statements DEDENT", "$$ = $2"],
             ["", "$$ = []"],
@@ -200,7 +207,17 @@ export var parser = new Parser({
                 "$$ = node(@$, 'for', ['name', $2], $4, $6, $9)"],
             ["for complex_assign_tgt of e key e : NL stmtblock",
                 "$$ = node(@$, 'for', $2, $4, $6, $9)"],
+            ["e NL INDENT statements DEDENT",
+                "$$ = node(@$, 'block_call', $1, [['body', $4]]);" ],
+            ["e : NL INDENT subblocks DEDENT",
+                "$$ = node(@$, 'block_call', $1, $5);" ],
             ["e NL", "$$ = node(@$, 'expression', $1);" ],
+        ],
+        "subblocks": list('subblock'),
+        "subblock": [
+            ["IDENT : NL stmtblock", "$$ = node(@$, $1, $4);"],
+            ["IDENT : simplevalue NL",
+                "$$ = node(@$, $1, [['expression', $3]]);"],
         ],
         "classes": list('classe'),
         "classe": [

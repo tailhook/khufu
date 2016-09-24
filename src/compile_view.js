@@ -63,6 +63,35 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
                     join_key(key, T.stringLiteral('-' + elements)))
                 break;
             }
+            case 'block_call': {
+                elements += 1;
+                let subkey = join_key(key, T.stringLiteral('-' + elements));
+                let [_block_call, expression, kwargs] = item;
+                let expr = compile_expression(expression, path, opt)
+                let kwarg_items = []
+                for(let [name, block] of kwargs) {
+                    kwarg_items.push(T.objectProperty(T.identifier(name),
+                        T.functionExpression(null, [], T.blockStatement([
+                            T.returnStatement(
+                                T.functionExpression(null,
+                                        [T.identifier('key')],
+                                        T.blockStatement([]), false, false))
+                        ]))))
+                }
+                let callpath = push_to_body(path, T.expressionStatement(
+                    T.callExpression(
+                        expr,
+                        [subkey, T.objectExpression(kwarg_items)],
+                    )))
+                let argpath = callpath.get('expression.arguments')[1]
+                    .get('properties')
+                for(var i = 0; i < kwargs.length; ++i) {
+                    compile_body(kwargs[i][1], argpath[i]
+                            .get('value.body.body')[0].get('argument.body'),
+                        opt, T.identifier('key'))
+                }
+                break;
+            }
             case 'assign': {
                 let [_assign, target, value] = item;
                 let expr = compile_expression(value, path, opt);
@@ -121,7 +150,7 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
 }
 
 export function compile(view, path, opt) {
-    let [_view, name, params, body] = view;
+    let [_view, name, params, kwargs, body] = view;
 
     if(!path.scope.getData('khufu:dom-imported')) {
         path.unshiftContainer("body",
@@ -132,10 +161,17 @@ export function compile(view, path, opt) {
         path.scope.setData('khufu:dom-imported', true)
     }
 
+    let kwarg_nodes = []
+    if(kwargs.length) {
+        kwarg_nodes.push(T.objectPattern(
+            kwargs.map(([_name, name]) =>
+                T.objectProperty(T.identifier(name), T.identifier(name)))))
+    }
+
     let ext_node = T.functionDeclaration(T.identifier(name), [],
         T.blockStatement([
             T.returnStatement(T.functionExpression(T.identifier(name + '$'),
-                [T.identifier('key')],
+                [T.identifier('key')].concat(kwarg_nodes),
                 T.blockStatement([]), false, false)),
         ]), false, false);
     let ext_fun
@@ -148,6 +184,9 @@ export function compile(view, path, opt) {
     let child_path = ext_fun.get('body.body')[0].get('argument.body')
     for(let param of params) {
         ext_fun.node.params.push(lval.compile(param, child_path, opt))
+    }
+    for(let [_name, kwarg] of kwargs) {
+        child_path.scope.setData('binding:' + kwarg, T.identifier(kwarg));
     }
     compile_body(body, child_path, opt, T.identifier('key'))
 }

@@ -501,8 +501,7 @@ khufu is smart enough to add a suffix to a key if you have more than one
 element in the loop body.
 
 You can use destructuring for the loop variables, but in that case specifying
-``key`` is mandatory:
-
+``key`` is mandatory::
 
     for [name, objects] in map.entries() key name:
       <div>
@@ -555,6 +554,58 @@ functions and they should work as expected.
    ``key`` as an argument and renders a dom as a side effect (this is how
    incremental-dom_ works). Usually it's not a problem as you never expect
    functions to be rendered as a text node.
+
+
+.. _placeholders:
+
+Higher Level Views
+------------------
+
+Sometimes you want to make a view with a few placeholders, for example::
+
+    view section(){title, body}:
+      <secton>
+        <h1> title()
+        body()
+
+    view main():
+      section():
+        title: "Hello world"
+        body:
+          <p> "Some text"
+          <p> "Second paragraph"
+
+The example above has the following elements:
+
+* ``{title, body}`` in the ``view`` definition means we need to pass blocks
+  with that names when calling a function
+* We pass a named blocks by using colon after a function call (``section():``)
+  and ``<name>:`` block with either expression or a block after it.
+
+To pass a single block to a function, we can omit colon after a function
+call and use a single indented block, like this::
+
+    view main():
+      section()
+        <p> "Some text"
+        <p> "Second paragraph"
+
+Which is equivalent to::
+
+    view main():
+      section():
+        body:
+          <p> "Some text"
+          <p> "Second paragraph"
+
+To check if block has been actually passed you can check the block name as
+follows::
+
+    view section(){title, body}:
+      <secton>
+        if title:
+          <h1> title()
+        body()
 
 
 The Javascript Parlance

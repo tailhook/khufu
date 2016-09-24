@@ -78,3 +78,27 @@ It's just a demo, khufu does **not** require to use redux-saga_.
 .. _rxjs: https://github.com/Reactive-Extensions/RxJS
 .. _redux-rx: https://github.com/acdlite/redux-rx
 
+
+Components
+==========
+
+Here is a simple demo for a component *label* that has a ``body`` and
+a ``badge`` placeholders:
+
+.. raw:: html
+
+   <iframe src="examples/components/index.html" frameborder="0"
+    width="400" height="100"></iframe>
+
+   <p align="right">
+     <a href="https://github.com/tailhook/khufu/tree/master/examples/components"
+        target="_newtab">Source</a> /
+     <a href="examples/components/index.html" target="_newtab">Open in New Tab</a>
+   </p>
+
+
+Template code is as simple as:
+
+.. literalinclude:: ../examples/components/components.khufu
+   :language: khufu
+   :lines: 12-

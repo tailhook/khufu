@@ -522,6 +522,47 @@ describe("compiler", () => {
             '  };\n' +
             '}')
     })
+    it("compiles simple call with body", () => {
+        expect(compile("view wrap(x){body}:\n <p>\n x()\n  body()"))
+            .to.equal(imp +
+            'export function wrap(_x) {\n' +
+            '  return function wrap$(key, {\n' +
+            '    body: body\n' +
+            '  }) {\n' +
+            '    elementVoid("p", key + "-1-p");\n' +
+            '\n' +
+            '    _x()(key + "-2", {\n' +
+            '      body: function () {\n' +
+            '        return function (key) {\n' +
+            '          item(body(), key + "-1");\n' +
+            '        };\n' +
+            '      }\n' +
+            '    });\n' +
+            '  };\n' +
+            '}')
+    })
+    it("compiles simple call with kwargs", () => {
+        expect(compile("view wrap(x):\n <p>\n x():\n  y:\n   'y'\n  z: 'z'"))
+            .to.equal(imp +
+            'export function wrap(_x) {\n' +
+            '  return function wrap$(key) {\n' +
+            '    elementVoid("p", key + "-1-p");\n' +
+            '\n' +
+            '    _x()(key + "-2", {\n' +
+            '      y: function () {\n' +
+            '        return function (key) {\n' +
+            '          text("y");\n' +
+            '        };\n' +
+            '      },\n' +
+            '      z: function () {\n' +
+            '        return function (key) {\n' +
+            '          text("z");\n' +
+            '        };\n' +
+            '      }\n' +
+            '    });\n' +
+            '  };\n' +
+            '}')
+    })
     it("compiles array unpacking", () => {
         expect(compile("view main([a, b]):"))
             .to.equal(imp + "export function main([_a, _b]) {\n" +

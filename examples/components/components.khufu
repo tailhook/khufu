@@ -1,0 +1,24 @@
+style:
+  .badge
+    display: inline-block
+    margin-left: 8px
+    background-color: gray
+    border-radius: 4px
+    padding: 1px 6px 1px 6px
+    color: white
+  .label
+    line-height: 25px
+
+view label(){body, badge}:
+  <div.label>
+    body()
+    if badge:
+      <div.badge> badge()
+
+view main():
+  label():
+    body: "Inbox"
+    badge: 10
+  label()
+    "Sent mails"
+
