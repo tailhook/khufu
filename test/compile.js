@@ -486,7 +486,7 @@ describe("compiler", () => {
                 '  return function main$(key) {\n' +
                 '    let _x = 1;\n' +
                 '    elementVoid("p", key + "-1-p", null, "a",' +
-                              ' `a${ _x }b${ _x + 1 }`);\n' +
+                              ' `a${_x}b${_x + 1}`);\n' +
                 '  };\n}')
     })
     it("compiles text inline", () => {
@@ -506,7 +506,7 @@ describe("compiler", () => {
             'export function main(_x) {\n' +
             '  return function main$(key) {\n' +
             '    elementOpen("p", key + "-1-p");\n' +
-            '    text(`text: ${ _x }`);\n' +
+            '    text(`text: ${_x}`);\n' +
             '    elementClose("p");\n' +
             '  };\n' +
             '}')
