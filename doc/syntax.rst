@@ -465,6 +465,30 @@ Any mix of elements, text nodes and function calls can be in each block. You
 can't have optional ``link``. Currently to add an optional ``store`` you need
 to wrap it into a HTML element.
 
+If-Let Statements
+-----------------
+
+
+If-let statements allow to assign the result of successful condition::
+
+    if let match = regex.exec(value):
+      <p>
+        match.$1
+
+They can be combined with regular ``if`` statements freely, and are
+particluarly useful for routing::
+
+    if path == '/':
+        index_page()
+    elif let [_, object_id] = regex("/obj/(\\d+)").match(path):
+        object_page(object_id)
+    else:
+        not_found_page()
+
+*(the example above might not be optimal both for preformance and for
+clarity, just an example, you may want a better abstraction)*
+
+
 
 For Statements
 --------------

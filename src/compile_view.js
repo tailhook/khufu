@@ -117,19 +117,54 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
             }
             case 'if': {
                 elements += 1;
-                let [_if, [condition, block], elifblocks, elseblk] = item;
-                let con = T.ifStatement(
-                    compile_expression(condition, path, opt),
-                    T.blockStatement([]), null)
-                let ifblock = push_to_body(path, con);
+                let [_if, [condition, block], elifblocks, elseblk] = item
+                let ifblock
+                if(condition[0] == 'let') {
+                    let decl = path.scope.generateUidIdentifier('if_let_cond');
+                    let expr = compile_expression(condition[2], path, opt)
+                    path.scope.push({ id: decl, kind: 'let' })
+
+                    let cond = T.assignmentExpression('=', decl, expr)
+                    let con = T.ifStatement(cond, T.blockStatement([]), null)
+                    ifblock = push_to_body(path, con);
+
+                    let inner_path = ifblock.get('consequent')
+                    let in_decl = lval.compile(condition[1], inner_path, opt)
+                    inner_path.scope
+                        .push({ id: in_decl, init: decl, kind: 'let' })
+                } else {
+                    let con = T.ifStatement(
+                        compile_expression(condition, path, opt),
+                        T.blockStatement([]),
+                        null)
+                    ifblock = push_to_body(path, con);
+                }
                 compile_body(block, ifblock.get('consequent'), opt,
                     join_key(key, T.stringLiteral(`-${elements}if0`)))
                 for(var [idx, [cond, blk]] of elifblocks.entries()) {
-                    ifblock = ifblock.get('alternate');
-                    ifblock.replaceWith(T.ifStatement(
-                        compile_expression(cond, path, opt),
-                        T.blockStatement([]),
-                        null))
+                    if(cond[0] == 'let') {
+                        let decl = path.scope.generateUidIdentifier(
+                            'if_let_cond');
+                        let expr = compile_expression(cond[2], path, opt)
+                        path.scope.push({ id: decl, kind: 'let' })
+
+                        let stmt = T.ifStatement(
+                            T.assignmentExpression('=', decl, expr),
+                            T.blockStatement([]), null)
+
+                        ifblock = ifblock.get('alternate');
+                        ifblock.replaceWith(stmt)
+                        let inner_path = ifblock.get('consequent');
+                        let in_decl = lval.compile(cond[1], inner_path, opt)
+                        inner_path.scope
+                            .push({ id: in_decl, init: decl, kind: 'let' })
+                    } else {
+                        ifblock = ifblock.get('alternate');
+                        ifblock.replaceWith(T.ifStatement(
+                            compile_expression(cond, path, opt),
+                            T.blockStatement([]),
+                            null))
+                    }
                     compile_body(blk, ifblock.get('consequent'), opt,
                         join_key(key,
                             T.stringLiteral(`-${elements}if${idx+1}`)))

@@ -197,6 +197,10 @@ export var parser = new Parser({
             ["< TAG_NAME classes attributes > NL INDENT elstatements DEDENT",
                 "$$ = node(@$, 'element', $2, $3, $4, $8);" ],
             ["let assign_tgt = e NL", "$$ = node(@$, 'assign', $2, $4)"],
+            ["if let assign_tgt = e : NL stmtblock elifblocks",
+                "$$ = node(@$, 'if', [['let', $3, $5], $8], $9)"],
+            ["if let assign_tgt = e : NL stmtblock elifblocks elseblock",
+                "$$ = node(@$, 'if', [['let', $3, $5], $8], $9, $10)"],
             ["if e : NL stmtblock elifblocks",
                 "$$ = node(@$, 'if', [$2, $5], $6)"],
             ["if e : NL stmtblock elifblocks elseblock",
@@ -226,6 +230,7 @@ export var parser = new Parser({
         ],
         "elifblocks": list('elifblock'),
         "elifblock": [
+            ["elif let assign_tgt = e : NL stmtblock", "$$ = [['let', $3, $5], $8]"],
             ["elif e : NL stmtblock", "$$ = [$2, $5]"],
         ],
         "elseblock": [

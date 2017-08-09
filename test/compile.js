@@ -361,6 +361,25 @@ describe("compiler", () => {
                 '  };\n' +
                 '}')
     })
+    it("compiles an elif-let statement", () => {
+        expect(compile("view main():\n <p>\n if 0:\n  <a>\n" +
+                       ' elif let a = 1:\n  <div>'))
+            .to.equal(imp +
+                'export function main() {\n' +
+                '  return function main$(key) {\n' +
+                '    let _if_let_cond;\n' +
+                '\n' +
+                '    elementVoid("p", key + "-1-p");\n' +
+                '\n' +
+                '    if (0) {\n' +
+                '      elementVoid("a", key + "-2if0-1-a");\n' +
+                '    } else if (_if_let_cond = 1) {\n' +
+                '      let _a = _if_let_cond;\n' +
+                '      elementVoid("div", key + "-2if1-1-div");\n' +
+                '    }\n' +
+                '  };\n' +
+                '}')
+    })
     it("compiles an elif-else statement", () => {
         expect(compile("view main():\n <p>\n if 0:\n  <a>\n" +
                        ' elif 1:\n  <div>\n else:\n  <b>'))
@@ -375,6 +394,22 @@ describe("compiler", () => {
                 '      elementVoid("div", key + "-2if1-1-div");\n' +
                 '    } else {\n' +
                 '      elementVoid("b", key + "-2els-1-b");\n' +
+                '    }\n' +
+                '  };\n' +
+                '}')
+    })
+    it("compiles an if-let statement", () => {
+        expect(compile("view main():\n <p>\n if let x = 1:\n  <a>"))
+            .to.equal(imp +
+                'export function main() {\n' +
+                '  return function main$(key) {\n' +
+                '    let _if_let_cond;\n' +
+                '\n' +
+                '    elementVoid("p", key + "-1-p");\n' +
+                '\n' +
+                '    if (_if_let_cond = 1) {\n' +
+                '      let _x = _if_let_cond;\n' +
+                '      elementVoid("a", key + "-2if0-1-a");\n' +
                 '    }\n' +
                 '  };\n' +
                 '}')
