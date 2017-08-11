@@ -7,6 +7,7 @@ const VIEW_KW = [
     "store", "link", "let",
     "and", "or", "not",
     "for", "in", "of", "key", "if", "else", "elif",
+    "catch",
     ... TOPLEVEL_KW]  // reserve them for better error reporting
 const STYLE = 2;
 const VIEW = 10;

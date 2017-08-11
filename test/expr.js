@@ -3,7 +3,8 @@ import {expect} from 'chai'
 
 describe("compiler", () => {
     const imp = 'import ' +
-        '{ elementVoid, elementOpen, elementClose, text, item }' +
+        '{ elementVoid, elementOpen, elementClose, '
+        + 'text, item, SuppressedError }' +
         ' from "khufu-runtime";\n';
     it("compiles function call", () => {
         expect(compile('import {x} from "y"\n' +

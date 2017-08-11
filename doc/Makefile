@@ -62,6 +62,8 @@ html:
 	cp ../examples/debounce/index.html _build/html/examples/debounce/
 	cd ../examples/components; $(WEBPACK) --bail
 	cp ../examples/components/index.html _build/html/examples/components/
+	cd ../examples/errors; $(WEBPACK) --bail
+	cp ../examples/errors/index.html _build/html/examples/errors/
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 

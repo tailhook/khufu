@@ -1,6 +1,7 @@
 import * as T from "babel-types"
 
 import * as element from "./compile_element"
+import * as expression from "./compile_expression.js"
 import {compile as compile_expression} from "./compile_expression"
 import * as lval from "./compile_lval"
 import {parse_tree_error} from "./compiler"
@@ -100,7 +101,7 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
                 break;
             }
             case 'for': {
-                elements += 1;
+                elements += 1
                 let [_for, assign, source, loopkey, block] = item;
                 let stmt = T.forOfStatement(
                     T.variableDeclaration("let", []),
@@ -116,7 +117,7 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
                 break;
             }
             case 'if': {
-                elements += 1;
+                elements += 1
                 let [_if, [condition, block], elifblocks, elseblk] = item
                 let ifblock
                 if(condition[0] == 'let') {
@@ -178,6 +179,47 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
                 }
                 break;
             }
+            case 'catch': {
+                elements += 1
+                let [_catch, pattern, action, target, block] = item
+                let name = path.scope.generateUidIdentifier('error');
+                let stmt = push_to_body(path, T.tryStatement(
+                    T.blockStatement([]),
+                    T.catchClause(name, T.blockStatement([]))))
+                let handler = stmt.get("handler").get("body")
+                let if_stmt = push_to_body(handler, T.ifStatement(
+                    T.unaryExpression('!',
+                        T.binaryExpression('instanceof',
+                            name,
+                            T.identifier("SuppressedError")), true),
+                    T.blockStatement([])))
+                    .get("consequent")
+
+                let store = path.scope.getData('khufu:store:raw:' + target[1]);
+                if(!store) {
+                    store = local_stores.get(target[1]);
+                    if(!store) {
+                        throw parse_tree_error("Unknown store: " + target[1],
+                                               target);
+                    }
+                }
+                if_stmt.scope.setData('binding:this', T.identifier('this'))
+                if_stmt.scope.setData('binding:event', name)
+                push_to_body(if_stmt, T.callExpression(
+                    T.memberExpression(store, T.identifier('dispatch')),
+                        [expression.compile(action, if_stmt, opt)]));
+                push_to_body(if_stmt,
+                    T.throwStatement(T.newExpression(
+                        T.identifier("SuppressedError"),
+                        [name])))
+
+                push_to_body(handler,
+                    T.throwStatement(name))
+                compile_body(block, stmt.get("block"), opt,
+                    join_key(key,
+                        T.StringLiteral(`-${elements}catch`)))
+                break;
+            }
             default:
                 throw parse_tree_error("Bad element", item);
         }
@@ -190,7 +232,7 @@ export function compile(view, path, opt) {
     if(!path.scope.getData('khufu:dom-imported')) {
         path.unshiftContainer("body",
             T.importDeclaration(
-                DOM_FUNCTIONS.map(
+                DOM_FUNCTIONS.concat(['SuppressedError']).map(
                     x => T.importSpecifier(T.identifier(x), T.identifier(x))),
                 T.stringLiteral('khufu-runtime')))
         path.scope.setData('khufu:dom-imported', true)

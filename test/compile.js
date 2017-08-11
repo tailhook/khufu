@@ -3,7 +3,8 @@ import {expect} from 'chai'
 
 describe("compiler", () => {
     const imp = 'import ' +
-        '{ elementVoid, elementOpen, elementClose, text, item }' +
+        '{ elementVoid, elementOpen, elementClose, '
+        + 'text, item, SuppressedError }' +
         ' from "khufu-runtime";\n';
     it("compiles empty function", () => {
         expect(compile("view main():"))
@@ -603,5 +604,26 @@ describe("compiler", () => {
             .to.equal(imp + "export function main([_a, _b]) {\n" +
                 "  return function main$(key) {};\n" +
                 "}")
+    })
+    it("compiles an catch statement", () => {
+        expect(compile("view main(@a):\n <p>\n catch * true -> @a:\n  <a>"))
+            .to.equal(imp +
+                'export function main(_a) {\n' +
+                '  return function main$(key) {\n' +
+                '    elementVoid("p", key + "-1-p");\n' +
+                '\n' +
+                '    try {\n' +
+                '      elementVoid("a", key + "-2catch-1-a");\n' +
+                '    } catch (_error) {\n' +
+                '      if (!(_error instanceof SuppressedError)) {\n' +
+                '        _a.dispatch(true)\n' +
+                '\n' +
+                '        throw new SuppressedError(_error);\n' +
+                '      }\n' +
+                '\n' +
+                '      throw _error;\n' +
+                '    }\n' +
+                '  };\n' +
+                '}')
     })
 })

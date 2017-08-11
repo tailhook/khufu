@@ -544,6 +544,57 @@ is scoped to a loop iteration. So events work as expected::
       <input type="button" value="remove_object">
         link {click} remove(obj.id) -> @objects
 
+
+Catch Statements
+================
+
+Catch statements are some kinds of error boundary. If error occurs within
+the block, error is caught and specified action is dispatched on the store.
+Here is some usage example::
+
+    store @err_store = value
+    if not @err_store:
+        catch * set_err(error) -> @err_store:
+            <div>
+                some_commplex_rendering()
+    else:
+        <div>
+            `Error ocurred: ${ @err_store }`
+            <button>
+                link {click} reset() -> @err_store
+                "Retry"
+
+There are few interesting notes:
+
+1. Keep in mind that it may trigger a continuous rerendering
+   if the block is not covered by a condition that depends on the action
+2. ``reset()`` action might be anything, like retry request to the backend
+   or anything
+3. If rendering depends on a result of a request, you may retry request at
+   some interval and reset store when request is fine
+
+Currently all errors are always caught, but we may add ``instanceof`` check
+in the future.
+
+Technically catch works as follows:
+
+1. Error is wrapped into ``SuppressedError`` and propagated down the stack
+2. Outer catch statements skip ``SuppressedError``
+3. Khufu's rendering function retries rendering starting from the top level,
+   but does that only once
+
+The (3) has the following consequences:
+
+1. It avoids flicker comparing to rerendering on next animation frame
+2. But since the action is dispatched, next frame will rerender anyway
+3. If two errors catched in the same render, user will see flicker anyway
+   (we may fix it in future)
+4. Render with error might be as much as 3x the normal diffing time, but
+   the errors should be relatively rare, so it doesn't matter
+5. It's still bad to use exceptions for business-logic errors,
+   because (3) and (4) only something can't be provisioned in advance.
+
+
 .. _subviews:
 
 Calling Other Views
@@ -675,7 +726,9 @@ Side effects are basically allowed in two places
 (``MUT_EXPR`` in the examples):
 
 1. The store constructor (``store @name = MUT_EXPR | middleware1``)
-2. The action creator expression (``link {ev} MUT_EXPR -> @store_name``)
+2. The action creator expression (``link {ev} MUT_EXPR -> @store_name`` and
+   ``catch * MUT_EXPR -> @store_name``)
+
 
 And the code in both places is assumed to have no influence on other variables
 used during render (actually an action creator expression is never

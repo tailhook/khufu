@@ -5,9 +5,9 @@ import {applyAttr, applyProp} from 'incremental-dom'
 import stores, {CANCEL} from './stores'
 import {add_style} from './style'
 import {item} from './dom'
+import {SuppressedError} from './errors'
 
-
-export {CANCEL, add_style, item,
+export {CANCEL, add_style, item, SuppressedError,
         elementOpen, elementClose, elementVoid, text}
 
 /// Things that can only be assigned as properties
@@ -71,7 +71,16 @@ export default function init(element, template, settings) {
         try {
             patch(element, template)
         } catch(e) {
-            console.error("Render error", e)
+            if(e instanceof SuppressedError) {
+                console.error("Render error (suppressed)", e.original)
+                try {
+                    patch(element, template)
+                } catch(e) {
+                    console.error("Successive render error", e)
+                }
+            } else {
+                console.error("Render error", e)
+            }
         }
         clean_global_state(obj)
     }

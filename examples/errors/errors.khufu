@@ -1,0 +1,42 @@
+import {Fruits, good_value, bad_value} from './store'
+import {Flag, set_true, set_false} from './store'
+
+view main():
+  <div>
+    store @fruits = Fruits
+    store @has_error = Flag
+    <p>
+      <label>
+        "Banana price is: "
+      if not @has_error:
+        catch * set_true() -> @has_error:
+          <b> @fruits.banana.price
+      else:
+        <span style={backgroundColor: 'red', color: 'white',
+                     padding: '8px', fontFamily: "sans-serif",
+                     display: "inline-block"}>
+          <span color="red"> "Can't calculate "
+          <button>
+            link {click} set_false() -> @has_error
+            "Retry"
+
+    <p>
+      <button>
+        link {click} good_value() -> @fruits
+        "Set good value"
+      " "
+      <button>
+        link {click} bad_value() -> @fruits
+        "Set bad value"
+      " "
+      <button>
+        link {click} good_value() -> @fruits
+        link {click} set_false() -> @has_error
+        "Set good value and retry"
+      " "
+      <button>
+        link {click} bad_value() -> @fruits
+        link {click} set_false() -> @has_error
+        "Set bad value and retry"
+
+

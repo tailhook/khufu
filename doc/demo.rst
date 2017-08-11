@@ -102,3 +102,45 @@ Template code is as simple as:
 .. literalinclude:: ../examples/components/components.khufu
    :language: khufu
    :lines: 12-
+
+
+Error Handling
+==============
+
+Following is a demo of error handling:
+
+.. raw:: html
+
+   <iframe src="examples/errors/index.html" frameborder="0"
+    width="550" height="100"></iframe>
+
+   <p align="right">
+     <a href="https://github.com/tailhook/khufu/tree/master/examples/errors"
+        target="_newtab">Source</a> /
+     <a href="examples/errors/index.html" target="_newtab">Open in New Tab</a>
+   </p>
+
+Note, how setting "bad value" breaks the rendering immediately. But setting
+a good value doesn't do, unless retry action is also executed. This is because
+the code looks like this (stripped some details::
+
+
+  <div>
+    store @fruits = Fruits
+    store @has_error = Flag
+    if not @has_error:
+      catch * set_true() -> @has_error:
+        <b> @fruits.banana.price
+    else:
+      <button>
+        link {click} set_false() -> @has_error
+        "Retry"
+
+    <button>
+      link {click} good_value() -> @fruits
+      "Set good value"
+
+I.e. if ``@fruits`` store is updated, and ``@has_error`` still contains
+``true`` the catch block isn't rerendered, but obviously if there was no error
+and store value changed, the template will rerender and drop into an errorneous
+state.

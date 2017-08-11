@@ -211,6 +211,8 @@ export var parser = new Parser({
                 "$$ = node(@$, 'for', ['name', $2], $4, $6, $9)"],
             ["for complex_assign_tgt of e key e : NL stmtblock",
                 "$$ = node(@$, 'for', $2, $4, $6, $9)"],
+            ["catch * e -> STORE : NL stmtblock",
+                "$$ = node(@$, 'catch', '*', $3, ['store', $5], $8);"],
             ["e NL INDENT statements DEDENT",
                 "$$ = node(@$, 'block_call', $1, [['body', $4]]);" ],
             ["e : NL INDENT subblocks DEDENT",
