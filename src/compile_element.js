@@ -196,7 +196,7 @@ export function compile(element, path, opt, key) {
         attrib_expr = insert_static(name, stat, path, opt)
     }
     let genattrs = []
-    let local_stores = {}
+    let local_stores = new Map()
     let stores_id;
     if(stores.length) {
         [stores_id, local_stores] = insert_stores(name, stores, genattrs, path, opt)

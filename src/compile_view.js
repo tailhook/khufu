@@ -200,11 +200,8 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
 
                 let store = path.scope.getData('khufu:store:raw:' + target[1]);
                 if(!store) {
-                    store = local_stores.get(target[1]);
-                    if(!store) {
-                        throw parse_tree_error("Unknown store: " + target[1],
-                                               target);
-                    }
+                    throw parse_tree_error("Unknown store: " + target[1],
+                                           target);
                 }
                 if_stmt.scope.setData('binding:this', T.identifier('this'))
                 if_stmt.scope.setData('binding:event', name)
