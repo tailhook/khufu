@@ -465,6 +465,8 @@ Any mix of elements, text nodes and function calls can be in each block. You
 can't have optional ``link``. Currently to add an optional ``store`` you need
 to wrap it into a HTML element.
 
+.. _if-let:
+
 If-Let Statements
 -----------------
 
@@ -544,6 +546,7 @@ is scoped to a loop iteration. So events work as expected::
       <input type="button" value="remove_object">
         link {click} remove(obj.id) -> @objects
 
+.. _catch:
 
 Catch Statements
 ================
@@ -591,8 +594,9 @@ The (3) has the following consequences:
    (we may fix it in future)
 4. Render with error might be as much as 3x the normal diffing time, but
    the errors should be relatively rare, so it doesn't matter
-5. It's still bad to use exceptions for business-logic errors,
-   because (3) and (4) only something can't be provisioned in advance.
+5. It's still bad to use exceptions for business-logic errors
+   because of (3) and (4). So ``catch`` should be used for fatal errors that
+   can't be taken care of in advance.
 
 
 .. _subviews:
