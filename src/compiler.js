@@ -38,27 +38,36 @@ function compile_block(block, path, opt) {
         case 'style':
             return style.compile(block, path, opt);
         case 'import_names': {
-            let [_import, names, module] = block;
+            let [_import, original_names, module] = block;
+            let names = original_names.map(([name, alias]) => {
+                let real_alias = alias
+                if(alias.substr(0, 1) == '@') {
+                    real_alias = alias.substr(1)
+                }
+                if(view.BUILTINS.indexOf(real_alias) >= 0) {
+                    real_alias = path.scope.generateUidIdentifier(real_alias)
+                } else {
+                    real_alias = T.identifier(real_alias)
+                }
+                return [name, alias, real_alias]
+            })
             path.pushContainer("body", T.importDeclaration(
-                names.map(([n, a]) => {
+                names.map(([n, a, r]) => {
                     if(n.substr(0, 1) == '@') {
-                        return T.importSpecifier(
-                            T.identifier(a.substr(1)),
-                            T.identifier(n.substr(1)))
+                        return T.importSpecifier(r, T.identifier(n.substr(1)))
                     } else {
-                        return T.importSpecifier(
-                            T.identifier(a), T.identifier(n))
+                        return T.importSpecifier(r, T.identifier(n))
                     }
                 }),
                 T.stringLiteral(module)))
-            for(var [name, alias] of names) {
+            for(var [name, alias, real_alias] of names) {
                 if(name.substr(0, 1) == '@') {
                     path.scope.setData('khufu:store:raw:' + alias.substr(1),
-                        T.identifier(name.substr(1)))
+                        real_alias)
                     path.scope.setData('khufu:store:state:' + alias.substr(1),
                         null);
                 } else {
-                    path.scope.setData('binding:' + alias, T.identifier(alias))
+                    path.scope.setData('binding:' + alias, real_alias)
                 }
             }
             return;

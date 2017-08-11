@@ -15,6 +15,9 @@ const DOM_FUNCTIONS = [
     'text',
     'item',
 ]
+export const BUILTINS = DOM_FUNCTIONS.concat([
+    'SuppressedError',
+])
 
 export function compile_string(item, path, opt, key) {
     let [_expression, value] = item;
@@ -232,7 +235,7 @@ export function compile(view, path, opt) {
     if(!path.scope.getData('khufu:dom-imported')) {
         path.unshiftContainer("body",
             T.importDeclaration(
-                DOM_FUNCTIONS.concat(['SuppressedError']).map(
+                BUILTINS.map(
                     x => T.importSpecifier(T.identifier(x), T.identifier(x))),
                 T.stringLiteral('khufu-runtime')))
         path.scope.setData('khufu:dom-imported', true)

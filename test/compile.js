@@ -626,4 +626,16 @@ describe("compiler", () => {
                 '  };\n' +
                 '}')
     })
+    it("compiles an import that clash builtin", () => {
+        expect(compile("import {text} from './anywhere'\n" +
+                       "view main():\n" +
+                       " text()\n"))
+        .to.equal(imp +
+            'import { text as _text } from "./anywhere";\n' +
+            "export function main() {\n" +
+            '  return function main$(key) {\n' +
+            '    item(_text(), key + "-1");\n' +
+            '  };\n' +
+            "}")
+    })
 })
