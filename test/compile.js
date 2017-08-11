@@ -638,4 +638,16 @@ describe("compiler", () => {
             '  };\n' +
             "}")
     })
+    it("compiles object literal with just names", () => {
+        expect(compile("view main(a, b):\n let x={a, b}"))
+            .to.equal(
+                imp +
+                'export function main(_a, _b) {\n' +
+                '  return function main$(key) {\n' +
+                '    let _x = {\n' +
+                '      a: _a,\n' +
+                '      b: _b\n' +
+                '    };\n' +
+                '  };\n}')
+    })
 })

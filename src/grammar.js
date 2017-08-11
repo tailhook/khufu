@@ -296,8 +296,11 @@ export var parser = new Parser({
         ],
         "object_entries": [
             ["IDENT : e , object_entries", "$$ = [[$1, $3]].concat($5);"],
+            ["IDENT , object_entries",
+                "$$ = [[$1, ['name', $1]]].concat($3);"],
             ["STRING : e , object_entries", "$$ = [[$1, $3]].concat($5);"],
             ["IDENT : e", "$$ = [[$1, $3]];"],
+            ["IDENT", "$$ = [[$1, ['name', $1]]];"],
             ["STRING : e", "$$ = [[$1, $3]];"],
             ["", "$$ = [];"],
         ],
