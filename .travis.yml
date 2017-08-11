@@ -5,6 +5,7 @@ jobs:
   - language: node_js
   - stage: publish
     install:
+    - npm install
     - pip install sphinx sphinx_rtd_theme ghp-import --user
     script:
     - "make html -C doc SPHINXBUILD=~/.local/bin/sphinx-build WEBPACK=$(npm bin)/webpack BABEL=$(npm bin)/babel"
