@@ -6,15 +6,16 @@ jobs:
   - stage: publish
     install:
     - npm install
-    - pip install sphinx sphinx_rtd_theme ghp-import --user
+    - pip install sphinx sphinx_rtd_theme --user
     script:
     - "make html -C doc SPHINXBUILD=~/.local/bin/sphinx-build WEBPACK=$(npm bin)/webpack BABEL=$(npm bin)/babel"
     env:
       secure: "XVgwRUI/uHPXNlJ3yWqdGYATaHNU0MKTjiEd6gyAP5nTWooTZ8ew1bjtX5POGrtsL/RVN9am32gu2TBh9msCY+2Ksv7lim50j8dA66WLxTRyOE7/dIBDVgv/vF+ewzrltuG4GMwpW7jGAarjTwotBu5FxcBQINcX234NclniXJs7BsMnt/tYQ89GiP7tkDfsjg9OcO2b1ZMzcGMrssj9ga00MZds6X03pLfDbHuWCdi3DEqBY6h6Z55z4bdzhmJIOf/b+0CXknAcBFS+FqGNc5chdUmgN4okp7aurCeFDGE4tgRGScDg2YFcNTsUK683VKeYgqBsd8Fyv3otMuryfssw1GWnIcYNwHSIojqgfOPWWCdVQg4vw6YxWFyBwMaJy9ZF9tVR57+aXJPy51QtCHqgQDftXOhw42trhwJVt3P+kLrmvlmTc5XnRv/ks3BkDRoW4yvAOVINFFZ0WMYi7ABn6WxgmwomE95AZhND3/KOjLXBF7qG6GTPhHZZIdFz1mTrCr286u+uNTHpJrL+WwQQCd2LvN3eg+1WKBc2n8DYq6SQc0Z9vQP3vDrUzq43Plk1KguRcYciuy1UFWRsmi0Dz+ajvz1Sj3H5JXzrHhHbHR6tJGHL6eQboItcXTiYdafxpP+iqUumY5wlLJdAWQEifu2bFTzP0JfgEBjJ5dc="
     deploy:
-      provider: script
+      provider: pages
       skip_cleanup: true
-      script: "~/.local/bin/ghp-import -n doc/_build/html && git push -fq https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages"
+      github_token: "$GH_TOKEN"
+      local_dir: doc/_build/html
       on:
         branch: master
   - stage: publish
