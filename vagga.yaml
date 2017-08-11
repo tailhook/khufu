@@ -2,7 +2,7 @@ containers:
 
   node:
     setup:
-    - !Alpine v3.4
+    - !Alpine v3.6
     - !NpmDependencies
     environ: &env
       NODE_PATH: /usr/lib/node_modules
@@ -12,12 +12,10 @@ containers:
   doc:
     setup:
     - !Container node
-    - !Install [make]
-    - !Repo edge/main
-    - !Install [py-sphinx, py-sphinx_rtd_theme]
+    - !Install [make, py3-sphinx, vim]
     - &bulk !Tar
-      url: "http://files.zerogw.com/bulk/bulk-0.4.7.tar.gz"
-      sha256: faec9ee88ee079de3c7cfb95c5900489941b28b24b47411afaec1fae7a277546
+      url: "https://github.com/tailhook/bulk/releases/download/v0.4.9/bulk-v0.4.9.tar.gz"
+      sha256: 23471a9986274bb4b7098c03e2eb7e1204171869b72c45385fcee1c64db2d111
       path: /
     environ: *env
 
@@ -68,7 +66,7 @@ commands:
     description: Build documentation and examples
     container: doc
     work-dir: doc
-    run: [make, html]
+    run: [make, html, SPHINXBUILD=sphinx-build-3]
     epilog: |
       --------------------------------------------------------
       Documentation is built under doc/_build/html/index.html
