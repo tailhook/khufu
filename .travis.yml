@@ -14,9 +14,9 @@ jobs:
     deploy:
       provider: script
       skip_cleanup: true
-      script: |
-        ~/.local/bin/ghp-import -n doc/_build/html &&
-        git push -fq https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages
+      script:
+      - "~/.local/bin/ghp-import -n doc/_build/html"
+      - "git push -fq https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages"
       on:
         branch: master
   - stage: publish
