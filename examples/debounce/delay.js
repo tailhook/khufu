@@ -1,8 +1,6 @@
 import {applyMiddleware, createStore} from 'redux'
 import {CANCEL} from 'khufu-runtime'
-import {fork, take, cancel, race, put} from 'redux-saga'
-import middleware from 'redux-saga'
-import regeneratorRuntime from 'regenerator/runtime'
+import {fork, take, cancel, race, put} from 'redux-saga/effects'
 
 var sleep = (num) => new Promise((accept) => setTimeout(accept, num))
 
@@ -33,5 +31,5 @@ export function delay_saga(msec) {
             yield put(action.action)
         }
     }
-    return middleware(() => guard(debounce))
+    return {saga: debounce}
 }

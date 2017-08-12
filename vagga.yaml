@@ -3,11 +3,16 @@ containers:
   node:
     setup:
     - !Alpine v3.6
-    - !NpmDependencies
-    environ: &env
-      NODE_PATH: /usr/lib/node_modules
-      HOME: /work/tmp
+    - !Install [nodejs-npm]
+    - !Env
+      <<: &env
+        NODE_PATH: /usr/lib/node_modules
+        PATH: /bin:/usr/bin:/usr/local/bin:/usr/lib/node_modules/.bin
+    - !YarnDependencies
+    environ:
+      <<: *env
       USER: user
+      HOME: /work/tmp
 
   doc:
     setup:

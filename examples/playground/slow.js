@@ -1,6 +1,5 @@
 import {applyMiddleware, createStore} from 'redux'
-import {take, put} from 'redux-saga'
-import middleware from 'redux-saga'
+import {take, put} from 'redux-saga/effects'
 import {counter, block, unblock} from './counter'
 
 var sleep = (num) => new Promise((accept) => setTimeout(accept, num))
@@ -25,4 +24,4 @@ export function count(num, step) {
     }
 }
 
-export var delayable = middleware(_delayable)
+export var delayable = {saga: _delayable}

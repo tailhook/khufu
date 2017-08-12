@@ -14,31 +14,35 @@ module.exports = {
     module: {
         loaders: [{
             test: /\.khufu$/,
-            loaders: ['babel', '../../src/loader'],
+            loaders: ['babel-loader', '../../src/loader'],
             exclude: /node_modules/,
         }, {
             test: /\.js$/,
-            loaders: ['babel'],
+            loaders: [],
             exclude: /node_modules/,
         }],
     },
     resolve: {
-        root: ["/usr/lib/node_modules",
-               __dirname + "/../../khufu-runtime/lib",
-               __dirname + "/../../node_modules"],
+        modules: ["/usr/lib/node_modules",
+                  __dirname + "/../../khufu-runtime/lib",
+                  __dirname + "/../../node_modules"],
     },
     resolveLoader: {
-        root: ["/usr/lib/node_modules"],
+        modules: ["/usr/lib/node_modules"],
     },
     devServer: {
         contentBase: '.',
         hot: true,
     },
-    khufu: {
-        static_attrs: !DEV,
-    },
     plugins: [
         new webpack.NoErrorsPlugin(),
+        new webpack.LoaderOptionsPlugin({
+            options: {
+                khufu: {
+                    static_attrs: !DEV,
+                },
+            },
+        }),
     ],
 }
 
