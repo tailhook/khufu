@@ -2,15 +2,15 @@ import {Counter, counter} from './counter'
 
 view main():
   <p>
-    store @counter = Counter
+    store @cnt = Counter
 
     <button>
-       link {click} counter(1) -> @counter
+       link {click} counter(1) -> @cnt
        "+"
 
-    <input disabled size="6" value=@counter>
+    <input disabled size="6" value=@cnt>
 
     <button>
-       link {click} counter(-1) -> @counter
+       link {click} counter(-1) -> @cnt
        "-"
 
