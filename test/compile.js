@@ -221,6 +221,28 @@ describe("compiler", () => {
             '  };\n' +
             "}")
     })
+    it("accesses a store as a variable", () => {
+        expect(compile("import {mystore} from './stores'\n" +
+                       "view main():\n" +
+                       " <p>\n" +
+                       "  store @x = mystore\n" +
+                       "  x.getState().value\n"))
+        .to.equal(imp +
+            'import { mystore } from "./stores";\n' +
+            "export function main() {\n" +
+            '  return function main$(key) {\n' +
+            '    let _p_stores = elementOpen("p", key + "-1-p", null, ' +
+                                            '"__stores", {\n' +
+            '      x: function () {\n' +
+            '        return [mystore, []];\n' +
+            '      }\n' +
+            '    }).__stores;\n' +
+            '\n' +
+            '    text(_p_stores.x.getState().value);\n' +
+            '    elementClose("p");\n' +
+            '  };\n' +
+            "}")
+    })
     it("compiles a link", () => {
         expect(compile(
             "import {mystore, action} from './stores'\n" +

@@ -1,5 +1,6 @@
 import * as T from "babel-types"
 import {parse_tree_error} from './compiler'
+import {get_var} from './vars'
 
 const GLOBAL_NAMES = new Set([
     'true',
@@ -58,18 +59,11 @@ export function compile(item, path, opt) {
             if(GLOBAL_NAMES.has(name)) {
                 return T.identifier(name);
             }
-            let binding = path.scope.getData('binding:' + name);
-            if(!binding) {
-                throw parse_tree_error("Unknown variable: " + name, item);
-            }
-            return binding;
+            return get_var(path, name, item);
         }
         case 'store': {
             let [_store, name] = item
-            let store = path.scope.getData('khufu:store:raw:' +name);
-            if(!store) {
-                throw parse_tree_error("Unknown store: " + name, item);
-            }
+            let store = get_var(path, name, item);
             let state = path.scope.getData('khufu:store:state:' +name);
             if(!state) {
                 state = path.scope.generateUidIdentifier(name + '_state');
@@ -85,11 +79,7 @@ export function compile(item, path, opt) {
         }
         case 'raw_store': {
             let [_raw_store, name] = item
-            let store = path.scope.getData('khufu:store:raw:' +name);
-            if(!store) {
-                throw parse_tree_error("Unknown store: " + name, item);
-            }
-            return store;
+            return get_var(path, name, item);
         }
         case 'attr': {
             let [_attr, object, name] = item

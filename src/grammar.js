@@ -148,6 +148,7 @@ export var parser = new Parser({
         // HTML
         "assign_tgt": [
             ["IDENT", "$$ = ['name', $1];"],
+            ["STORE", "$$ = ['store', $1];"],
             ["complex_assign_tgt", "$$ = $1;"],
         ],
         "complex_assign_tgt": [
@@ -156,7 +157,6 @@ export var parser = new Parser({
         ],
         "arg_def": [
             ["assign_tgt", "$$ = $1;"],
-            ["STORE", "$$ = ['store', $1];"],
         ],
         "tgt_list": [
             ["assign_tgt , tgt_list", "$$ = [$1].concat($3);"],

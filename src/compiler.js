@@ -4,6 +4,7 @@ import * as T from 'babel-types'
 import {parser} from './grammar'
 import * as view from './compile_view'
 import * as style from './compile_style'
+import {set_var} from './vars'
 
 
 const DEFAULT_OPTIONS = {
@@ -62,12 +63,9 @@ function compile_block(block, path, opt) {
                 T.stringLiteral(module)))
             for(var [name, alias, real_alias] of names) {
                 if(name.substr(0, 1) == '@') {
-                    path.scope.setData('khufu:store:raw:' + alias.substr(1),
-                        real_alias)
-                    path.scope.setData('khufu:store:state:' + alias.substr(1),
-                        null);
+                    set_var(path, alias.substr(1), real_alias)
                 } else {
-                    path.scope.setData('binding:' + alias, real_alias)
+                    set_var(path, alias, real_alias)
                 }
             }
             return;
@@ -77,7 +75,7 @@ function compile_block(block, path, opt) {
             path.pushContainer("body", T.importDeclaration(
                 [T.importDefaultSpecifier(T.identifier(name))],
                 T.stringLiteral(module)))
-            path.scope.setData('binding:' + name, T.identifier(name))
+            set_var(path, name, T.identifier(name))
             return;
         }
         case 'import_namespace': {
@@ -85,7 +83,7 @@ function compile_block(block, path, opt) {
             path.pushContainer("body", T.importDeclaration(
                 [T.importNamespaceSpecifier(T.identifier(name))],
                 T.stringLiteral(module)))
-            path.scope.setData('binding:' + name, T.identifier(name))
+            set_var(path, name, T.identifier(name))
             return;
         }
         default:
@@ -108,7 +106,7 @@ export function compile(txt, options, wpack) {
                 .map(([_block, name]) => {
                     // Bind all views in scope, so they can call each other
                     // (including recursively)
-                    path.scope.setData('binding:' + name, T.identifier(name))
+                    set_var(path, name, T.identifier(name))
                 })
 
             parse_tree.map(block => compile_block(block, path, opt))

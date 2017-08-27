@@ -4,6 +4,7 @@ import {compile_body, join_key} from "./compile_view.js"
 import * as expression from "./compile_expression.js"
 import {push_to_body} from "./babel-util"
 import {parse_tree_error} from "./compiler"
+import {set_var, get_var} from './vars'
 
 
 function optimize_plus(a, b) {
@@ -127,15 +128,15 @@ function insert_links(links, genattrs, local_stores, path, opt) {
             T.blockStatement([]))
         let fpath = push_to_body(path, fun).get('body');
         console.assert(target[0] == 'store');
-        let store = path.scope.getData('khufu:store:raw:' + target[1]);
+        let store = get_var(path, target[1]);
         if(!store) {
             store = local_stores.get(target[1]);
             if(!store) {
                 throw parse_tree_error("Unknown store: " + target[1], target);
             }
         }
-        fpath.scope.setData('binding:this', T.identifier('this'))
-        fpath.scope.setData('binding:event', T.identifier('event'))
+        set_var(fpath, 'this', T.identifier('this'))
+        set_var(fpath, 'event', T.identifier('event'))
         push_to_body(fpath, T.callExpression(
             T.memberExpression(store, T.identifier('dispatch')),
                 [expression.compile(action, fpath, opt)]));
@@ -156,12 +157,12 @@ function insert_links(links, genattrs, local_stores, path, opt) {
 
         for(let [action, target] of handlers) {
             console.assert(target[0] == 'store');
-            let store = path.scope.getData('khufu:store:raw:' + target[1]);
+            let store = get_var(path, target[1]);
             if(!store) {
                 throw parse_tree_error("Unknown store: " + target[1], handlers);
             }
-            fpath.scope.setData('binding:this', T.identifier('this'))
-            fpath.scope.setData('binding:event', T.identifier('event'))
+            set_var(fpath, 'this', T.identifier('this'))
+            set_var(fpath, 'event', T.identifier('event'))
             push_to_body(fpath, T.callExpression(
                 T.memberExpression(store, T.identifier('dispatch')),
                     [expression.compile(action, fpath, opt)]));
@@ -248,8 +249,7 @@ export function compile(element, path, opt, key) {
         let blockpath = push_to_body(path, T.blockStatement([]));
         if(stores_id) {
             for(let [name, expr] of local_stores) {
-                blockpath.scope.setData('khufu:store:raw:' + name, expr);
-                blockpath.scope.setData('khufu:store:state:' + name, null);
+                set_var(blockpath, name, expr);
             }
         }
         compile_body(body, blockpath, opt)

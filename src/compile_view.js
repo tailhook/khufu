@@ -6,6 +6,7 @@ import {compile as compile_expression} from "./compile_expression"
 import * as lval from "./compile_lval"
 import {parse_tree_error} from "./compiler"
 import {push_to_body} from "./babel-util"
+import {get_var, set_var} from './vars'
 
 
 const DOM_FUNCTIONS = [
@@ -198,13 +199,9 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
                     T.blockStatement([])))
                     .get("consequent")
 
-                let store = path.scope.getData('khufu:store:raw:' + target[1]);
-                if(!store) {
-                    throw parse_tree_error("Unknown store: " + target[1],
-                                           target);
-                }
-                if_stmt.scope.setData('binding:this', T.identifier('this'))
-                if_stmt.scope.setData('binding:event', name)
+                let store = get_var(path, target[1], target);
+                set_var(if_stmt, 'this', T.identifier('this'))
+                set_var(if_stmt, 'event', name)
                 push_to_body(if_stmt, T.callExpression(
                     T.memberExpression(store, T.identifier('dispatch')),
                         [expression.compile(action, if_stmt, opt)]));
@@ -263,7 +260,7 @@ export function compile(view, path, opt) {
         ext_fun.node.params.push(lval.compile(param, child_path, opt))
     }
     for(let [_name, kwarg] of kwargs) {
-        child_path.scope.setData('binding:' + kwarg, T.identifier(kwarg));
+        set_var(child_path, kwarg, T.identifier(kwarg));
     }
     compile_body(body, child_path, opt, T.identifier('key'))
 }
