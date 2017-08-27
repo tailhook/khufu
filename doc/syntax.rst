@@ -332,13 +332,10 @@ Ocasionally, you may find it useful to import a store::
         if @router.current_page == '/home':
             ...
 
-Or you might pass store as an argument. Declaring function argument as a store
-is as easy as prefixing the name with ``@``. But if you pass the ``@x`` as an
-argument you will pass the *value*. So to pass the *store itself* you need to
-add an arrow to the expression ``-> @name``. As the only reason to pass the
-store to the function is sending events to it (otherwise you can just pass the
-state), you may think of it as a "function call will send events to the store"
-(which is denoted by the arrow, see `Links`_). For example::
+Since khufu 0.5 the stores are just like variables. So you can access
+methods on ``router`` above without the AT sign. And pass the store as an
+argument to the function (with ``@`` sign it will pass the state vaule, so you
+can't send event there)::
 
     view button(name, num, @mystore):
       <button>
@@ -348,10 +345,21 @@ state), you may think of it as a "function call will send events to the store"
     view main():
       <div>
         store @cnt = createStore(Counter)
-        button('+1', +1, -> @cnt)
-        button('-1', -1, -> @cnt)
+        button('+1', +1, cnt)
+        button('-1', -1, cnt)
         <input value=@cnt>
 
+See `Links`_ section for the description of ``link .. -> @store`` syntax.
+
+The ``@`` anotation in function definition is mere annotation to show that
+you will be using the variables as a store, it has no special meaning.
+
+.. note::
+
+   Previously ``-> @`` operator was used to pass a store as an argument, it's
+   still supported, but is deprecated.
+
+   .. versionchanged:: 0.5.0
 
 The ``createStore`` function above, in many cases isn't just the one from
 module ``redux``. It's often some more elaborate store creator with a
