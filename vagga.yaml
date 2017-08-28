@@ -86,3 +86,11 @@ commands:
     description: Run arbitrary bulk command (maintains version number)
     container: doc
     run: [bulk]
+
+  yarn: !Command
+    description: Wrapper around yarn
+    container: node
+    accepts-arguments: true
+    write-mode: transient-hard-link-copy
+    run: |
+      yarn $@ --modules-folder=/usr/lib/node_modules
