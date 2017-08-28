@@ -11,14 +11,14 @@
     "prepublish": "rimraf lib && npm run build"
   },
   "dependencies": {
-    "incremental-dom": "0.3.0"
+    "incremental-dom": "0.5.1"
   },
   "devDependencies": {
-    "babel-core": "6.3.26",
-    "babel-cli": "6.3.17",
-    "babel-preset-es2015": "6.3.13",
-    "babel-plugin-transform-object-rest-spread": "6.3.13",
-    "rimraf": "2.4.3"
+    "babel-core": "^6.26.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "rimraf": "2.6.1"
   },
   "repository": {
     "type": "git",
