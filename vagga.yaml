@@ -8,6 +8,7 @@ containers:
       <<: &env
         NODE_PATH: /usr/lib/node_modules
         PATH: /bin:/usr/bin:/usr/local/bin:/usr/lib/node_modules/.bin
+        BABEL_DISABLE_CACHE: 1
     - !YarnDependencies
       # until bug #3792 in yarn fixed
     - !Sh |
