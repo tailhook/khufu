@@ -13,7 +13,7 @@ v0.5.0
    1. If you have the variables that clash with store names, they must be
       renamed, (see below).
    2. The variables named ``catch`` are prohibited now
-   3. API: use `import {attach} from 'khufu-runtime'` instead of
+   3. API: use ``import {attach} from 'khufu-runtime'`` instead of
       importing default
 
 
