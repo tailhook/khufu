@@ -17,7 +17,7 @@ module.exports = {
         }],
     },
     resolve: {
-        modules: ["/usr/lib/node_modules",
+        modules: ["/usr/lib/node_modules", "node_modules",
                __dirname + "/../../khufu-runtime/lib",
                __dirname + "/../../node_modules"],
     },
