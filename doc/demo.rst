@@ -112,7 +112,7 @@ Following is a demo of error handling:
 .. raw:: html
 
    <iframe src="examples/errors/index.html" frameborder="0"
-    width="550" height="100"></iframe>
+    width="100%" height="100"></iframe>
 
    <p align="right">
      <a href="https://github.com/tailhook/khufu/tree/master/examples/errors"

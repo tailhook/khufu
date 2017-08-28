@@ -50,7 +50,7 @@ function clean_global_state(old) {
     attributes.__stores = old.stores
 }
 
-export default function init(element, template, settings) {
+export function attach(element, template, settings) {
     if(typeof settings.store !== 'function') {
         throw Error("Third argument to khufu must be a settings object " +
                     "and has `store` function (see http://bit.ly/store_cons)")

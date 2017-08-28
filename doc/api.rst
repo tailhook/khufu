@@ -10,16 +10,15 @@ Rendering a Template
 --------------------
 
 Because khufu tries to be non-opionated to what implementation of stores you
-have, you need to set some parameters to
-To use khufu, you just need to import a root template function and render it
-inside the element (note template function is called, so you can pass
-parameters to it)::
+have, you need to set some parameters to To use khufu, you just need to import
+a root template function and render it inside the element (note template
+function is called, so you can pass parameters to it)::
 
-    import khufu from 'khufu-runtime'
+    import {attach} from 'khufu-runtime'
     import {main} from './template.khufu'
     import {createStore, applyMiddleware} from 'redux'
 
-    khufu(document.getElementById('app'), main(), {
+    attach(document.getElementById('app'), main(), {
         store(reducer, middleware, state) {
             return createStore(reducer, state, applyMiddleware(...middleware));
         }
@@ -29,11 +28,11 @@ parameters to it)::
 
 Adding support for hot reload is straightforward::
 
-    import khufu from 'khufu-runtime'
+    import {attach} from 'khufu-runtime'
     import {main} from './template.khufu'
     import {createStore, applyMiddleware} from 'redux'
 
-    khufu(document.getElementById('app'), main(), {
+    attach(document.getElementById('app'), main(), {
         store(reducer, middleware, state) {
             return createStore(reducer, state, applyMiddleware(...middleware));
         }
@@ -46,7 +45,7 @@ Adding support for hot reload is straightforward::
 Khufu Object
 ````````````
 
-The object that is returned by ``khufu`` has the following methods:
+The object that is returned by ``attach`` has the following methods:
 
 .. js:function:: khufu_obj.queue_redraw
 
@@ -56,14 +55,14 @@ The object that is returned by ``khufu`` has the following methods:
 
    For example, if you have time displayed in the view::
 
-       var khufu_obj = khufu(el, main())
+       var khufu_obj = attach(el, main())
        setTimeout(khufu_obj.queue_redraw, 1000)
 
 
 Runtime Settings
 ````````````````
 These are set on object passed as the third argument to
-``khufu(element, template, settings)``.
+``attach(element, template, settings)``.
 
 
 .. _store_constructor:
@@ -150,7 +149,7 @@ These are set on object passed as the third argument to
 
    Or just treat everything as enhancer::
 
-        khufu(element, main(), {
+        attach(element, main(), {
             store: (r, m, s) => createStore(r, s, compose(...m)),
         })
 
@@ -210,7 +209,8 @@ __ https://github.com/tailhook/khufu/tree/master/examples/playground
 Compilation Settings
 ````````````````````
 
-Settings are put into the ``khufu`` key in the webpack config.
+Settings are put into the ``khufu`` key in the webpack config, in
+webpack >= 2.0, you need a ``LoaderOptionsPlugin`` to set them:
 
 static_attrs
   If ``true`` (default) means that all attribute values that compiler thinks

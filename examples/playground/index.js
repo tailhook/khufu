@@ -1,10 +1,10 @@
 import {createStore, applyMiddleware} from 'redux'
-import khufu from 'khufu-runtime'
+import {attach} from 'khufu-runtime'
 import createSagaMiddleware from 'redux-saga'
 
 import {main} from './counter.khufu'
 
-khufu(document.getElementById('app'), main(), {
+attach(document.getElementById('app'), main(), {
     store(reducer, middleware, state) {
         let sagas = []
         let middle = middleware.map(m => {
