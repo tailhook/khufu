@@ -51,10 +51,14 @@ export var parser = new Parser({
             ["style : NL INDENT styleitems DEDENT",
                 "$$ = node(@$, 'style', $5);"],
             ["style : NL", "$$ = node(@$, 'style', [])"],
-            ["view IDENT ( args ) { kwargs } : NL stmtblock",
+            ["view func_name ( args ) { kwargs } : NL stmtblock",
                 "$$ = node(@$, 'view', $2, $4, $7, $11)"],
-            ["view IDENT ( args ) : NL stmtblock",
+            ["view func_name ( args ) : NL stmtblock",
                 "$$ = node(@$, 'view', $2, $4, [], $8)"],
+        ],
+        "func_name": [
+            ["IDENT", "$1"],
+            ["IDENT . IDENT", "$$ = $1 + '.' + $3"],
         ],
         "impnames": [
             ["IDENT , impnames", "$$ = [[$1, $1]].concat($3);"],

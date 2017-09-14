@@ -18,6 +18,25 @@ describe("compiler", () => {
             "  return function _main$(key) {};\n" +
             "}")
     })
+    it("compiles exported dict with functions", () => {
+        expect(compile("view x.y():"))
+            .to.equal(
+            "let _x = {};\n" +
+            imp +
+            "export { _x as x };\n" +
+            "\nx.y = function x_y() {\n" +
+            "  return function x_y$(key) {};\n" +
+            "};")
+    })
+    it("compiles unexported dict with functions", () => {
+        expect(compile("view _x.y():"))
+            .to.equal(
+            "let _x = {};\n" +
+            imp +
+            "\n_x.y = function _x_y() {\n" +
+            "  return function _x_y$(key) {};\n" +
+            "};")
+    })
     it("compiles an element", () => {
         expect(compile("view main():\n <p>"))
             .to.equal(imp +

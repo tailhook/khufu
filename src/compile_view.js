@@ -242,17 +242,47 @@ export function compile(view, path, opt) {
                 T.objectProperty(T.identifier(name), T.identifier(name)))))
     }
 
-    let ext_node = T.functionDeclaration(T.identifier(name), [],
-        T.blockStatement([
-            T.returnStatement(T.functionExpression(T.identifier(name + '$'),
+    let ident = name.replace(/\./g, '_');
+    let block_node = T.blockStatement([
+            T.returnStatement(T.functionExpression(T.identifier(ident + '$'),
                 [T.identifier('key')].concat(kwarg_nodes),
-                T.blockStatement([]), false, false)),
-        ]), false, false);
+                T.blockStatement([]), false, false))
+        ])
     let ext_fun
-    if(name[0] != '_') {
-        ext_node = T.exportNamedDeclaration(ext_node, [])
+    if(name.indexOf('.') >= 0) {
+        let [varname, key] = name.split('.');
+        let binding = get_var(path, varname);
+        if(!binding) {
+            binding = path.scope.generateUidIdentifier(varname);
+            set_var(path, varname, binding);
+            path.scope.push({
+                id: binding,
+                init: T.objectExpression([]),
+                kind: 'let',
+            })
+            if(varname[0] != '_') {
+                push_to_body(path, T.exportNamedDeclaration(null,
+                    [T.exportSpecifier(binding, T.identifier(varname))],
+                    null))
+            }
+        }
+        let assign = T.assignmentExpression('=',
+            T.memberExpression(T.identifier(varname),
+                               T.identifier(key),
+                               false),
+            T.functionExpression(T.identifier(ident), [],
+                block_node, false, false));
+        let ext_node = T.expressionStatement(assign);
+        ext_fun = push_to_body(path, ext_node)
+            .get('expression.right')
+    } else if(name[0] != '_') {
+        let func_decl = T.functionDeclaration(T.identifier(ident), [],
+            block_node, false, false);
+        let ext_node = T.exportNamedDeclaration(func_decl, [])
         ext_fun = push_to_body(path, ext_node).get('declaration')
     } else {
+        let ext_node = T.functionDeclaration(T.identifier(ident), [],
+            block_node, false, false);
         ext_fun = push_to_body(path, ext_node)
     }
     let child_path = ext_fun.get('body.body')[0].get('argument.body')

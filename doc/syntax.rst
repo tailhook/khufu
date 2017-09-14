@@ -161,6 +161,23 @@ If you don't want to export the function, just prefix it with underscore::
 
 This creates internal function named ``_helper``.
 
+Also you can create a dictionary (i.e. object) of views and access them using
+a variable::
+
+    view helpers.italic(text):
+        <i> text
+
+    view helpers.bold(text):
+        <b> text
+
+    view main(kind, text):
+        helpers[kind](text)
+
+The name of the ``helpers`` object can be arbitrary. And as with normal
+views this variable is exported if name does not start with underscore (the
+second part of the name isn't checked for underscore). Multiple such
+dictionaries may be declared. Nesting is not supported.
+
 More information in :ref:`views` section.
 
 
