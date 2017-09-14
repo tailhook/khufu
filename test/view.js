@@ -155,13 +155,13 @@ describe("views", () => {
     it("empty template", () => {
         expect(parser.parse("view main():\n ``"))
             .to.deep.equal([['view', 'main', [], [], [
-                ['expression', ['string', ""]]
+                ['expression', ['template', [["const", ""]]]]
             ]]])
     })
     it("const template", () => {
         expect(parser.parse("view main():\n `hello`"))
             .to.deep.equal([['view', 'main', [], [], [
-                ['expression', ['string', "hello"]]
+                ['expression', ['template', [['const', "hello"]]]]
             ]]])
     })
     it("var in template", () => {

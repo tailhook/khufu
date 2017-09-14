@@ -30,6 +30,23 @@ export function compile(item, path, opt) {
 
             return T.templateLiteral(quasis, exprs);
         }
+        case 'apply_template': {
+            let [_apply_template, expr, items] = item;
+            let tag = compile(expr, path, opt)
+            let quasis = []
+            let exprs = []
+            for(var [kind, val] of items) {
+                if(kind == 'const') {
+                    quasis.push(T.templateElement({raw: val}))
+                } else {
+                    exprs.push(compile(val, path, opt))
+                }
+            }
+            quasis[quasis.length-1].tail = true;
+
+            return T.taggedTemplateExpression(tag,
+                T.templateLiteral(quasis, exprs));
+        }
         case 'number': {
             let [_number, value] = item;
             return T.numericLiteral(Number(value));

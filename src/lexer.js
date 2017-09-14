@@ -249,7 +249,7 @@ export default function () {
         lex(function (lex) {
             if(lex.charAt(lex.length-1) == '`') {
                 this.yytext = unquote(lex.substr(1, lex.length-2));
-                return 'STRING';
+                return 'TEMPLATE_STRING';
             } else {
                 this.yytext = unquote(lex.substr(1, lex.length-3));
                 this.templates += 1;

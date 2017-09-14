@@ -569,6 +569,17 @@ describe("compiler", () => {
             '  };\n' +
             '}')
     })
+    it("compiles custom template", () => {
+        expect(compile("import {gql} from 'graphql-tag'\n" +
+                       "view main(x):\n let x = gql`query { field }`\n"))
+            .to.equal(imp +
+            'import { gql } from "graphql-tag";\n' +
+            'export function main(_x) {\n' +
+            '  return function main$(key) {\n' +
+            '    let _x2 = gql`query { field }`;\n' +
+            '  };\n' +
+            '}')
+    })
     it("compiles inline attr access", () => {
         expect(compile("view main(x):\n <p> x.a\n"))
             .to.equal(imp +
