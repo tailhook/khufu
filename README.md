@@ -32,8 +32,8 @@ Installation
 ------------
 
 ```sh
-npm install khufu@0.5.0 --save-dev
-npm install khufu-runtime@0.5.0 --save
+npm install khufu@0.5.1 --save-dev
+npm install khufu-runtime@0.5.1 --save
 ```
 
 

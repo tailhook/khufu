@@ -1,6 +1,6 @@
 {
   "name": "khufu",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A template language for incremental-dom or DSL for javascript views",
   "keywords": [
     "redux",
