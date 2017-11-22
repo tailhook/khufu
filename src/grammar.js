@@ -141,6 +141,7 @@ export var parser = new Parser({
             ["PERCENTAGE_TOKEN", "$$ = $1"],
             ["HASH_TOKEN", "$$ = $1"],
             ["URL", "$$ = $1"],
+            ["CSS_STRING", "$$ = $1"],
             ["DIMENSION", "$$ = $1"],
             ["NUMBER", "$$ = $1"],
             ["css_item ( css_value ) ", "$$ = $1 + '(' + $3 + ')'"],

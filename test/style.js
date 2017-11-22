@@ -85,6 +85,13 @@ describe("parses styles", () => {
                 ['rule', ['body'], [['property', 'width', '75%']]]
             ]]])
     })
+    it("composes", () => {
+        expect(parser.parse("style:\n  body\n    composes: xxx from \"yy\"\n"))
+            .to.deep.equal([['style', [
+                ['rule', ['body'], [['property', 'composes',
+                    'xxx from "yy"']]]
+            ]]])
+    })
     it("@media queries", () => {
         expect(parser.parse('style:\n @media (max-width: 600px)\n' +
                             '  body\n   width: 75%\n'))
