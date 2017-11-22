@@ -213,6 +213,10 @@ export default function () {
     lexer.addRule(new RegExp("url\\(\\s*(?:" +
         css_string + "|" + css_unquoted + ")\s*\\)"),
         lex("URL"), [STYLE]);
+
+    // I'm not sure it's useful in normal css but it's used
+    // in `composes: xx from "file"` in CSS Modules
+    lexer.addRule(new RegExp(css_string), lex("CSS_STRING"), [STYLE]);
     lexer.addRule(new RegExp("#(?:[a-zA-Z_0-9\\u0080-\\uffff-]|${css_esc})*"),
         lex("HASH_TOKEN"), [STYLE]);
 
