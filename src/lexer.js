@@ -187,7 +187,7 @@ export default function () {
     /********************* Style tokens ***************************/
 
     let css_esc = "\\\\[^\\n0-9a-fA-F]|\\\\[0-9a-fA-F]{1,6} ?"
-    let css_ident = "-?" +
+    let css_ident = "-*" +
         `(?:[a-zA-Z_\\u0080-\\uffff]|${css_esc})` +
         `(?:[a-zA-Z_0-9\\u0080-\\uffff-]|${css_esc})*`
     let css_number =
