@@ -85,6 +85,12 @@ describe("parses styles", () => {
                 ['rule', ['body'], [['property', 'width', '75%']]]
             ]]])
     })
+    it("var", () => {
+        expect(parser.parse("style:\n  body\n    --v1: var(--v2)\n"))
+            .to.deep.equal([['style', [
+                ['rule', ['body'], [['property', '--v1', 'var(--v2)']]]
+            ]]])
+    })
     it("composes", () => {
         expect(parser.parse("style:\n  body\n    composes: xxx from \"yy\"\n"))
             .to.deep.equal([['style', [
