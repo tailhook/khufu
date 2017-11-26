@@ -7,14 +7,9 @@ containers:
     - !Env
       <<: &env
         NODE_PATH: /usr/lib/node_modules
-        PATH: /bin:/usr/bin:/usr/local/bin:/usr/lib/node_modules/.bin
+        PATH: /bin:/usr/bin:/usr/local/bin
         BABEL_DISABLE_CACHE: 1
     - !YarnDependencies
-      # until bug #3792 in yarn fixed
-    - !Sh |
-        ln -sfn /usr/lib/node_modules/webpack/bin/webpack.js /usr/bin/webpack
-        ln -sfn /usr/lib/node_modules/mocha/bin/mocha /usr/bin/mocha
-        ln -sfn /usr/lib/node_modules/babel-cli/bin/babel.js /usr/bin/babel
     environ:
       <<: *env
       USER: user
