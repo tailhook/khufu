@@ -161,6 +161,8 @@ If you don't want to export the function, just prefix it with underscore::
 
 This creates internal function named ``_helper``.
 
+.. _dictionary-view:
+
 Also you can create a dictionary (i.e. object) of views and access them using
 a variable::
 

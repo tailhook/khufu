@@ -2,6 +2,15 @@
 Khufu Changes By Release
 ========================
 
+.. _changelog 0.5.1:
+
+v0.5.1
+======
+
+* Support of tagged templates (not just bare template strings)
+* Support of :ref:`dictionaries of views <dictionary-view>`
+
+
 .. _changelog 0.5.0:
 
 v0.5.0
