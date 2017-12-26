@@ -2,6 +2,18 @@
 Khufu Changes By Release
 ========================
 
+
+.. _changelog 0.5.2:
+
+v0.5.2
+======
+
+* Bugfix: ``error`` variable works in :ref:`catch`
+* Bugfix: exported :ref:`dictionary views <dictionary-view>` did not compile
+* More CSS syntax is supported now, in particular ``--vars`` and
+  quoted literals (outside of url)
+
+
 .. _changelog 0.5.1:
 
 v0.5.1
