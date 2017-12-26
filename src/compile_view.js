@@ -267,9 +267,7 @@ export function compile(view, path, opt) {
             }
         }
         let assign = T.assignmentExpression('=',
-            T.memberExpression(T.identifier(varname),
-                               T.identifier(key),
-                               false),
+            T.memberExpression(binding, T.identifier(key), false),
             T.functionExpression(T.identifier(ident), [],
                 block_node, false, false));
         let ext_node = T.expressionStatement(assign);
