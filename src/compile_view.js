@@ -201,7 +201,7 @@ export function compile_body(body, path, opt, key=T.stringLiteral('')) {
 
                 let store = get_var(path, target[1], target);
                 set_var(if_stmt, 'this', T.identifier('this'))
-                set_var(if_stmt, 'event', name)
+                set_var(if_stmt, 'error', name)
                 push_to_body(if_stmt, T.callExpression(
                     T.memberExpression(store, T.identifier('dispatch')),
                         [expression.compile(action, if_stmt, opt)]));

@@ -658,7 +658,7 @@ describe("compiler", () => {
                 "}")
     })
     it("compiles an catch statement", () => {
-        expect(compile("view main(@a):\n <p>\n catch * true -> @a:\n  <a>"))
+        expect(compile("view main(@a):\n <p>\n catch * error -> @a:\n  <a>"))
             .to.equal(imp +
                 'export function main(_a) {\n' +
                 '  return function main$(key) {\n' +
@@ -668,7 +668,7 @@ describe("compiler", () => {
                 '      elementVoid("a", key + "-2catch-1-a");\n' +
                 '    } catch (_error) {\n' +
                 '      if (!(_error instanceof SuppressedError)) {\n' +
-                '        _a.dispatch(true)\n' +
+                '        _a.dispatch(_error)\n' +
                 '\n' +
                 '        throw new SuppressedError(_error);\n' +
                 '      }\n' +
