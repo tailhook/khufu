@@ -618,9 +618,10 @@ describe("compiler", () => {
         expect(compile("view wrap(x){body}:\n <p>\n x()\n  body()"))
             .to.equal(imp +
             'export function wrap(_x) {\n' +
-            '  return function wrap$(key, {\n' +
-            '    body: body\n' +
-            '  }) {\n' +
+            '  return function wrap$(key, children = {}) {\n' +
+            '    let {\n' +
+            '      body: body\n' +
+            '    } = children;\n' +
             '    elementVoid("p", key + "-1-p");\n' +
             '\n' +
             '    _x()(key + "-2", {\n' +

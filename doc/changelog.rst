@@ -3,6 +3,16 @@ Khufu Changes By Release
 ========================
 
 
+.. _changelog 0.5.3:
+
+v0.5.3
+======
+
+* Bugfix: previously if some block (e.g. ``view f(){body}``) was declared
+  in arguments but not passed exception were when calling function. Now
+  ``body`` will be undefined and can be checked for in function itself.
+
+
 .. _changelog 0.5.2:
 
 v0.5.2

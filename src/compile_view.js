@@ -235,18 +235,23 @@ export function compile(view, path, opt) {
         path.scope.setData('khufu:dom-imported', true)
     }
 
-    let kwarg_nodes = []
-    if(kwargs.length) {
-        kwarg_nodes.push(T.objectPattern(
-            kwargs.map(([_name, name]) =>
-                T.objectProperty(T.identifier(name), T.identifier(name)))))
-    }
-
     let ident = name.replace(/\./g, '_');
     let block_node = T.blockStatement([
             T.returnStatement(T.functionExpression(T.identifier(ident + '$'),
-                [T.identifier('key')].concat(kwarg_nodes),
-                T.blockStatement([]), false, false))
+                [T.identifier('key')].concat(
+                    kwargs.length == 0 ? [] :
+                         [T.assignmentPattern(
+                            T.identifier('children'), T.objectExpression([]))]
+                ),
+                T.blockStatement(kwargs.length ? [
+                    T.variableDeclaration('let', [T.variableDeclarator(
+                        T.objectPattern(
+                            kwargs.map(([_name, name]) =>
+                                T.objectProperty(T.identifier(name),
+                                                 T.identifier(name)))),
+                        T.identifier('children'),
+                    )])
+                ]:[]), false, false))
         ])
     let ext_fun
     if(name.indexOf('.') >= 0) {
