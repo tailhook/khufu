@@ -1,0 +1,296 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Khufu Changes By Release &mdash; Khufu 0.5.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Khufu 0.5.2 documentation" href="index.html"/>
+        <link rel="prev" title="API" href="api.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Khufu
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="syntax.html">Khufu Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Live Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Khufu Changes By Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v0-5-3">v0.5.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-5-2">v0.5.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-5-1">v0.5.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-5-0">v0.5.0</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Khufu</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Khufu Changes By Release</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/changelog.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="khufu-changes-by-release">
+<h1>Khufu Changes By Release<a class="headerlink" href="#khufu-changes-by-release" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="v0-5-3">
+<span id="changelog-0-5-3"></span><h2>v0.5.3<a class="headerlink" href="#v0-5-3" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Bugfix: previously if some block (e.g. <code class="docutils literal"><span class="pre">view</span> <span class="pre">f(){body}</span></code>) was declared
+in arguments but not passed exception were when calling function. Now
+<code class="docutils literal"><span class="pre">body</span></code> will be undefined and can be checked for in function itself.</li>
+</ul>
+</div>
+<div class="section" id="v0-5-2">
+<span id="changelog-0-5-2"></span><h2>v0.5.2<a class="headerlink" href="#v0-5-2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Bugfix: <code class="docutils literal"><span class="pre">error</span></code> variable works in <a class="reference internal" href="syntax.html#catch"><span class="std std-ref">Catch Statements</span></a></li>
+<li>Bugfix: exported <a class="reference internal" href="syntax.html#dictionary-view"><span class="std std-ref">dictionary views</span></a> did not compile</li>
+<li>More CSS syntax is supported now, in particular <code class="docutils literal"><span class="pre">--vars</span></code> and
+quoted literals (outside of url)</li>
+</ul>
+</div>
+<div class="section" id="v0-5-1">
+<span id="changelog-0-5-1"></span><h2>v0.5.1<a class="headerlink" href="#v0-5-1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Support of tagged templates (not just bare template strings)</li>
+<li>Support of <a class="reference internal" href="syntax.html#dictionary-view"><span class="std std-ref">dictionaries of views</span></a></li>
+</ul>
+</div>
+<div class="section" id="v0-5-0">
+<span id="changelog-0-5-0"></span><h2>v0.5.0<a class="headerlink" href="#v0-5-0" title="Permalink to this headline">¶</a></h2>
+<div class="hint admonition">
+<p class="first admonition-title">Upgrading</p>
+<ol class="last arabic simple">
+<li>If you have the variables that clash with store names, they must be
+renamed, (see below).</li>
+<li>The variables named <code class="docutils literal"><span class="pre">catch</span></code> are prohibited now</li>
+<li>API: use <code class="docutils literal"><span class="pre">import</span> <span class="pre">{attach}</span> <span class="pre">from</span> <span class="pre">'khufu-runtime'</span></code> instead of
+importing default</li>
+</ol>
+</div>
+<ul class="simple">
+<li>Added <a class="reference internal" href="syntax.html#if-let"><span class="std std-ref">if-let</span></a> statement</li>
+<li><code class="docutils literal"><span class="pre">catch</span></code> became reserved word, added <a class="reference internal" href="syntax.html#catch"><span class="std std-ref">catch</span></a> statement</li>
+<li>Imports that shadow builtin names like <code class="docutils literal"><span class="pre">text</span></code> and <code class="docutils literal"><span class="pre">item</span></code> are now handled
+properly</li>
+<li>Simplified object literals like <code class="docutils literal"><span class="pre">{field1,</span> <span class="pre">field2}</span></code> are supported</li>
+<li>Stores are now in the same namespace as normal variables, so <code class="docutils literal"><span class="pre">x</span></code> is
+a store and <code class="docutils literal"><span class="pre">&#64;x</span></code> is a <code class="docutils literal"><span class="pre">x.getState()</span></code> (but with optimizations applied).
+So the store can be passed as a variable normally as well as you can access
+any extra methods on the store without any hacks.</li>
+<li>Now we allow <code class="docutils literal"><span class="pre">&#64;x</span></code> as assignment target everywhere (i.e. even in let
+statements or object/array unpacking, etc..). The AT sign in assignment
+context basically just an indicator that you will use the variable as a
+store, without any special meaning.</li>
+<li>The default-exported function in <code class="docutils literal"><span class="pre">khufu-runtime</span></code> module is now gone, and
+is replaced by <code class="docutils literal"><span class="pre">attach</span></code> function that works the same. This is because
+exporting both the default and named variables is not recommended at least by
+rollup.</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="api.html" class="btn btn-neutral" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, paul@colomiets.name.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.5.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

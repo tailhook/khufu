@@ -1,0 +1,418 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Live Demo &mdash; Khufu 0.5.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Khufu 0.5.2 documentation" href="index.html"/>
+        <link rel="next" title="API" href="api.html"/>
+        <link rel="prev" title="Khufu Syntax" href="syntax.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Khufu
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="syntax.html">Khufu Syntax</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Live Demo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#simple-counter">Simple Counter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debounce">Debounce</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#components">Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Khufu Changes By Release</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Khufu</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Live Demo</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/demo.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="live-demo">
+<span id="demo"></span><h1>Live Demo<a class="headerlink" href="#live-demo" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="simple-counter">
+<h2>Simple Counter<a class="headerlink" href="#simple-counter" title="Permalink to this headline">¶</a></h2>
+<p>This is about as small demo as possible:</p>
+<iframe src="examples/counter/index.html" frameborder="0"
+ width="400" height="45"></iframe>
+<p align="right">
+  <a href="https://github.com/tailhook/khufu/tree/master/examples/counter"
+     target="_newtab">Source</a> /
+  <a href="examples/counter/index.html" target="_newtab">Open in New Tab</a>
+</p><p>The template:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">import</span> {Counter, counter} <span class="k">from</span> &#39;./counter&#39;
+
+<span class="k">view</span> main():
+  <span class="nt">&lt;p&gt;</span>
+    <span class="k">store</span> <span class="nb">@cnt</span> = Counter
+
+    <span class="nt">&lt;button&gt;</span>
+       <span class="k">link</span> {click} counter(1) -&gt; <span class="nb">@cnt</span>
+       <span class="s">&quot;+&quot;</span>
+
+    <span class="nt">&lt;input</span> disabled size=&quot;6&quot; value=<span class="nb">@cnt</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;button&gt;</span>
+       <span class="k">link</span> {click} counter(-1) -&gt; <span class="nb">@cnt</span>
+       <span class="s">&quot;-&quot;</span>
+</pre></div>
+</div>
+<p>Bootstrap code (<cite>index.js</cite>):</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span><span class="nx">createStore</span><span class="p">,</span> <span class="nx">applyMiddleware</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;redux&#39;</span>
+<span class="kr">import</span> <span class="p">{</span><span class="nx">attach</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;khufu-runtime&#39;</span>
+<span class="kr">import</span> <span class="p">{</span><span class="nx">main</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./counter.khufu&#39;</span>
+
+<span class="nx">attach</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">),</span> <span class="nx">main</span><span class="p">(),</span> <span class="p">{</span>
+    <span class="nx">store</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">middleware</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">createStore</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span>
+            <span class="nx">applyMiddleware</span><span class="p">(...</span><span class="nx">middleware</span><span class="p">))</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>And the counter store <cite>counter.js</cite>.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">export</span> <span class="kd">function</span> <span class="nx">Counter</span><span class="p">(</span><span class="nx">state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span><span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="s1">&#39;incr&#39;</span><span class="o">:</span>
+            <span class="k">return</span> <span class="nx">state</span> <span class="o">+</span> <span class="nx">action</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+            <span class="k">return</span> <span class="nx">state</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">export</span> <span class="kd">function</span> <span class="nx">counter</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;incr&#39;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">x</span> <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This is just simple <a class="reference external" href="http://redux.js.org/">redux</a> store and an action creator.</p>
+</div>
+<div class="section" id="debounce">
+<h2>Debounce<a class="headerlink" href="#debounce" title="Permalink to this headline">¶</a></h2>
+<p>This example demonstrates use of <a class="reference external" href="https://github.com/yelouafi/redux-saga">redux-saga</a> for debouncing the event stream:</p>
+<iframe src="examples/debounce/index.html" frameborder="0"
+ width="400" height="200"></iframe>
+
+<p align="right">
+  <a href="https://github.com/tailhook/khufu/tree/master/examples/debounce"
+     target="_newtab">Source</a> /
+  <a href="examples/debounce/index.html" target="_newtab">Open in New Tab</a>
+</p><p>This example shows scoping of stores and how to define stores and middlewares
+dynamically:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span>  <span class="nt">&lt;div</span>.table<span class="nt">&gt;</span>
+    <span class="k">for</span> ms <span class="k">of</span> [0, 200, 1000]:
+      <span class="nt">&lt;div</span>.row<span class="nt">&gt;</span>
+        <span class="k">store</span> <span class="nb">@value</span> = Text | delay_saga(ms)
+        <span class="nt">&lt;div</span>.main<span class="nt">&gt;</span>
+          <span class="k">store</span> <span class="nb">@id</span> = id
+          <span class="nt">&lt;label</span> for=<span class="nb">@id</span><span class="nt">&gt;</span>
+            <span class="s">&quot;Delay &quot;</span>
+            ms
+            <span class="s">&quot; ms: &quot;</span>
+          <span class="nt">&lt;input</span> id=<span class="nb">@id</span> type=&quot;text&quot;<span class="nt">&gt;</span>
+            <span class="k">link</span> {blur, change, keyup, keydown} delay(update(this.value)) -&gt; <span class="nb">@value</span>
+
+        <span class="nt">&lt;div</span>.clone<span class="nt">&gt;</span>
+          <span class="k">store</span> <span class="nb">@id</span> = id
+          <span class="nt">&lt;label</span>.arrow for=<span class="nb">@id</span><span class="nt">&gt;</span>
+            <span class="s">&quot;⤷&quot;</span>
+          <span class="nt">&lt;input</span> id=<span class="nb">@id</span> disabled value=<span class="nb">@value</span><span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>And here is a <code class="docutils literal"><span class="pre">delay_saga</span></code> middleware:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;VALUE&quot;</span><span class="p">)</span>
+        <span class="k">while</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nx">action</span> <span class="o">=</span> <span class="k">yield</span> <span class="nx">take</span><span class="p">(</span><span class="s1">&#39;delay&#39;</span><span class="p">)</span>
+            <span class="kd">let</span> <span class="nx">deadline</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">+</span> <span class="nx">msec</span>
+            <span class="kd">let</span> <span class="nx">diff</span>
+            <span class="k">while</span> <span class="p">((</span><span class="nx">diff</span> <span class="o">=</span> <span class="nx">deadline</span> <span class="o">-</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">let</span> <span class="p">{</span><span class="nx">event</span><span class="p">}</span> <span class="o">=</span> <span class="k">yield</span> <span class="nx">race</span><span class="p">({</span>
+                    <span class="nx">event</span><span class="o">:</span> <span class="nx">take</span><span class="p">(</span><span class="s1">&#39;delay&#39;</span><span class="p">),</span>
+                    <span class="nx">timeout</span><span class="o">:</span> <span class="nx">sleep</span><span class="p">(</span><span class="nx">diff</span><span class="p">),</span>
+                <span class="p">})</span>
+                <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="nx">action</span> <span class="o">=</span> <span class="nx">event</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">yield</span> <span class="nx">put</span><span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">action</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="nx">saga</span><span class="o">:</span> <span class="nx">debounce</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This looks more complex than <code class="docutils literal"><span class="pre">stream.debounce(x)</span></code> from <a class="reference external" href="https://github.com/Reactive-Extensions/RxJS">RxJS</a>, but it’s
+because we don’t use any function defined by library, but rather implementing
+functionality ourselves. Sure you can use <a class="reference external" href="https://github.com/acdlite/redux-rx">redux-rx</a> or any other stuff.
+It’s just a demo, khufu does <strong>not</strong> require to use <a class="reference external" href="https://github.com/yelouafi/redux-saga">redux-saga</a>.</p>
+</div>
+<div class="section" id="components">
+<h2>Components<a class="headerlink" href="#components" title="Permalink to this headline">¶</a></h2>
+<p>Here is a simple demo for a component <em>label</em> that has a <code class="docutils literal"><span class="pre">body</span></code> and
+a <code class="docutils literal"><span class="pre">badge</span></code> placeholders:</p>
+<iframe src="examples/components/index.html" frameborder="0"
+ width="400" height="100"></iframe>
+
+<p align="right">
+  <a href="https://github.com/tailhook/khufu/tree/master/examples/components"
+     target="_newtab">Source</a> /
+  <a href="examples/components/index.html" target="_newtab">Open in New Tab</a>
+</p><p>Template code is as simple as:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">view</span> label(){body, badge}:
+  <span class="nt">&lt;div</span>.label<span class="nt">&gt;</span>
+    body()
+    <span class="k">if</span> badge:
+      <span class="nt">&lt;div</span>.badge<span class="nt">&gt;</span> badge()
+
+<span class="k">view</span> main():
+  label():
+    body: <span class="s">&quot;Inbox&quot;</span>
+    badge: 10
+  label()
+    <span class="s">&quot;Sent mails&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="error-handling">
+<h2>Error Handling<a class="headerlink" href="#error-handling" title="Permalink to this headline">¶</a></h2>
+<p>Following is a demo of error handling:</p>
+<iframe src="examples/errors/index.html" frameborder="0"
+ width="100%" height="100"></iframe>
+
+<p align="right">
+  <a href="https://github.com/tailhook/khufu/tree/master/examples/errors"
+     target="_newtab">Source</a> /
+  <a href="examples/errors/index.html" target="_newtab">Open in New Tab</a>
+</p><p>Note, how setting “bad value” breaks the rendering immediately. But setting
+a good value doesn’t do, unless retry action is also executed. This is because
+the code looks like this (stripped some details:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">div</span><span class="o">&gt;</span>
+  <span class="n">store</span> <span class="nd">@fruits</span> <span class="o">=</span> <span class="n">Fruits</span>
+  <span class="n">store</span> <span class="nd">@has_error</span> <span class="o">=</span> <span class="n">Flag</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="nd">@has_error</span><span class="p">:</span>
+    <span class="n">catch</span> <span class="o">*</span> <span class="n">set_true</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nd">@has_error</span><span class="p">:</span>
+      <span class="o">&lt;</span><span class="n">b</span><span class="o">&gt;</span> <span class="nd">@fruits</span><span class="o">.</span><span class="n">banana</span><span class="o">.</span><span class="n">price</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="o">&lt;</span><span class="n">button</span><span class="o">&gt;</span>
+      <span class="n">link</span> <span class="p">{</span><span class="n">click</span><span class="p">}</span> <span class="n">set_false</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nd">@has_error</span>
+      <span class="s2">&quot;Retry&quot;</span>
+
+  <span class="o">&lt;</span><span class="n">button</span><span class="o">&gt;</span>
+    <span class="n">link</span> <span class="p">{</span><span class="n">click</span><span class="p">}</span> <span class="n">good_value</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nd">@fruits</span>
+    <span class="s2">&quot;Set good value&quot;</span>
+</pre></div>
+</div>
+<p>I.e. if <code class="docutils literal"><span class="pre">&#64;fruits</span></code> store is updated, and <code class="docutils literal"><span class="pre">&#64;has_error</span></code> still contains
+<code class="docutils literal"><span class="pre">true</span></code> the catch block isn’t rerendered, but obviously if there was no error
+and store value changed, the template will rerender and drop into an errorneous
+state.</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="syntax.html" class="btn btn-neutral" title="Khufu Syntax" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, paul@colomiets.name.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.5.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

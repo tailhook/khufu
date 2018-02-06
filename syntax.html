@@ -1,0 +1,1013 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Khufu Syntax &mdash; Khufu 0.5.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Khufu 0.5.2 documentation" href="index.html"/>
+        <link rel="next" title="Live Demo" href="demo.html"/>
+        <link rel="prev" title="Welcome to Khufu’s documentation!" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Khufu
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Khufu Syntax</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#global-scope">Global Scope</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#import-statements">Import Statements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#style-blocks">Style Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#view-blocks">View Blocks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#view-definition">View Definition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#elements">Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-nodes">Text Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stores">Stores</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#links">Links</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#let-statements">Let Statements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#if-statements">If Statements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#if-let-statements">If-Let Statements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#for-statements">For Statements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#catch-statements">Catch Statements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calling-other-views">Calling Other Views</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#higher-level-views">Higher Level Views</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-javascript-parlance">The Javascript Parlance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#no-side-effects-rule">No Side Effects Rule</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Live Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Khufu Changes By Release</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Khufu</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Khufu Syntax</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/syntax.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="khufu-syntax">
+<h1>Khufu Syntax<a class="headerlink" href="#khufu-syntax" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Syntax has significant line endings, no semicolons are allowed</li>
+<li>Blocks are denoted by identation</li>
+<li>Between any kind of parenthesis (<code class="docutils literal"><span class="pre">{([])}</span></code>) the newlines and indentation
+loose their meaning. Same thing in element-denoting angle-brackets <code class="docutils literal"><span class="pre">&lt;&gt;</span></code>,
+but not for less/greater sigils (which are also <code class="docutils literal"><span class="pre">&lt;</span></code> and <code class="docutils literal"><span class="pre">&gt;</span></code>) in
+expressions</li>
+<li>In places where an expression expected, such as text of element or attribute
+value, the javascript rules for expressions are used, with few limitations</li>
+<li>Blocks <code class="docutils literal"><span class="pre">view</span></code>, <code class="docutils literal"><span class="pre">style</span></code>, <code class="docutils literal"><span class="pre">for</span></code>, <code class="docutils literal"><span class="pre">if</span></code>, <code class="docutils literal"><span class="pre">elif</span></code>, <code class="docutils literal"><span class="pre">else</span></code> require
+the colon before indented block, just like in python</li>
+<li>See <a class="reference internal" href="#the-javascript-parlance">The Javascript Parlance</a> section for the expression language
+description</li>
+<li>Be sure to read <a class="reference internal" href="#no-side-effects-rule">No Side Effects Rule</a> section</li>
+</ol>
+<div class="admonition hint">
+<p class="first admonition-title">Hint</p>
+<p class="last">We have a <a class="reference internal" href="demo.html#demo"><span class="std std-ref">Live Demo</span></a> page showing some useful code examples</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We refer to <a class="reference external" href="http://redux.js.org/">redux</a> stores in multiple places. Actually you can
+<a class="reference internal" href="api.html#store-constructor"><span class="std std-ref">customized what kind of stores to use</span></a></p>
+</div>
+</div>
+<div class="section" id="global-scope">
+<h2>Global Scope<a class="headerlink" href="#global-scope" title="Permalink to this headline">¶</a></h2>
+<p>There are three kinds of global statements: <code class="docutils literal"><span class="pre">import</span></code>, <code class="docutils literal"><span class="pre">view</span></code>
+and a <code class="docutils literal"><span class="pre">style</span></code>.</p>
+<p>Note that <code class="docutils literal"><span class="pre">view</span> <span class="pre">xxx():</span></code> and <code class="docutils literal"><span class="pre">style:</span></code> blocks do start with a colon <code class="docutils literal"><span class="pre">:</span></code>
+at the end of line and element’s content is indented.</p>
+<div class="section" id="import-statements">
+<h3>Import Statements<a class="headerlink" href="#import-statements" title="Permalink to this headline">¶</a></h3>
+<p>Import statements are exactly the same as in ES2015 Javascript, except
+obviously, you don’t need a semicolon:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">import</span> {a, b} <span class="k">from</span> &#39;module&#39;
+</pre></div>
+</div>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">import</span> module <span class="k">from</span> &#39;module&#39;
+</pre></div>
+</div>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">import</span> * as module <span class="k">from</span> &#39;module&#39;
+</pre></div>
+</div>
+<p>The khufu doesn’t actually do anything special to the statement and outputs
+it in a similar fashion to the generated javascript file (which is usually
+further processed by <a class="reference external" href="https://babeljs.io/">babel</a>). That means that you
+can import anything that webpack (or whatever tool you use for building) is
+able to import.</p>
+<p><strong>Convention:</strong> Import statements are usually grouped at the top of the file
+before any blocks.</p>
+</div>
+<div class="section" id="style-blocks">
+<h3>Style Blocks<a class="headerlink" href="#style-blocks" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">style</span></code> block allow you to write a style sheet right in the file.
+Like everything in <code class="docutils literal"><span class="pre">*.khufu</span></code> file, style blocks are indentation based.
+But there are more special things about style blocks, except syntax:</p>
+<ol class="arabic simple">
+<li>Selectors are limited to: elements, classes and pseudo-elements</li>
+<li>Every style sheet rule implicitly includes a class name of this block</li>
+</ol>
+<p>The rule #1 is important for making performance of the style sheet great. Like
+you don’t have nesting elements and so on. We feel that you have enough khufu
+instruments to achieve same goal without nested selectors and similar things.
+Of course, you can attach an external stylesheet to the page, if you have
+specific needs (like styling user HTML, which needs complex hierarchy of rules).</p>
+<p>The rule #2 means that if you compile a file <code class="docutils literal"><span class="pre">regform.khufu</span></code>, every <code class="docutils literal"><span class="pre">p</span></code>
+selector will actually be <code class="docutils literal"><span class="pre">p.b-regform</span></code> and every <code class="docutils literal"><span class="pre">.btn.btn-success</span></code>
+selector will be compiled to <code class="docutils literal"><span class="pre">.b-regform.btn.btn-success</span></code>. This allows to
+namespace styles easily.</p>
+<p>Here is a rough example of style block:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">style</span>:
+  .bar1, bar2
+    margin: 4px
+
+  p
+    display: flex
+    flex-direction: column
+    width: 300px
+    align-items: center
+
+  input
+    border-radius: 5px
+    padding: 2px 4px
+</pre></div>
+</div>
+<p>You can wrap property lines with indentation and also add the line comments,
+like this:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">style</span>:
+  div
+    margin:
+      12px  <span class="c">// left</span>
+      8px   <span class="c">// top</span>
+      12px  <span class="c">// right</span>
+      8px   <span class="c">// bottom</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default we add <code class="docutils literal"><span class="pre">b-blockname</span></code> class only for elements that:
+(a) already have a class name or (b) mentioned by bare class name in the
+<code class="docutils literal"><span class="pre">style</span></code> block.</p>
+</div>
+<p><strong>Convention</strong> Usually you need a single <code class="docutils literal"><span class="pre">style</span></code> block which is at the
+start of the file immediately following the <code class="docutils literal"><span class="pre">import</span></code> statements but before
+any <code class="docutils literal"><span class="pre">view</span></code>.</p>
+</div>
+<div class="section" id="view-blocks">
+<span id="id1"></span><h3>View Blocks<a class="headerlink" href="#view-blocks" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">view</span></code> block definition defines a function which renders virtual DOM (in
+particular of <a class="reference external" href="https://github.com/google/incremental-dom">incremental-dom</a> kind) for some HTML fragment.</p>
+<p>It also allows to anchor <a class="reference external" href="http://redux.js.org/">redux</a> stores to particular nodes of the virtual DOM
+tree.</p>
+<p>The <code class="docutils literal"><span class="pre">view</span></code> statement defined a plain javascript function, for example:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">view</span> main(x):
+  x
+</pre></div>
+</div>
+<p>Defines and exports function that renders bare text node, equivalent to the
+following javascript:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span><span class="nx">text</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;incremental-dom&#39;</span>
+<span class="kr">export</span> <span class="kd">function</span> <span class="nx">main</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">text</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If you don’t want to export the function, just prefix it with underscore:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">view</span> _helper(value, defvalue):
+    <span class="k">if</span> value == defvalue:
+        <span class="s">&quot;&lt;default&gt;&quot;</span>
+    <span class="k">else</span>:
+        value
+</pre></div>
+</div>
+<p>This creates internal function named <code class="docutils literal"><span class="pre">_helper</span></code>.</p>
+<p id="dictionary-view">Also you can create a dictionary (i.e. object) of views and access them using
+a variable:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">view</span> helpers.italic(text):
+    <span class="nt">&lt;i&gt;</span> text
+
+<span class="k">view</span> helpers.bold(text):
+    <span class="nt">&lt;b&gt;</span> text
+
+<span class="k">view</span> main(kind, text):
+    helpers[kind](text)
+</pre></div>
+</div>
+<p>The name of the <code class="docutils literal"><span class="pre">helpers</span></code> object can be arbitrary. And as with normal
+views this variable is exported if name does not start with underscore (the
+second part of the name isn’t checked for underscore). Multiple such
+dictionaries may be declared. Nesting is not supported.</p>
+<p>More information in <a class="reference internal" href="#views"><span class="std std-ref">View Definition</span></a> section.</p>
+</div>
+</div>
+<div class="section" id="view-definition">
+<span id="views"></span><h2>View Definition<a class="headerlink" href="#view-definition" title="Permalink to this headline">¶</a></h2>
+<p>This section defines what to write <strong>inside</strong> the <code class="docutils literal"><span class="pre">view</span></code> section.
+For instructions writing view function signature see <a class="reference internal" href="#view-blocks"><span class="std std-ref">View Blocks</span></a>.
+Everthing described below can only be used in <code class="docutils literal"><span class="pre">view</span></code> function.</p>
+<div class="section" id="elements">
+<h3>Elements<a class="headerlink" href="#elements" title="Permalink to this headline">¶</a></h3>
+<p>The most useful thing is creating an expression. You create expression by
+starting HTML-like angular-bracket tag <strong>at the start of a line</strong> after
+indentation, for example:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;p&gt;</span>
+</pre></div>
+</div>
+<p>Writing attributes look a lot like in HTML:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;p</span> align=&quot;left&quot;<span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>But actually the attribute value is a limited kind of javascript expression.
+For example you might write:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;p</span> align=x<span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>But you can’t write complex expressions here like <code class="docutils literal"><span class="pre">align=x+x</span></code> instead you
+may either use <code class="docutils literal"><span class="pre">let</span></code> syntax or wrap the expression in parenthessis:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;p</span> size=(x+y)<span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>And ES2015 (ES6) templates are supported too:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;a</span> href=`http://${host}/${path}`<span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>In angular-brackets you might wrap line as you wish:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;p</span> class=&quot;big-paragraph&quot;
+   align=<span class="s">&quot;left&quot;</span>&gt;
+</pre></div>
+</div>
+<p>There is never need to write an <code class="docutils literal"><span class="pre">onclick</span></code> or similar event handler directly
+inside the attribute. See <code class="docutils literal"><span class="pre">link</span></code> for an idea of how we work with events.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Unlike in <a class="reference external" href="https://github.com/google/incremental-dom">incremental-dom</a> by default we set boolean attributes using
+property (<code class="docutils literal"><span class="pre">el[x]</span></code>) instead of <code class="docutils literal"><span class="pre">el.setAttribute(x)</span></code>. This works better
+for attributes like <code class="docutils literal"><span class="pre">checked</span></code>.</p>
+</div>
+<p>We have a short syntax for defining <code class="docutils literal"><span class="pre">class</span></code> attribute, similar to one used
+in CSS:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;p</span>.big-paragraph<span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>Additionally we have syntax for optional styles:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;p</span>.paragraph.justified?(settings.is_justified)<span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>Any valid expression is allowed in <code class="docutils literal"><span class="pre">?(..)</span></code> and the operator is only applied
+to a class immediately preceeding the operator, <code class="docutils literal"><span class="pre">justified</span></code> in the case
+above, but you can use it multiple times. The parenthesis are the part of the
+operator and <em>no alternative</em> value (like in ternary <code class="docutils literal"><span class="pre">x</span> <span class="pre">?</span> <span class="pre">y</span> <span class="pre">:</span> <span class="pre">z</span></code> operator) is
+present.</p>
+<p>Elements can be nested, and text nodes (see below) can be inside the tag:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;p&gt;</span>
+  <span class="s">&quot;Here is a link&quot;</span>
+  <span class="nt">&lt;a</span>.download-link href=&quot;http://example.org/download&quot; download<span class="nt">&gt;</span>
+    <span class="s">&quot;to download file&quot;</span>
+</pre></div>
+</div>
+<p>The element is a basis for defining scope of things in khufu. For example,
+<code class="docutils literal"><span class="pre">store</span></code> is linked to the element where it is defined. The <code class="docutils literal"><span class="pre">store</span></code> and
+<code class="docutils literal"><span class="pre">let</span></code> variables are limited to the element scope.</p>
+<p>You can write strings and simple expressions (attributes, function calls,
+template expressions) on the same line as tag if they are the only element
+in the tag:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>&lt;p&gt;</dt>
+<dd>&lt;b&gt; “bold”
+&lt;i&gt; data.italic
+&lt;u&gt; capitalize(“underline”)</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="text-nodes">
+<h3>Text Nodes<a class="headerlink" href="#text-nodes" title="Permalink to this headline">¶</a></h3>
+<p>Every expression, that is not an element or one of the special argument below,
+is treated as a javascript expression defining text node. For example:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;ul&gt;</span>
+  <span class="nt">&lt;li&gt;</span>
+    <span class="s">&quot;This is a string&quot;</span>
+  <span class="nt">&lt;li&gt;</span>
+    x + y
+  <span class="nt">&lt;li&gt;</span>
+    `Hello ${ generate name() }`
+</pre></div>
+</div>
+<p>All three <code class="docutils literal"><span class="pre">&lt;li&gt;</span></code> elements above have a text node inside. In the first case
+the text is just a constant string value. For the second element the expression
+<code class="docutils literal"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> is evaluated, and whatever javascript decides is the result of the
+expression it will be inserted into a text node. The third element uses
+template string as defined in ES2015 (ES6) (currently only bare backticks
+are supported no custom prefix).</p>
+<p>Note that bare function calls like <code class="docutils literal"><span class="pre">fun(x,</span> <span class="pre">y)</span></code> also may work as
+<a class="reference internal" href="#subviews">Subviews</a></p>
+</div>
+<div class="section" id="stores">
+<h3>Stores<a class="headerlink" href="#stores" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">store</span></code> statement let you declare a <a class="reference external" href="http://redux.js.org/">redux</a> store, for example:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">import</span> {counter} <span class="k">from</span> &#39;./counter&#39;
+<span class="k">view</span> main():
+  <span class="nt">&lt;p&gt;</span>
+    <span class="k">store</span> <span class="nb">@x</span> = counter
+</pre></div>
+</div>
+<p>The stores are always denoted by <code class="docutils literal"><span class="pre">&#64;name</span></code>. In expression context the store
+name resolves to it’s state, for example:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;span&gt;</span>
+  <span class="s">&quot;Counter value: &quot;</span> + <span class="nb">@x</span>
+  <span class="s">&quot;Next value: &quot;</span>
+  <span class="nt">&lt;input</span> disabled value=(<span class="nb">@x</span> + 1)<span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>Attribute access and methods calls are supported, too:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">store</span> <span class="nb">@m</span> = immutableJsMapStore
+<span class="s">&quot;Primary: &quot;</span> + <span class="nb">@m</span>.get(&#39;primary_value&#39;)
+<span class="k">for</span> <span class="k">key</span> <span class="k">of</span> <span class="nb">@m</span>.keys():
+    <span class="s">&quot;Additional key: &quot;</span> + <span class="k">key</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Stores may appear only directly inside the element. This is how our
+diffing technique works: if element is removed, we remove the store too. If
+on the next rerender the element is still rendered, the store is reused.</p>
+</div>
+<p>You may apply middlewares to store. For example, here is our imaginary
+middleware that initializes the store with a value:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">store</span> <span class="nb">@m</span> = reducer | init(&#39;value&#39;)
+</pre></div>
+</div>
+<p>Multiple middlewares may be used:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">store</span> <span class="nb">@m</span> = reducer | init(&#39;value&#39;) | thunk | logger
+</pre></div>
+</div>
+<p>Middlewares can also be written on the following lines. In that case, they
+must be indented and only single middleware per line allowed:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">store</span> <span class="nb">@store_name</span> = reducer | init(&#39;value&#39;)
+    | createLogger({level: &#39;debug&#39;, duration: true, collapsed: true})
+</pre></div>
+</div>
+<p>You shoudn’t apply logger here, but rather use it globally, by suplying custom
+<a class="reference internal" href="api.html#store-constructor"><span class="std std-ref">store initialization function</span></a>. In the function you can
+also influence how middlewares are treated. For example, you can accept store
+enhancers instead of middlewares in the template code.  See <a class="reference internal" href="api.html#store-constructor"><span class="std std-ref">API
+documentation</span></a> for more info.</p>
+<p>Ocasionally, you may find it useful to import a store:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">import</span> {<span class="nb">@router</span>} <span class="k">from</span> &#39;./myrouting&#39;
+
+<span class="k">view</span> main():
+    <span class="k">if</span> <span class="nb">@router</span>.current_page == &#39;/home&#39;:
+        ...
+</pre></div>
+</div>
+<p>Since khufu 0.5 the stores are just like variables. So you can access
+methods on <code class="docutils literal"><span class="pre">router</span></code> above without the AT sign. And pass the store as an
+argument to the function (with <code class="docutils literal"><span class="pre">&#64;</span></code> sign it will pass the state vaule, so you
+can’t send event there):</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">view</span> button(name, num, <span class="nb">@mystore</span>):
+  <span class="nt">&lt;button&gt;</span>
+    <span class="k">link</span> {click} incr(num) -&gt; <span class="nb">@mystore</span>
+    name
+
+<span class="k">view</span> main():
+  <span class="nt">&lt;div&gt;</span>
+    <span class="k">store</span> <span class="nb">@cnt</span> = createStore(Counter)
+    button(&#39;+1&#39;, +1, cnt)
+    button(&#39;-1&#39;, -1, cnt)
+    <span class="nt">&lt;input</span> value=<span class="nb">@cnt</span><span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="#links">Links</a> section for the description of <code class="docutils literal"><span class="pre">link</span> <span class="pre">..</span> <span class="pre">-&gt;</span> <span class="pre">&#64;store</span></code> syntax.</p>
+<p>The <code class="docutils literal"><span class="pre">&#64;</span></code> anotation in function definition is mere annotation to show that
+you will be using the variables as a store, it has no special meaning.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Previously <code class="docutils literal"><span class="pre">-&gt;</span> <span class="pre">&#64;</span></code> operator was used to pass a store as an argument, it’s
+still supported, but is deprecated.</p>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 0.5.0.</span></p>
+</div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">createStore</span></code> function above, in many cases isn’t just the one from
+module <code class="docutils literal"><span class="pre">redux</span></code>. It’s often some more elaborate store creator with a
+middleware. The powerful examples of middleware are <a class="reference external" href="https://github.com/yelouafi/redux-saga">redux-saga</a> and
+and <a class="reference external" href="https://github.com/acdlite/redux-rx">redux-rx</a>.</p>
+<p>See <a class="reference external" href="http://redux.js.org/">redux documentation</a> for more information on actions, stores and
+middlewares.</p>
+</div>
+<div class="section" id="links">
+<h3>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">link</span></code> statement allows you to create an event handler that sumbits
+and event to the store. For example:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">import</span> {crateStore} <span class="k">from</span> &#39;redux&#39;
+<span class="k">import</span> {counter, incr} <span class="k">from</span> &#39;./counter&#39;
+<span class="k">view</span> main():
+  <span class="nt">&lt;p&gt;</span>
+    <span class="k">store</span> <span class="nb">@counter_store</span> = createStore(counter)
+    <span class="nt">&lt;button&gt;</span>
+      <span class="k">link</span> {click} incr() -&gt; <span class="nb">@counter_store</span>
+</pre></div>
+</div>
+<p>In the example <code class="docutils literal"><span class="pre">counter</span></code> is a “reducer” in terms of <a class="reference external" href="http://redux.js.org/">redux</a>. Where redux uses
+terms store and reducer mostly interchangeably. The <code class="docutils literal"><span class="pre">incr</span></code> is an action
+creator. Which means it’s utility is to create an action object.</p>
+<p>The action object is dispatched within the redux store by calling
+<code class="docutils literal"><span class="pre">counter_store.dispatch(incr())</span></code> when <code class="docutils literal"><span class="pre">onclick</span></code> event happens.</p>
+<p>In the link expression there are two implicit variables (see examples below):</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">event</span></code> which is browser’s event object</li>
+<li><code class="docutils literal"><span class="pre">this</span></code> the element which has the event handler</li>
+</ul>
+<p>Mutliple event handlers may be bound at once:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;input</span> type=&quot;text&quot;<span class="nt">&gt;</span>
+  <span class="k">link</span> {change, keyup, keydown, blur} set_text(this.value) -&gt; <span class="nb">@user_input</span>
+</pre></div>
+</div>
+<p>And if you need more details on the actual event happened just pass the
+event to an action creator:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;input</span> type=&quot;text&quot;<span class="nt">&gt;</span>
+  <span class="k">link</span> {keyup, keydown} key_press(event) -&gt; <span class="nb">@ui_state</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="let-statements">
+<h3>Let Statements<a class="headerlink" href="#let-statements" title="Permalink to this headline">¶</a></h3>
+<p>Let statements allows to bind a variable to some value. Used mostly for
+shortcut variables:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span>let img = user.get(&#39;avatar&#39;).small_image
+<span class="nt">&lt;img</span> src=img.src width=img.width height=img.height<span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">let</span></code> bindings are scoped to the block they are used in. For example:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span>let x = <span class="s">&quot;outer&quot;</span>
+<span class="nt">&lt;p&gt;</span>
+  let x = <span class="s">&quot;inner&quot;</span>
+  x
+<span class="k">if</span> true:
+  let x = <span class="s">&quot;if_var&quot;</span>
+  x
+<span class="nt">&lt;p&gt;</span>
+  x
+</pre></div>
+</div>
+<p>Will generate the following html:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>inner<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>if_var<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>outer<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>There is <strong>no assigment</strong> statement or expression. So basically all variables
+behave like javascript <code class="docutils literal"><span class="pre">const</span></code> declarations. But conflicting names are not
+discouraged, so you can rebind a variable:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span>let text = <span class="nb">@user_input</span>
+<span class="s">&quot;Raw user input: &quot;</span> + text + <span class="s">&quot;, &quot;</span>
+let text = validate_and_clean(text)
+<span class="s">&quot;Validated user input: &quot;</span> + text
+</pre></div>
+</div>
+</div>
+<div class="section" id="if-statements">
+<h3>If Statements<a class="headerlink" href="#if-statements" title="Permalink to this headline">¶</a></h3>
+<p>If statements define conditional blocks of a template:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">@user_input</span>.length == 0:
+  <span class="nt">&lt;p&gt;</span>
+    &#39;-- no value --&#39;
+</pre></div>
+</div>
+<p>There are also <code class="docutils literal"><span class="pre">elif</span></code> and <code class="docutils literal"><span class="pre">else</span></code> blocks:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">@user_input</span> == <span class="s">&quot;&quot;</span>:
+  <span class="nt">&lt;b&gt;</span>
+    <span class="s">&quot;Please, enter some value&quot;</span>
+<span class="k">elif</span> <span class="nb">@user_input</span> == &#39;fruits&#39;:
+  <span class="s">&quot;apple, banana&quot;</span>
+  <span class="nt">&lt;input</span> type=&quot;button&quot; value=&quot;add fruit&quot;<span class="nt">&gt;</span>
+<span class="k">elif</span> <span class="nb">@user_input</span> == &#39;vegetables&#39;:
+  <span class="s">&quot;tomato, carrot&quot;</span>
+<span class="k">else</span>:
+  <span class="s">&quot;unknown request&quot;</span>
+</pre></div>
+</div>
+<p>Any mix of elements, text nodes and function calls can be in each block. You
+can’t have optional <code class="docutils literal"><span class="pre">link</span></code>. Currently to add an optional <code class="docutils literal"><span class="pre">store</span></code> you need
+to wrap it into a HTML element.</p>
+</div>
+<div class="section" id="if-let-statements">
+<span id="if-let"></span><h3>If-Let Statements<a class="headerlink" href="#if-let-statements" title="Permalink to this headline">¶</a></h3>
+<p>If-let statements allow to assign the result of successful condition:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">if</span> let match = regex.exec(value):
+  <span class="nt">&lt;p&gt;</span>
+    match.$1
+</pre></div>
+</div>
+<p>They can be combined with regular <code class="docutils literal"><span class="pre">if</span></code> statements freely, and are
+particluarly useful for routing:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">if</span> path == &#39;/&#39;:
+    index_page()
+<span class="k">elif</span> let [_, object_id] = regex(<span class="s">&quot;/obj/(\\d+)&quot;</span>).match(path):
+    object_page(object_id)
+<span class="k">else</span>:
+    not_found_page()
+</pre></div>
+</div>
+<p><em>(the example above might not be optimal both for preformance and for
+clarity, just an example, you may want a better abstraction)</em></p>
+</div>
+<div class="section" id="for-statements">
+<h3>For Statements<a class="headerlink" href="#for-statements" title="Permalink to this headline">¶</a></h3>
+<p>For statement allows to iterate over a collection:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;ul&gt;</span>
+  <span class="k">for</span> item <span class="k">of</span> [<span class="s">&quot;apple&quot;</span>, <span class="s">&quot;banana&quot;</span>, <span class="s">&quot;cherry&quot;</span>]:
+    <span class="nt">&lt;li&gt;</span>
+      item
+</pre></div>
+</div>
+<p>There is only a <code class="docutils literal"><span class="pre">for..of</span></code> loop, to iterate over the keys of the object or
+to iterate over the range of integer values you need a helper function.
+Otherwise any ES2015 iterator will work, for example you may use one from
+the <a class="reference external" href="https://facebook.github.io/immutable-js/">immutablejs</a>:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;ul&gt;</span>
+  <span class="k">for</span> item <span class="k">of</span> map.keys():
+    item
+</pre></div>
+</div>
+<p>Since we are building virtual DOM (<a class="reference external" href="https://github.com/google/incremental-dom">incremental-dom</a>) and not plain HTML, every
+loop needs a key to have diffing algorithm work well. By default the key is a
+string representation of the item, but it can be either non-useful (if you are
+iterating over the objects) or not efficient enough. You can override it
+easily:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">for</span> obj <span class="k">of</span> items <span class="k">key</span> obj.id:
+    <span class="nt">&lt;a</span> href=(&quot;/objects/&quot; + id)<span class="nt">&gt;</span>
+      obj.title
+</pre></div>
+</div>
+<p>Note that unlike in <a class="reference external" href="https://facebook.github.io/react/">react</a> and many other virtual DOM implementations, you
+don’t put <code class="docutils literal"><span class="pre">key</span></code> onto the element itself. It’s the property of the loop. And
+khufu is smart enough to add a suffix to a key if you have more than one
+element in the loop body.</p>
+<p>You can use destructuring for the loop variables, but in that case specifying
+<code class="docutils literal"><span class="pre">key</span></code> is mandatory:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">for</span> [name, objects] in map.entries() <span class="k">key</span> name:
+  <span class="nt">&lt;div&gt;</span>
+    name
+    <span class="k">for</span> {id, color, title} in objects <span class="k">key</span> id:
+        <span class="nt">&lt;span</span> style={color: color}<span class="nt">&gt;</span>
+            title
+</pre></div>
+</div>
+<p>The variables in a loop as well as a variable in the <code class="docutils literal"><span class="pre">for</span></code> statement itself
+is scoped to a loop iteration. So events work as expected:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">for</span> obj <span class="k">of</span> <span class="nb">@objects</span> <span class="k">key</span> obj.id:
+  let image = obj.image
+  <span class="nt">&lt;input</span> type=&quot;image&quot; src=image.url<span class="nt">&gt;</span>
+    <span class="k">link</span> {click} edit_image(image.id) -&gt; <span class="nb">@objects</span>
+  <span class="nt">&lt;input</span> type=&quot;button&quot; value=&quot;remove_object&quot;<span class="nt">&gt;</span>
+    <span class="k">link</span> {click} remove(obj.id) -&gt; <span class="nb">@objects</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="catch-statements">
+<span id="catch"></span><h2>Catch Statements<a class="headerlink" href="#catch-statements" title="Permalink to this headline">¶</a></h2>
+<p>Catch statements are some kinds of error boundary. If error occurs within
+the block, error is caught and specified action is dispatched on the store.
+Here is some usage example:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">store</span> <span class="nb">@err_store</span> = value
+<span class="k">if</span> not <span class="nb">@err_store</span>:
+    catch * set_err(error) -&gt; <span class="nb">@err_store</span>:
+        <span class="nt">&lt;div&gt;</span>
+            some_commplex_rendering()
+<span class="k">else</span>:
+    <span class="nt">&lt;div&gt;</span>
+        `Error ocurred: ${ <span class="nb">@err_store</span> }`
+        <span class="nt">&lt;button&gt;</span>
+            <span class="k">link</span> {click} reset() -&gt; <span class="nb">@err_store</span>
+            <span class="s">&quot;Retry&quot;</span>
+</pre></div>
+</div>
+<p>There are few interesting notes:</p>
+<ol class="arabic simple">
+<li>Keep in mind that it may trigger a continuous rerendering
+if the block is not covered by a condition that depends on the action</li>
+<li><code class="docutils literal"><span class="pre">reset()</span></code> action might be anything, like retry request to the backend
+or anything</li>
+<li>If rendering depends on a result of a request, you may retry request at
+some interval and reset store when request is fine</li>
+</ol>
+<p>Currently all errors are always caught, but we may add <code class="docutils literal"><span class="pre">instanceof</span></code> check
+in the future.</p>
+<p>Technically catch works as follows:</p>
+<ol class="arabic simple">
+<li>Error is wrapped into <code class="docutils literal"><span class="pre">SuppressedError</span></code> and propagated down the stack</li>
+<li>Outer catch statements skip <code class="docutils literal"><span class="pre">SuppressedError</span></code></li>
+<li>Khufu’s rendering function retries rendering starting from the top level,
+but does that only once</li>
+</ol>
+<p>The (3) has the following consequences:</p>
+<ol class="arabic simple">
+<li>It avoids flicker comparing to rerendering on next animation frame</li>
+<li>But since the action is dispatched, next frame will rerender anyway</li>
+<li>If two errors catched in the same render, user will see flicker anyway
+(we may fix it in future)</li>
+<li>Render with error might be as much as 3x the normal diffing time, but
+the errors should be relatively rare, so it doesn’t matter</li>
+<li>It’s still bad to use exceptions for business-logic errors
+because of (3) and (4). So <code class="docutils literal"><span class="pre">catch</span></code> should be used for fatal errors that
+can’t be taken care of in advance.</li>
+</ol>
+</div>
+<div class="section" id="calling-other-views">
+<span id="subviews"></span><h2>Calling Other Views<a class="headerlink" href="#calling-other-views" title="Permalink to this headline">¶</a></h2>
+<p>The subviews can be called by writing function call:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">view</span> button(x):
+  <span class="nt">&lt;button&gt;</span>
+    x
+
+<span class="k">view</span> main():
+  <span class="nt">&lt;div&gt;</span>
+    button(<span class="s">&quot;a&quot;</span>)
+    button(<span class="s">&quot;b&quot;</span>)
+</pre></div>
+</div>
+<p>Note that for views, only function call syntax is supported not arbitrary
+expression. The following will <strong>not</strong> work:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">view</span> main():
+  <span class="nt">&lt;div&gt;</span>
+    button(<span class="s">&quot;a&quot;</span>) + button(<span class="s">&quot;b&quot;</span>)
+</pre></div>
+</div>
+<p>Otherwise you are free to use imported functions both as view and as a regular
+functions and they should work as expected.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If you have a function that returns another function and you use
+former in a call expression you will get returned function called
+automatically.  This is the way we use views. The <code class="docutils literal"><span class="pre">view</span> <span class="pre">main()</span></code> defined in
+a template is a function that returns a closure. The closure accepts a
+<code class="docutils literal"><span class="pre">key</span></code> as an argument and renders a dom as a side effect (this is how
+<a class="reference external" href="https://github.com/google/incremental-dom">incremental-dom</a> works). Usually it’s not a problem as you never expect
+functions to be rendered as a text node.</p>
+</div>
+<div class="section" id="higher-level-views">
+<span id="placeholders"></span><h3>Higher Level Views<a class="headerlink" href="#higher-level-views" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes you want to make a view with a few placeholders, for example:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">view</span> section(){title, body}:
+  <span class="nt">&lt;secton&gt;</span>
+    <span class="nt">&lt;h1&gt;</span> title()
+    body()
+
+<span class="k">view</span> main():
+  section():
+    title: <span class="s">&quot;Hello world&quot;</span>
+    body:
+      <span class="nt">&lt;p&gt;</span> <span class="s">&quot;Some text&quot;</span>
+      <span class="nt">&lt;p&gt;</span> <span class="s">&quot;Second paragraph&quot;</span>
+</pre></div>
+</div>
+<p>The example above has the following elements:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">{title,</span> <span class="pre">body}</span></code> in the <code class="docutils literal"><span class="pre">view</span></code> definition means we need to pass blocks
+with that names when calling a function</li>
+<li>We pass a named blocks by using colon after a function call (<code class="docutils literal"><span class="pre">section():</span></code>)
+and <code class="docutils literal"><span class="pre">&lt;name&gt;:</span></code> block with either expression or a block after it.</li>
+</ul>
+<p>To pass a single block to a function, we can omit colon after a function
+call and use a single indented block, like this:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">view</span> main():
+  section()
+    <span class="nt">&lt;p&gt;</span> <span class="s">&quot;Some text&quot;</span>
+    <span class="nt">&lt;p&gt;</span> <span class="s">&quot;Second paragraph&quot;</span>
+</pre></div>
+</div>
+<p>Which is equivalent to:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">view</span> main():
+  section():
+    body:
+      <span class="nt">&lt;p&gt;</span> <span class="s">&quot;Some text&quot;</span>
+      <span class="nt">&lt;p&gt;</span> <span class="s">&quot;Second paragraph&quot;</span>
+</pre></div>
+</div>
+<p>To check if block has been actually passed you can check the block name as
+follows:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">view</span> section(){title, body}:
+  <span class="nt">&lt;secton&gt;</span>
+    <span class="k">if</span> title:
+      <span class="nt">&lt;h1&gt;</span> title()
+    body()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="the-javascript-parlance">
+<h2>The Javascript Parlance<a class="headerlink" href="#the-javascript-parlance" title="Permalink to this headline">¶</a></h2>
+<p>In many places we allow arbitrary javascript-like expressions. They are mostly
+same as javascript but have important differences.</p>
+<p>The only thing that is different in expressions is the syntax of boolean
+operators: they are replaced with <code class="docutils literal"><span class="pre">and</span></code>, <code class="docutils literal"><span class="pre">or</span></code>, <code class="docutils literal"><span class="pre">not</span></code> keywords for
+readability.  <code class="docutils literal"><span class="pre">not</span></code> operator has lower precedence, it’s just above <code class="docutils literal"><span class="pre">and</span></code>,
+so <code class="docutils literal"><span class="pre">not</span> <span class="pre">a</span> <span class="pre">==</span> <span class="pre">b</span></code> is <code class="docutils literal"><span class="pre">!(a</span> <span class="pre">==</span> <span class="pre">b)</span></code> and not <code class="docutils literal"><span class="pre">(!a)</span> <span class="pre">==</span> <span class="pre">b</span></code> like in javascript.</p>
+<p>The functionality that is absent in khufu by design:</p>
+<ol class="arabic simple">
+<li>Function declarations</li>
+<li>All mutation operators, including assignments, augmented assigments,
+increments and <code class="docutils literal"><span class="pre">delete</span></code> operator (but see <a class="reference internal" href="#let-statements">let statements</a>)</li>
+<li>Bitwise operators</li>
+<li><code class="docutils literal"><span class="pre">new</span></code>, <code class="docutils literal"><span class="pre">void</span></code>, <code class="docutils literal"><span class="pre">typeof</span></code>, <code class="docutils literal"><span class="pre">instanceof</span></code></li>
+<li>All kinds of Javascript statements (see above for khufu-specific ones)</li>
+</ol>
+</div>
+<div class="section" id="no-side-effects-rule">
+<h2>No Side Effects Rule<a class="headerlink" href="#no-side-effects-rule" title="Permalink to this headline">¶</a></h2>
+<p>It should be the first thing you should know about the khufu language, except
+you need to understand the language to read this section. The two rules of
+thumb are:</p>
+<ol class="arabic simple">
+<li>Everything evaluated during single render assumed to have no side effects</li>
+<li>Every function or method call assumed to be pure (i.e. depend only
+on arguments)</li>
+</ol>
+<p>In particular:</p>
+<ul class="simple">
+<li>Attribute access assumed to be no-op</li>
+<li>Function calls assumed to have no side effects</li>
+<li>Objects passed to function calls are assumed to never mutate</li>
+<li>Store state is assumed to never mutate during render</li>
+</ul>
+<p>Side effects are basically allowed in two places
+(<code class="docutils literal"><span class="pre">MUT_EXPR</span></code> in the examples):</p>
+<ol class="arabic simple">
+<li>The store constructor (<code class="docutils literal"><span class="pre">store</span> <span class="pre">&#64;name</span> <span class="pre">=</span> <span class="pre">MUT_EXPR</span> <span class="pre">|</span> <span class="pre">middleware1</span></code>)</li>
+<li>The action creator expression (<code class="docutils literal"><span class="pre">link</span> <span class="pre">{ev}</span> <span class="pre">MUT_EXPR</span> <span class="pre">-&gt;</span> <span class="pre">&#64;store_name</span></code> and
+<code class="docutils literal"><span class="pre">catch</span> <span class="pre">*</span> <span class="pre">MUT_EXPR</span> <span class="pre">-&gt;</span> <span class="pre">&#64;store_name</span></code>)</li>
+</ol>
+<p>And the code in both places is assumed to have no influence on other variables
+used during render (actually an action creator expression is never
+evaluated during template render).</p>
+<p>This is important so that khufu can optimize things out. In particular khufu
+assumes that it’s safe to do the following:</p>
+<ol class="arabic">
+<li><p class="first">Reorder evaluation of any expression. For example,
+<code class="docutils literal"><span class="pre">let</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">a()</span> <span class="pre">+</span> <span class="pre">b()</span></code> may be evaluated as
+<code class="docutils literal"><span class="pre">let</span> <span class="pre">b_</span> <span class="pre">=</span> <span class="pre">b(),</span> <span class="pre">a_</span> <span class="pre">=</span> <span class="pre">a(),</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">a_</span> <span class="pre">+</span> <span class="pre">b_</span></code></p>
+</li>
+<li><p class="first">Evaluate expressions that depend neither on stores nor on function arguments
+only once, at module intitialization. For example:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">import</span> {text} <span class="k">from</span> &#39;./btn&#39;
+<span class="k">view</span> render():
+     let x = 16
+     <span class="nt">&lt;input</span> type=&#39;button&#39; style={width: x + &#39;px&#39;} value=text()<span class="nt">&gt;</span>
+</pre></div>
+</div>
+<p>May be compiled as:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="k">import</span> {text} <span class="k">from</span> &#39;./btn&#39;
+const BUTTON_ATTRIBUTES = [&#39;type&#39;, &#39;text&#39;,
+                           &#39;<span class="k">style</span>&#39;, {width: &#39;16px&#39;},
+                           &#39;value&#39;, text()]
+function render() {
+     elementVoid(&#39;button&#39;, &#39;x&#39;, BUTTON_ATTRIBUTES)
+}
+</pre></div>
+</div>
+<p>Note that neither the value of style nor the <code class="docutils literal"><span class="pre">text()</span></code> function are
+evaluated on each call of <code class="docutils literal"><span class="pre">render()</span></code>, they are cached in module
+intitialization forever.</p>
+</li>
+<li><p class="first">Cache attribute access. For example:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span><span class="nt">&lt;a</span> href=`http://${lnk.host}/${lnk.path}`<span class="nt">&gt;</span>
+    lnk.host
+</pre></div>
+</div>
+<p>Is the same as:</p>
+<div class="highlight-khufu"><div class="highlight"><pre><span></span>let host_ = lnk.host
+<span class="nt">&lt;a</span> href=`http://${host_}/${lnk.path}`<span class="nt">&gt;</span>
+    host_
+</pre></div>
+</div>
+</li>
+</ol>
+<p>It may look like the rules are too complex. But they are not. Actually they
+are rules that most users of any virtual dom library obey anyway. The khufu
+is just a library that are going to make use of all of these assumptions
+for optimization</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We do not make most optimizations yet. But they will be applied in
+the future library and are assumed as non breaking with regards to
+backwards compatibility</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="demo.html" class="btn btn-neutral float-right" title="Live Demo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to Khufu’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, paul@colomiets.name.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.5.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

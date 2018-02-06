@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to Khufu’s documentation! &mdash; Khufu 0.5.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Khufu 0.5.2 documentation" href="#"/>
+        <link rel="next" title="Khufu Syntax" href="syntax.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> Khufu
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="syntax.html">Khufu Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Live Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Khufu Changes By Release</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Khufu</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Welcome to Khufu’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-khufu-s-documentation">
+<h1>Welcome to Khufu’s documentation!<a class="headerlink" href="#welcome-to-khufu-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Khufu is a template engine for <a class="reference external" href="https://github.com/google/incremental-dom">incremental-dom</a> (which is one of virtual DOM
+implementations) that allows you to add properly scoped CSS styles and some
+temporary <a class="reference external" href="http://redux.js.org/">redux</a> stores directly into the template syntax. The generated output
+is a javascript module which requires <strong>less than 20Kb</strong> of runtime (including
+the <a class="reference external" href="https://github.com/google/incremental-dom">incremental-dom</a> and <a class="reference external" href="http://redux.js.org/">redux</a>).  See more on intent of creating the product
+in <a class="reference external" href="https://github.com/tailhook/khufu/blob/master/README.rst">README</a></p>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="syntax.html">Khufu Syntax</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="syntax.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="syntax.html#global-scope">Global Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="syntax.html#view-definition">View Definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="syntax.html#catch-statements">Catch Statements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="syntax.html#calling-other-views">Calling Other Views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="syntax.html#the-javascript-parlance">The Javascript Parlance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="syntax.html#no-side-effects-rule">No Side Effects Rule</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Live Demo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demo.html#simple-counter">Simple Counter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo.html#debounce">Debounce</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo.html#components">Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#rendering-a-template">Rendering a Template</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#compilation-with-webpack">Compilation With Webpack</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Khufu Changes By Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#v0-5-3">v0.5.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#v0-5-2">v0.5.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#v0-5-1">v0.5.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#v0-5-0">v0.5.0</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="syntax.html" class="btn btn-neutral float-right" title="Khufu Syntax" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, paul@colomiets.name.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.5.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

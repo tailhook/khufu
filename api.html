@@ -1,0 +1,476 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>API &mdash; Khufu 0.5.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Khufu 0.5.2 documentation" href="index.html"/>
+        <link rel="next" title="Khufu Changes By Release" href="changelog.html"/>
+        <link rel="prev" title="Live Demo" href="demo.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Khufu
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="syntax.html">Khufu Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Live Demo</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#rendering-a-template">Rendering a Template</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#khufu-object">Khufu Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#runtime-settings">Runtime Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#compilation-with-webpack">Compilation With Webpack</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#compilation-settings">Compilation Settings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Khufu Changes By Release</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Khufu</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="api">
+<h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="rendering-a-template">
+<h2>Rendering a Template<a class="headerlink" href="#rendering-a-template" title="Permalink to this headline">¶</a></h2>
+<p>Because khufu tries to be non-opionated to what implementation of stores you
+have, you need to set some parameters to To use khufu, you just need to import
+a root template function and render it inside the element (note template
+function is called, so you can pass parameters to it):</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span><span class="nx">attach</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;khufu-runtime&#39;</span>
+<span class="kr">import</span> <span class="p">{</span><span class="nx">main</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./template.khufu&#39;</span>
+<span class="kr">import</span> <span class="p">{</span><span class="nx">createStore</span><span class="p">,</span> <span class="nx">applyMiddleware</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;redux&#39;</span>
+
+<span class="nx">attach</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">),</span> <span class="nx">main</span><span class="p">(),</span> <span class="p">{</span>
+    <span class="nx">store</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">middleware</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">createStore</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span> <span class="nx">applyMiddleware</span><span class="p">(...</span><span class="nx">middleware</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Example uses <a class="reference external" href="https://redux.js.org">redux</a> 3.1 and ES2015</p>
+</div>
+<p>Adding support for hot reload is straightforward:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span><span class="nx">attach</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;khufu-runtime&#39;</span>
+<span class="kr">import</span> <span class="p">{</span><span class="nx">main</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./template.khufu&#39;</span>
+<span class="kr">import</span> <span class="p">{</span><span class="nx">createStore</span><span class="p">,</span> <span class="nx">applyMiddleware</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;redux&#39;</span>
+
+<span class="nx">attach</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">),</span> <span class="nx">main</span><span class="p">(),</span> <span class="p">{</span>
+    <span class="nx">store</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">middleware</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">createStore</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span> <span class="nx">applyMiddleware</span><span class="p">(...</span><span class="nx">middleware</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+
+<span class="k">if</span><span class="p">(</span><span class="nx">module</span><span class="p">.</span><span class="nx">hot</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">module</span><span class="p">.</span><span class="nx">hot</span><span class="p">.</span><span class="nx">accept</span><span class="p">()</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="section" id="khufu-object">
+<h3>Khufu Object<a class="headerlink" href="#khufu-object" title="Permalink to this headline">¶</a></h3>
+<p>The object that is returned by <code class="docutils literal"><span class="pre">attach</span></code> has the following methods:</p>
+<dl class="function">
+<dt id="khufu_obj.queue_redraw">
+<code class="descclassname">khufu_obj.</code><code class="descname">queue_redraw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#khufu_obj.queue_redraw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schedules next redraw of the view with <code class="docutils literal"><span class="pre">requestAnimationFrame</span></code>. You don’t
+have to call it manually whenever the stores in the view change. But you may
+need it if you have some external shared state which is changing.</p>
+<p>For example, if you have time displayed in the view:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">khufu_obj</span> <span class="o">=</span> <span class="nx">attach</span><span class="p">(</span><span class="nx">el</span><span class="p">,</span> <span class="nx">main</span><span class="p">())</span>
+<span class="nx">setTimeout</span><span class="p">(</span><span class="nx">khufu_obj</span><span class="p">.</span><span class="nx">queue_redraw</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="runtime-settings">
+<h3>Runtime Settings<a class="headerlink" href="#runtime-settings" title="Permalink to this headline">¶</a></h3>
+<p>These are set on object passed as the third argument to
+<code class="docutils literal"><span class="pre">attach(element,</span> <span class="pre">template,</span> <span class="pre">settings)</span></code>.</p>
+<span class="target" id="store-constructor"></span><dl class="function">
+<dt id="store">
+<code class="descname">store</code><span class="sig-paren">(</span><em>reducer</em>, <em>middleware</em>, <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#store" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function that is used to create a store. The most common one is:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span><span class="nx">createStore</span><span class="p">,</span> <span class="nx">applyMiddleware</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;redux&#39;</span>
+
+<span class="kd">function</span> <span class="nx">store</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">middleware</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">createStore</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span>
+        <span class="nx">applyMiddleware</span><span class="p">(...</span><span class="nx">middleware</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>The examples here use <a class="reference external" href="https://redux.js.org">redux</a> &gt;= 3.1. Older redux can also
+be used. For example, here is how the code above can be modified for
+older redux:</p>
+<div class="last highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span><span class="nx">createStore</span><span class="p">,</span> <span class="nx">applyMiddleware</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;redux&#39;</span>
+
+<span class="kd">function</span> <span class="nx">store</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">middleware</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">applyMiddleware</span><span class="p">(...</span><span class="nx">middleware</span><span class="p">)(</span><span class="nx">createStore</span><span class="p">)(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>You may add middleware and/or enhancers that must be used for every store:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span><span class="nx">createStore</span><span class="p">,</span> <span class="nx">applyMiddleware</span><span class="p">,</span> <span class="nx">compose</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;redux&#39;</span>
+<span class="kr">import</span> <span class="p">{</span><span class="nx">DevTools</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./devtools&#39;</span>
+<span class="kr">import</span> <span class="nx">createLogger</span> <span class="nx">from</span> <span class="s1">&#39;redux-logger&#39;</span>
+<span class="kr">import</span> <span class="nx">thunk</span> <span class="nx">from</span> <span class="s1">&#39;redux-thunk&#39;</span>
+<span class="kr">import</span> <span class="nx">promise</span> <span class="nx">from</span> <span class="s1">&#39;redux-promise&#39;</span>
+
+<span class="kd">function</span> <span class="nx">store</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">middleware</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">createStore</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span> <span class="nx">compose</span><span class="p">(</span>
+        <span class="nx">applyMiddleware</span><span class="p">(...</span><span class="nx">middleware</span><span class="p">,</span> <span class="nx">thunk</span><span class="p">,</span> <span class="nx">promise</span><span class="p">,</span> <span class="nx">logger</span><span class="p">),</span>
+        <span class="nx">DevTools</span><span class="p">.</span><span class="nx">instrument</span><span class="p">()</span>
+    <span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Or using <a class="reference external" href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd">chrome DevTools extension</a>:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span><span class="nx">createStore</span><span class="p">,</span> <span class="nx">applyMiddleware</span><span class="p">,</span> <span class="nx">compose</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;redux&#39;</span>
+<span class="kr">import</span> <span class="nx">createLogger</span> <span class="nx">from</span> <span class="s1">&#39;redux-logger&#39;</span>
+<span class="kr">import</span> <span class="nx">thunk</span> <span class="nx">from</span> <span class="s1">&#39;redux-thunk&#39;</span>
+<span class="kr">import</span> <span class="nx">promise</span> <span class="nx">from</span> <span class="s1">&#39;redux-promise&#39;</span>
+
+<span class="kd">function</span> <span class="nx">store</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">middleware</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">createStore</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span> <span class="nx">compose</span><span class="p">(</span>
+        <span class="nx">applyMiddleware</span><span class="p">(...</span><span class="nx">middleware</span><span class="p">,</span> <span class="nx">thunk</span><span class="p">,</span> <span class="nx">promise</span><span class="p">,</span> <span class="nx">logger</span><span class="p">),</span>
+        <span class="nb">window</span><span class="p">.</span><span class="nx">devToolsExtension</span> <span class="o">?</span> <span class="nb">window</span><span class="p">.</span><span class="nx">devToolsExtension</span><span class="p">()</span> <span class="o">:</span> <span class="nx">f</span> <span class="p">=&gt;</span> <span class="nx">f</span>
+    <span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You don’t have to treat everything in middleware list as <a class="reference external" href="https://redux.js.org">redux</a>
+middleware. A lame example would be to allow actions to be used to seed some
+state in the store:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">store</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">middleware</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">actions</span> <span class="o">=</span> <span class="nx">middleware</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">x</span> <span class="p">=&gt;</span> <span class="o">!!</span><span class="nx">x</span><span class="p">.</span><span class="nx">type</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">functions</span> <span class="o">=</span> <span class="nx">middleware</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">x</span> <span class="p">=&gt;</span> <span class="o">!</span><span class="nx">x</span><span class="p">.</span><span class="nx">type</span><span class="p">);</span>
+    <span class="kd">let</span> <span class="nx">store</span> <span class="o">=</span> <span class="nx">createStore</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span>
+        <span class="nx">applyMiddleware</span><span class="p">(...</span><span class="nx">functions</span><span class="p">));</span>
+    <span class="k">for</span><span class="p">(</span><span class="kd">let</span> <span class="nx">action</span> <span class="k">of</span> <span class="nx">actions</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">store</span><span class="p">.</span><span class="nx">dispatch</span><span class="p">(</span><span class="nx">action</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">store</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>Or you could determine if some things should actually be middleware or
+enhancer, to allow both middleware and enhancers in the template:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">store</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">middleware</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">enhancers</span> <span class="o">=</span> <span class="nx">middleware</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">is_enhancer</span><span class="p">)</span>
+    <span class="kd">let</span> <span class="nx">middleware</span> <span class="o">=</span> <span class="nx">middleware</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">x</span> <span class="p">=&gt;</span> <span class="o">!</span><span class="nx">is_enhancer</span><span class="p">(</span><span class="nx">x</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nx">createStore</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span>
+        <span class="nx">compose</span><span class="p">(</span>
+            <span class="c1">// redux docs say middleware should be first enhancer</span>
+            <span class="nx">applyMiddleware</span><span class="p">(...</span><span class="nx">middleware</span><span class="p">),</span>
+            <span class="p">...</span><span class="nx">enhancers</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Or just treat everything as enhancer:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">attach</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">main</span><span class="p">(),</span> <span class="p">{</span>
+    <span class="nx">store</span><span class="o">:</span> <span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">m</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="nx">createStore</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">compose</span><span class="p">(...</span><span class="nx">m</span><span class="p">)),</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>In the case you use something other than <a class="reference external" href="https://redux.js.org">redux</a>, you may use a wrapper that
+uses redux protocol (namely methods <code class="docutils literal"><span class="pre">dispatch</span></code>, <code class="docutils literal"><span class="pre">getState</span></code>,
+<code class="docutils literal"><span class="pre">subscribe</span></code>). For example, here is how you could use <a class="reference external" href="https://github.com/Reactive-Extensions/RxJS">RxJS</a> streams
+as stores (untested):</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">store</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span> <span class="nx">middleware</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">current_state</span> <span class="o">=</span> <span class="nx">state</span>
+    <span class="kd">let</span> <span class="nx">subj</span> <span class="o">=</span> <span class="nx">Rx</span><span class="p">.</span><span class="nx">Subject</span><span class="p">()</span>
+    <span class="kd">let</span> <span class="nx">stream</span> <span class="o">=</span> <span class="nx">compose</span><span class="p">(...</span><span class="nx">middleware</span><span class="p">)(</span><span class="nx">subj</span><span class="p">)</span>
+    <span class="kd">let</span> <span class="nx">store</span> <span class="o">=</span> <span class="nx">stream</span><span class="p">.</span><span class="nx">scan</span><span class="p">(</span><span class="nx">reducer</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span>
+    <span class="nx">store</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="nx">x</span> <span class="p">=&gt;</span> <span class="p">{</span> <span class="nx">current_state</span> <span class="o">=</span> <span class="nx">x</span> <span class="p">})</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="nx">dispatch</span><span class="o">:</span> <span class="nx">subj</span><span class="p">.</span><span class="nx">onNext</span><span class="p">,</span>
+        <span class="nx">getState</span><span class="o">:</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="nx">current_state</span><span class="p">,</span>
+        <span class="nx">subscribe</span><span class="o">:</span> <span class="nx">store</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="compilation-with-webpack">
+<h2>Compilation With Webpack<a class="headerlink" href="#compilation-with-webpack" title="Permalink to this headline">¶</a></h2>
+<p>Compilation of templates in webpack is just a matter of adding a loader.
+You need to feed the output of the compilation to the babel:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">loaders</span><span class="o">:</span> <span class="p">[{</span>
+    <span class="nx">test</span><span class="o">:</span> <span class="sr">/\.khufu$/</span><span class="p">,</span>
+    <span class="nx">loaders</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;babel&#39;</span><span class="p">,</span> <span class="s1">&#39;khufu&#39;</span><span class="p">],</span>
+    <span class="nx">exclude</span><span class="o">:</span> <span class="sr">/node_modules/</span><span class="p">,</span>
+<span class="p">}]</span>
+</pre></div>
+</div>
+<p>For hot reload you need to turn off generation of static attributes. This is
+a valuable optimization for production code, so do this only for development:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">khufu</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">static_attrs</span><span class="o">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">[</span><span class="s1">&#39;NODE_ENV&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;production&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There is a <a class="reference external" href="https://github.com/tailhook/khufu/tree/master/examples/playground">full example with hot-reload</a> in the sources (just note that
+khufu loader path is local there, you need a package name instead).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>As of webpack 2.0.7-beta you need to put the following into the
+config, we’re not sure if this is a bug or a feature (the first item in
+the list needs to be added, others are by default):</p>
+<div class="last highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">resolveLoader</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">mainFields</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;webpackLoader&quot;</span><span class="p">,</span> <span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="s2">&quot;browser&quot;</span><span class="p">],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="compilation-settings">
+<h3>Compilation Settings<a class="headerlink" href="#compilation-settings" title="Permalink to this headline">¶</a></h3>
+<p>Settings are put into the <code class="docutils literal"><span class="pre">khufu</span></code> key in the webpack config, in
+webpack &gt;= 2.0, you need a <code class="docutils literal"><span class="pre">LoaderOptionsPlugin</span></code> to set them:</p>
+<dl class="docutils">
+<dt>static_attrs</dt>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code> (default) means that all attribute values that compiler thinks
+are constant are put into the external array which is only used for element
+creatio and is optimized out on diff process. See <a class="reference external" href="http://google.github.io/incremental-dom/#rendering-dom/statics-array">incremental-dom
+documentation</a> for more info</dd>
+<dt>additional_class</dt>
+<dd><p class="first">It’s a string or a function that returns string. The value is a class name
+that is added to all the things:</p>
+<ol class="arabic simple">
+<li>Every CSS selector in the <code class="docutils literal"><span class="pre">style</span></code> section</li>
+<li>Every element having at least one class name</li>
+<li>Every element that has no classes but is mentioned without classes in the
+<code class="docutils literal"><span class="pre">style</span></code> section too</li>
+</ol>
+<p>The last rule looks a little bit cumbersome, but it allows selectors with
+bare elements like <code class="docutils literal"><span class="pre">div</span></code> work as expected.</p>
+<p class="last">If the setting is a function a full <a class="reference external" href="https://webpack.github.io/docs/loaders.html#loader-context">webpack loader context</a> is passed as
+the first argument. Default function extracts base filename and prepends it
+with <code class="docutils literal"><span class="pre">b-</span></code>, for example for <code class="docutils literal"><span class="pre">/work/templates/menu.khufu</span></code> the default name
+will be <code class="docutils literal"><span class="pre">b-menu</span></code>.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Khufu Changes By Release" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="demo.html" class="btn btn-neutral" title="Live Demo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, paul@colomiets.name.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.5.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
